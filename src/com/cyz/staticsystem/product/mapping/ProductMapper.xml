@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.product.dao.ProductMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.product.model.Product">
+		<id column="PRODUCT_ID" property="productId" jdbcType="CHAR" />
+		<result column="PRODUCT_CLASS_ID" property="productClassId" jdbcType="CHAR" />
+		<result column="PRODUCT_CLASS_NAME" property="productClassName" jdbcType="CHAR" />
+		<result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+		<result column="PRODUCT_IMAGE_PATH" property="productImagePath" jdbcType="VARCHAR" />
+		<result column="PRODUCT_UNIT_PRICE" property="productUnitPrice" jdbcType="DOUBLE" />
+		<result column="PRODUCT_STOCKS" property="productStocks" jdbcType="INTEGER" />
+		<result column="PRODUCT_STATUS" property="productStatus" jdbcType="CHAR" />
+		<result column="STORE_ID" property="storeId" jdbcType="CHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+	 	PRODUCT_ID
+		,PRODUCT_CLASS_ID
+		,PRODUCT_NAME
+		,PRODUCT_IMAGE_PATH
+		,PRODUCT_UNIT_PRICE
+		,PRODUCT_STOCKS
+		,PRODUCT_STATUS
+		,STORE_ID
+	</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+			p.PRODUCT_ID
+			,p.PRODUCT_CLASS_ID
+			,pc.PRODUCT_CLASS_NAME as productClassName
+			,p.PRODUCT_NAME
+			,p.PRODUCT_IMAGE_PATH
+			,p.PRODUCT_UNIT_PRICE
+			,p.PRODUCT_STOCKS
+			,p.PRODUCT_STATUS
+			,p.STORE_ID
+		from dn_product as p
+		left join dn_product_class as pc on pc.PRODUCT_CLASS_ID = p.PRODUCT_CLASS_ID
+		left join dn_store as s on s.STORE_ID = p.STORE_ID
+		where p.PRODUCT_ID = #{productId,jdbcType=CHAR} and s.is_delete = 0
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.product.model.Product">
+		select
+			p.PRODUCT_ID
+			,p.PRODUCT_CLASS_ID
+			,pc.PRODUCT_CLASS_NAME as productClassName
+			,p.PRODUCT_NAME
+			,p.PRODUCT_IMAGE_PATH
+			,p.PRODUCT_UNIT_PRICE
+			,p.PRODUCT_STOCKS
+			,p.PRODUCT_STATUS
+			,p.STORE_ID
+		from dn_product as p
+		left join dn_product_class as pc on pc.PRODUCT_CLASS_ID = p.PRODUCT_CLASS_ID
+		<if test="productId != null and '' != productId">  
+			and p.PRODUCT_ID = #{productId,jdbcType=CHAR}
+		</if>
+		<if test="productClassId != null and '' != productClassId">  
+			and p.PRODUCT_CLASS_ID = #{productClassId,jdbcType=CHAR}
+		</if>
+		<if test="productName != null and '' != productName">  
+			and p.PRODUCT_NAME = #{productName,jdbcType=VARCHAR}
+		</if>
+		<if test="productImagePath != null and '' != productImagePath">  
+			and p.PRODUCT_IMAGE_PATH = #{productImagePath,jdbcType=VARCHAR}
+		</if>
+		<if test="productUnitPrice != null and '' != productUnitPrice">  
+			and p.PRODUCT_UNIT_PRICE = #{productUnitPrice,jdbcType=DOUBLE}
+		</if>
+		<if test="productStocks != null and '' != productStocks">  
+			and p.PRODUCT_STOCKS = #{productStocks,jdbcType=INTEGER}
+		</if>
+		<if test="productStatus != null and '' != productStatus">  
+			and p.PRODUCT_STATUS = #{productStatus,jdbcType=CHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and p.STORE_ID = #{storeId,jdbcType=CHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from dn_product
+		where PRODUCT_ID = #{productId,jdbcType=CHAR}
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.product.model.Product">
+		insert into dn_product (
+		<include refid="Base_Column_List" />
+		)values (
+			#{productId,jdbcType=CHAR}
+			,#{productClassId,jdbcType=CHAR}
+			,#{productName,jdbcType=VARCHAR}
+			,#{productImagePath,jdbcType=VARCHAR}
+			,#{productUnitPrice,jdbcType=DOUBLE}
+			,#{productStocks,jdbcType=INTEGER}
+			,#{productStatus,jdbcType=CHAR}
+			,#{storeId,jdbcType=CHAR}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.product.model.Product">
+		update dn_product  set
+			PRODUCT_CLASS_ID= #{productClassId,jdbcType=CHAR}
+			,PRODUCT_ID = #{productId,jdbcType=CHAR}
+			,PRODUCT_NAME = #{productName,jdbcType=VARCHAR}
+			,PRODUCT_IMAGE_PATH = #{productImagePath,jdbcType=VARCHAR}
+			,PRODUCT_UNIT_PRICE = #{productUnitPrice,jdbcType=DOUBLE}
+			,PRODUCT_STOCKS = #{productStocks,jdbcType=INTEGER}
+			,PRODUCT_STATUS = #{productStatus,jdbcType=CHAR}
+			,STORE_ID = #{storeId,jdbcType=CHAR}
+		where PRODUCT_ID = #{productId,jdbcType=CHAR}
+	</update>
+</mapper>

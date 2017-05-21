@@ -1,0 +1,203 @@
+#login-body{
+	background-color: #fff;
+	background-image: url('images/login_bg.jpg');
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+}
+#login-body .bg_logo{
+	position: absolute;
+	top: 40px;
+	left:15%;
+	right: 0;
+	height: 10%;
+}
+#login-body .bg_logo span{
+    position: relative;
+    bottom: 10px;
+    right: 0;
+    font-size: 1rem;
+    margin-left: 20px;
+    color: #f47115;
+    font-family: microsoft yahei;
+    font-weight: 600;
+    cursor:default;
+}
+#login-body .bg_logo .logo{
+	height: 100%;
+	height:4rem;
+}
+#loginWindow{
+	position: absolute;
+	left: 70%;
+	top: 55%;
+	transform: translate(-50%,-70%);
+	width: 280px;
+	min-width: 280px;
+	padding: 0 20px;
+	background: #ffffff;
+	border-radius: 2px;
+}
+#loginWindow table{
+	width: 100%;
+}
+#loginWindow table tr{
+	height:60px;
+}
+#loginWindow .logo_box{
+	font-size: 18px;
+	color: #666;
+	border-bottom: 1px dotted #bababa;
+}
+
+#loginWindow .logo_box img{
+	width: 100%;
+	
+}
+#loginForm input{
+	background-color:#fff;
+}
+#loginForm div.group{
+	position:relative;
+	/* border-radius: 8px; */
+	overflow: hidden;
+}
+#loginForm div.group span.addon{
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    font-size: 18px;
+    background-color: #efefef;
+    color: #e8e8e8;
+    border: 1px solid #cccccc;
+}
+#loginForm div.group span.addon::before{
+	position:relative;
+	top:30%;
+}
+#loginForm div.group.check_code{
+	border-radius: 0;
+	overflow: visible;
+	height: 34px;
+}
+#loginForm div.group.check_code>a{
+    display: table-cell;
+    color: #aaa;
+    float: left;
+    /*margin-left: 10px;*/
+    cursor: pointer;
+}
+#loginForm div.group.check_code span.addon{
+	background-color: #ff7373;
+	color: #fff;
+	width: 34px;
+	line-height: 34px;
+	height: 100%;
+	font-weight: bold;
+	text-align: center;
+	position: static;
+	display: table-cell;
+	border: none;
+	vertical-align: middle;
+	float: left;
+}
+#loginForm div.group.check_code input{
+	height: 100%;
+	width:80px;
+	display: table-cell;
+	text-indent: 10px;
+	line-height: 0;
+	float: left;
+	box-sizing: border-box;
+}
+#loginForm div.group.check_code img{
+	height: 100%;
+	display: table-cell;
+	float: left;
+}
+#loginForm div.remb{
+	position:relative;
+	margin:20px 0px 10px 10px;
+}
+#loginForm div.remb label {
+    color: #666;
+}
+#loginForm div.remb .remb_label {
+    background: #fff;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    position: relative;
+    border: 1px solid;
+}
+#loginForm div.remb .remb_label:after{
+    content: '';
+	opacity: 0;
+    position: absolute;
+    width: 9px;
+    height: 5px;
+    background: transparent;
+    top: 4px;
+    left: 3px;
+    border: 3px solid #333;
+    border-top: none;
+    border-right: none;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+#loginForm div.remb input{
+	position: absolute;
+	z-index: -100;
+	visibility: hidden;
+}
+#loginForm div.remb input#remb:checked~.remb_label:after{
+	opacity: 1;
+}
+#loginForm div.remb span{
+	position:absolute;
+	bottom:0px;
+	right:0px;
+	color:#fff;
+}
+#loginForm div.group input{
+	width: 280px;
+	height: 35px;
+	text-indent: 45px;
+	border:none;
+	font-size: 16px;
+	color: #999;
+	border: #ccc 1px solid;
+}
+#loginForm button{
+	height:35px;
+	font-size:18px;
+	letter-spacing:8px;
+	color:#fff;
+	border:none;
+	cursor:pointer;
+	width: 100%; 
+	border-radius: 3px;
+	outline: none;
+}
+#loginForm button:hover{
+	opacity:.9;
+}
+#loginForm button.btn_login{
+	background-color:#f47115;
+}
+#popup_ok{
+    background-color: transparent;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    width: 60px;
+    cursor: pointer;
+	}

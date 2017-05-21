@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.finance.dao.AccountOrderDetailMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+			<result column="create_date" property="createDate" jdbcType="DATE" />
+			<result column="store_id" property="storeId" jdbcType="CHAR" />
+			<result column="store_ELM_id" property="storeELMId" jdbcType="CHAR" />
+			<result column="store_MT_id" property="storeMTId" jdbcType="CHAR" />
+			<result column="store_BD_id" property="storeBDId" jdbcType="CHAR" />
+			<result column="store_name" property="storeName" jdbcType="VARCHAR" />
+			<result column="check_no" property="checkNo" jdbcType="VARCHAR" />
+			<result column="order_type" property="orderType" jdbcType="VARCHAR" />
+			<result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
+			<result column="over_time" property="overTime" jdbcType="TIMESTAMP" />
+			<result column="order_index" property="orderIndex" jdbcType="VARCHAR" />
+			<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+			<result column="orgin_price" property="orginPrice" jdbcType="DECIMAL" />
+			<result column="meal_fee" property="mealFee" jdbcType="DECIMAL" />
+			<result column="product_sale_amount" property="productSaleAmount" jdbcType="DECIMAL" />
+			<result column="actual_price" property="actualPrice" jdbcType="DECIMAL" />
+			<result column="merchant_activities_subsidies" property="merchantActivitiesSubsidies" jdbcType="DECIMAL" />
+			<result column="merchant_subsidy_vouchers" property="merchantSubsidyVouchers" jdbcType="DECIMAL" />
+			<result column="actual_merchant_dist_charge" property="actualMerchantDistCharge" jdbcType="DECIMAL" />
+			<result column="merchant_dist_charge" property="merchantDistCharge" jdbcType="DECIMAL" />
+			<result column="order_dist_charge" property="orderDistCharge" jdbcType="DECIMAL" />
+			<result column="platform_dist_charge" property="platformDistCharge" jdbcType="DECIMAL" />
+			<result column="service_rate" property="serviceRate" jdbcType="VARCHAR" />
+			<result column="service_charge" property="serviceCharge" jdbcType="DECIMAL" />
+			<result column="refund_amount" property="refundAmount" jdbcType="VARCHAR" />
+			<result column="settlement_amount" property="settlementAmount" jdbcType="DECIMAL" />
+			<result column="distribution_mode" property="distributionMode" jdbcType="VARCHAR" />
+			<result column="remark" property="remark" jdbcType="VARCHAR" />
+			<result column="platform_activities_subsidies" property="platformActivitiesSubsidies" jdbcType="DECIMAL" />
+			<result column="platform_subsidy_vouchers" property="platformSubsidyVouchers" jdbcType="DECIMAL" />
+			<result column="platform_type" property="platformType" jdbcType="VARCHAR" />
+			<result column="is_invalid" property="isInvalid" jdbcType="VARCHAR" />
+			<result column="activities_subsidy_bymerchant" property="activitiesSubsidyBymerchant" jdbcType="DECIMAL" />
+			<result column="activities_subsidy_bycompany" property="activitiesSubsidyBycompany" jdbcType="DECIMAL" />
+			<result column="food_discount" property="foodDiscount" jdbcType="DECIMAL" />
+			<result column="special_offer" property="specialOffer" jdbcType="DECIMAL" />
+			<result column="booked_time" property="bookedTime" jdbcType="TIMESTAMP" />
+			<result column="consignee_name" property="consigneeName" jdbcType="VARCHAR" />
+			<result column="consignee_phones" property="consigneePhones" jdbcType="VARCHAR" />
+			<result column="active_time" property="activeTime" jdbcType="TIMESTAMP" />
+			<result column="active_total" property="activeTotal" jdbcType="DECIMAL" />
+			<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+			<result column="goods_quality" property="goodsQuality" jdbcType="VARCHAR" />
+			<result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
+			<result column="goods_price" property="goodsPrice" jdbcType="VARCHAR" />
+			<result column="order_sale_rate" property="orderSaleRate" jdbcType="DECIMAL" />
+			<result column="target_addr" property="targetAddr" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="GoodsMap" type="com.cyz.staticsystem.finance.model.AccountSaleGoods" >
+		<id jdbcType="VARCHAR" property="id" column="id"/>
+		<result jdbcType="VARCHAR" property="storeId" column="store_id"/>
+		<result jdbcType="VARCHAR" property="storeName" column="store_name"/>
+		<result jdbcType="TIMESTAMP" property="createDate" column="create_date"/>
+		<result jdbcType="VARCHAR" property="orderNo" column="order_no"/>
+		<result jdbcType="VARCHAR" property="goodName" column="good_name"/>
+		<result jdbcType="DECIMAL" property="goodUnitPrice" column="good_unit_price"/>
+		<result jdbcType="DECIMAL" property="goodActualPrice" column="good_actual_price"/>
+		<result jdbcType="INTEGER" property="goodNum" column="good_num"/>
+		<result jdbcType="DECIMAL" property="goodsPrice" column="goods_price"/>
+		<result jdbcType="VARCHAR" property="platformType" column="platform_type"/>
+	</resultMap>
+	<resultMap id="orderStatic" type="com.cyz.staticsystem.finance.model.OrderDetailStatic" >
+		<result jdbcType="VARCHAR" property="storeId" column="storeId"/>
+		<result jdbcType="VARCHAR" property="storeName" column="storeName"/>
+		<result jdbcType="VARCHAR" property="platformType" column="platformType"/>
+		<result jdbcType="INTEGER" property="successOrderNum" column="successOrderNum"/>
+		<result jdbcType="INTEGER" property="failOrderNum" column="failOrderNum"/>
+		<!-- <result jdbcType="TIMESTAMP" property="orderTime" column="orderTime"/> -->
+		<result jdbcType="DECIMAL" property="successOrderAmount" column="successOrderAmount"/>
+		<result jdbcType="DECIMAL" property="failOrderAmount" column="failOrderAmount"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+	 	id,
+		create_date,
+		store_id,
+		store_ELM_id,
+		store_MT_id,
+		store_BD_id,
+		store_name,
+		check_no,
+		order_type,
+		order_time,
+		over_time,
+		order_index,
+		order_no,
+		orgin_price,
+		meal_fee,
+		product_sale_amount,
+		actual_price,
+		merchant_activities_subsidies,
+		merchant_subsidy_vouchers,
+		actual_merchant_dist_charge,
+		merchant_dist_charge,
+		order_dist_charge,
+		platform_dist_charge,
+		service_rate,
+		service_charge,
+		refund_amount,
+		settlement_amount,
+		distribution_mode,
+		remark,
+		platform_activities_subsidies,
+		platform_subsidy_vouchers,
+		platform_type,
+		is_invalid,
+		activities_subsidy_bymerchant,
+		activities_subsidy_bycompany,
+		food_discount,
+		special_offer,
+		booked_time,
+		consignee_name,
+		consignee_phones,
+		active_time,
+		active_total,
+		goods_name,
+		goods_quality,
+		goods_id,
+		goods_price,
+		order_sale_rate,
+		target_addr
+	</sql>
+	<sql id="Goods_List"> id ,store_id ,store_name ,create_date,order_no ,good_name ,good_unit_price ,good_actual_price,good_num ,platform_type </sql>
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from account_order_detail
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		select
+			od.id,
+			od.create_date,
+			od.store_id,
+			od.store_ELM_id,
+			od.store_MT_id,
+			od.store_BD_id,
+			od.store_name,
+			od.check_no,
+			od.order_type,
+			od.order_time,
+			od.over_time,
+			od.order_index,
+			od.order_no,
+			od.orgin_price,
+			od.meal_fee,
+			od.product_sale_amount,
+			od.actual_price,
+			od.merchant_activities_subsidies,
+			od.merchant_subsidy_vouchers,
+			od.actual_merchant_dist_charge,
+			od.merchant_dist_charge,
+			od.order_dist_charge,
+			od.platform_dist_charge,
+			od.service_rate,
+			od.service_charge,
+			od.refund_amount,
+			od.settlement_amount,
+			od.distribution_mode,
+			od.remark,
+			od.platform_activities_subsidies,
+			od.platform_subsidy_vouchers,
+			od.platform_type,
+			od.is_invalid,
+			od.activities_subsidy_bymerchant,
+			(od.merchant_activities_subsidies-od.activities_subsidy_bymerchant) as activities_subsidy_bycompany,
+			od.food_discount,
+			sso.special_offer_food_price as special_offer,
+			od.booked_time,
+			od.consignee_name,
+			od.consignee_phones,
+			od.active_time,
+			od.active_total,
+			od.goods_name,
+			od.goods_quality,
+			od.goods_id,
+			od.goods_price,
+			od.order_sale_rate,
+			od.target_addr
+			from account_order_detail as od 
+			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+			LEFT JOIN dn_store as s on s.elm_id = od.store_id or s.meituan_id= od.store_MT_id or s.baidu_id =od.store_BD_id
+			 where 1=1
+		<if test="brandId != null and '' != brandId">  
+			AND s.BRAND_ID = #{brandId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and (s.elm_id = #{storeELMId,jdbcType=VARCHAR} or s.meituan_id= #{storeMTId,jdbcType=VARCHAR}  or s.baidu_id =#{storeBDId,jdbcType=VARCHAR}) 
+		</if>
+		<if test="checkNo != null and '' != checkNo">  
+			and od.check_no = #{checkNo,jdbcType=VARCHAR}
+		</if>
+		<if test="orderType != null and '' != orderType">  
+			and od.order_type = #{orderType,jdbcType=VARCHAR}
+		</if>
+		<if test="isInvalid != null and '' != isInvalid">  
+			and od.is_invalid = #{isInvalid,jdbcType=TIMESTAMP}
+		</if>
+		 <if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="null != propsMap.startTime and propsMap.startTime != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.order_time,'%h:%m"%s') >= DATE_FORMAT(#{propsMap.startTime,jdbcType=TIMESTAMP},'%h:%m:%s')
+			]]>
+		</if>
+		<if test="null != propsMap.endTime and propsMap.endTime != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.over_time,'%h:%m:%s') <= DATE_FORMAT(#{propsMap.endTime,jdbcType=TIMESTAMP},'%h:%m:%s')
+			]]>
+		</if> 
+		<if test="orderNo != null and '' != orderNo">  
+			and od.order_no = #{orderNo,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice">  
+			and od.orgin_price = #{orginPrice,jdbcType=DECIMAL}
+		</if>
+		<if test="serviceRate != null and '' != serviceRate">  
+			and od.service_rate = #{serviceRate,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceCharge != null and '' != serviceCharge">  
+			and od.service_charge = #{serviceCharge,jdbcType=DECIMAL}
+		</if>
+		<if test="refundAmount != null and '' != refundAmount">  
+			and od.refund_amount = #{refundAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="distributionMode != null and '' != distributionMode">  
+			and od.distribution_mode = #{distributionMode,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and od.platform_type = #{platformType,jdbcType=DECIMAL}
+		</if>
+		GROUP BY od.order_no
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	<!-- 菜品价格表 -->
+	<select id="listGoodsFromOrderDetail" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		SELECT DISTINCT
+			tod.order_time as create_date,
+			tod.store_name,
+			tod.goods_name,
+			tod.goods_price as goods_price,
+			COUNT(*) as goods_quality,
+			tod.platform_type
+		FROM
+			(
+			SELECT
+				aod.id,
+				aod.create_date,
+				aod.store_id,
+				aod.store_ELM_id,
+				aod.store_MT_id,
+				aod.store_BD_id,
+				aod.store_name,
+				aod.check_no,
+				aod.order_type,
+				aod.order_time,
+				aod.over_time,
+				aod.order_index,
+				aod.order_no,
+				aod.orgin_price,
+				aod.meal_fee,
+				aod.goods_name,
+				aod.goods_quality,
+				aod.goods_id,
+				aod.goods_price,
+				aod.platform_type 
+			FROM
+				account_order_detail AS aod
+			WHERE 1 = 1
+		<if test="id != null and '' != id">  
+			and aod.id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and aod.store_id = #{storeId,jdbcType=CHAR}
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			and aod.store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="orderType != null and '' != orderType">  
+			and aod.order_type = #{orderType,jdbcType=VARCHAR}
+		</if>
+		<if test="orderTime != null and '' != orderTime">  
+			and aod.order_time = #{orderTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="isInvalid != null and '' != isInvalid">  
+			and aod.is_invalid = #{isInvalid,jdbcType=TIMESTAMP}
+		</if>
+		 <if test="null != propsMap.startDate and propsMap.startDate != ''">
+				<![CDATA[
+					and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=TIMESTAMP},'%Y-%c-%d')
+				]]>
+			</if>
+			<if test="null != propsMap.endDate and propsMap.endDate != ''">
+				<![CDATA[
+					and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=TIMESTAMP},'%Y-%c-%d')
+				]]>
+			</if> 
+			<if test="null != propsMap.startTime and propsMap.startTime != ''">
+				<![CDATA[
+					and DATE_FORMAT(aod.order_time,'%h:%m"%s') >= DATE_FORMAT(#{propsMap.startTime,jdbcType=TIMESTAMP},'%h:%m:%s')
+				]]>
+			</if>
+			<if test="null != propsMap.endTime and propsMap.endTime != ''">
+				<![CDATA[
+					and DATE_FORMAT(aod.order_time,'%h:%m:%s') <= DATE_FORMAT(#{propsMap.endTime,jdbcType=TIMESTAMP},'%h:%m:%s')
+				]]>
+			</if> 
+		<if test="orderNo != null and '' != orderNo">  
+			and aod.order_no = #{orderNo,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark">  
+			and aod.remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="goodsName != null and '' != goodsName">  
+			and aod.goods_name like CONCAT('%',#{goodsName,jdbcType=DECIMAL},'%') 
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and aod.platform_type = #{platformType,jdbcType=DECIMAL}
+		</if>
+       	) as tod
+			GROUP BY tod.goods_name,DATE_FORMAT(tod.order_time,'%Y-%c-%d')
+			order by create_date,goods_name
+	</select>
+	<!-- 菜品数量表 -->
+	<select id="listGoods" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail" resultMap="GoodsMap">
+		select 
+			asg.id as id,
+			asg.store_id as store_id,
+			asg.store_name as store_name,
+			aod.order_time as create_date,
+			aod.order_no as order_no,
+			asg.good_name as good_name,
+			asg.good_unit_price as good_unit_price,
+			asg.good_actual_price as good_actual_price,
+			sum(asg.good_num) as good_num,
+			sum(asg.good_num * asg.good_unit_price) as goods_price,
+			asg.platform_type 
+		from account_sale_goods as asg 
+		LEFT JOIN account_order_detail as aod on aod.order_no = asg.order_no and asg.store_name = aod.store_name
+			where 1=1 
+		<if test="id != null and '' != id"> and id = #{id,jdbcType=INTEGER} </if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if> 
+		<if test="storeId != null and '' != storeId"> and asg.store_id = #{storeId,jdbcType=VARCHAR} </if>
+		<if test="storeName != null and '' != storeName"> and asg.store_name = #{storeName,jdbcType=VARCHAR} </if>
+		<if test="goodsName != null and '' != goodsName"> and asg.good_name like CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%') </if>
+		<if test="platformType != null and '' != platformType"> and asg.platform_type = #{platformType,jdbcType=VARCHAR} </if>
+		GROUP BY create_date,asg.good_name,asg.store_name,asg.platform_type
+		<if test="orderFields != null and '' != orderFields"> order by ${orderFields} ${order} </if>
+	</select>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from account_order_detail
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		insert into account_order_detail (
+		<include refid="Base_Column_List" />
+		)values (
+				#{id,jdbcType=VARCHAR}
+				,#{createDate,jdbcType=DATE}
+				,#{storeId,jdbcType=CHAR}
+				,#{storeELMId,jdbcType=CHAR}
+				,#{storeMTId,jdbcType=CHAR}
+				,#{storeBDId,jdbcType=CHAR}
+				,#{storeName,jdbcType=VARCHAR}
+				,#{checkNo,jdbcType=VARCHAR}
+				,#{orderType,jdbcType=VARCHAR}
+				,#{orderTime,jdbcType=TIMESTAMP}
+				,#{overTime,jdbcType=TIMESTAMP}
+				,#{orderIndex,jdbcType=VARCHAR}
+				,#{orderNo,jdbcType=VARCHAR}
+				,#{orginPrice,jdbcType=DECIMAL}
+				,#{mealFee,jdbcType=DECIMAL}
+				,#{productSaleAmount,jdbcType=DECIMAL}
+				,#{actualPrice,jdbcType=DECIMAL}
+				,#{merchantActivitiesSubsidies,jdbcType=DECIMAL}
+				,#{merchantSubsidyVouchers,jdbcType=DECIMAL}
+				,#{merchantDistCharge,jdbcType=DECIMAL}
+				,#{orderDistCharge,jdbcType=DECIMAL}
+				,#{platformDistCharge,jdbcType=DECIMAL}
+				,#{serviceRate,jdbcType=VARCHAR}
+				,#{serviceCharge,jdbcType=DECIMAL}
+				,#{refundAmount,jdbcType=VARCHAR}
+				,#{settlementAmount,jdbcType=DECIMAL}
+				,#{distributionMode,jdbcType=VARCHAR}
+				,#{remark,jdbcType=VARCHAR}
+				,#{platformActivitiesSubsidies,jdbcType=DECIMAL}
+				,#{platformSubsidyVouchers,jdbcType=DECIMAL}
+				,#{platformType,jdbcType=VARCHAR}
+				,#{isInvalid,jdbcType=VARCHAR}
+				,#{activitiesSubsidyBymerchant,jdbcType=DECIMAL}
+				,#{activitiesSubsidyBycompany,jdbcType=DECIMAL}
+				,#{foodDiscount,jdbcType=DECIMAL}
+				,#{specialOffer,jdbcType=DECIMAL}
+				,#{bookedTime,jdbcType=TIMESTAMP}
+				,#{consigneeName,jdbcType=VARCHAR}
+				,#{consigneePhones,jdbcType=VARCHAR}
+				,#{activeTime,jdbcType=TIMESTAMP}
+				,#{activeTotal,jdbcType=DECIMAL}
+				,#{goodsName,jdbcType=VARCHAR}
+				,#{goodsQuality,jdbcType=VARCHAR}
+				,#{goodsId,jdbcType=VARCHAR}
+				,#{goodsPrice,jdbcType=VARCHAR}
+				,#{orderSaleRate,jdbcType=DECIMAL}
+				,#{targetAddr,jdbcType=VARCHAR}
+			)
+	</insert>
+	<!-- 模板导入，批量增加 -->
+	<insert id="addOrderDetail" parameterType="java.util.List">
+		insert into account_order_detail (
+				id
+				,create_date
+				,store_id
+				,store_ELM_id
+				,store_MT_id
+				,store_BD_id
+				,store_name
+				,check_no
+				,order_type
+				,order_time
+				,over_time
+				,order_index
+				,order_no
+				,orgin_price
+				,meal_fee
+				,product_sale_amount
+				,actual_price
+				,merchant_activities_subsidies
+				,merchant_subsidy_vouchers
+				,actual_merchant_dist_charge
+				,merchant_dist_charge
+				,order_dist_charge
+				,platform_dist_charge
+				,service_rate
+				,service_charge
+				,refund_amount
+				,settlement_amount
+				,distribution_mode
+				,remark
+				,platform_activities_subsidies
+				,platform_subsidy_vouchers
+				,platform_type
+				,is_invalid
+				,activities_subsidy_bymerchant
+				,activities_subsidy_bycompany
+				,food_discount
+				,special_offer
+				,booked_time
+				,consignee_name
+				,consignee_phones
+				,active_time
+				,active_total
+				,goods_name
+				,goods_quality
+				,goods_id
+				,goods_price
+				,order_sale_rate
+				,target_addr
+		)values
+		<foreach collection="list" item="item" index="index" separator="," >
+		 (
+				#{item.id,jdbcType=VARCHAR}
+				,#{item.createDate,jdbcType=DATE}
+				,#{item.storeId,jdbcType=CHAR}
+				,#{item.storeELMId,jdbcType=CHAR}
+				,#{item.storeMTId,jdbcType=CHAR}
+				,#{item.storeBDId,jdbcType=CHAR}
+				,#{item.storeName,jdbcType=VARCHAR}
+				,#{item.checkNo,jdbcType=VARCHAR}
+				,#{item.orderType,jdbcType=VARCHAR}
+				,#{item.orderTime,jdbcType=TIMESTAMP}
+				,#{item.overTime,jdbcType=TIMESTAMP}
+				,#{item.orderIndex,jdbcType=VARCHAR}
+				,#{item.orderNo,jdbcType=VARCHAR}
+				,#{item.orginPrice,jdbcType=DECIMAL}
+				,#{item.mealFee,jdbcType=DECIMAL}
+				,#{item.productSaleAmount,jdbcType=DECIMAL}
+				,#{item.actualPrice,jdbcType=DECIMAL}
+				,#{item.merchantActivitiesSubsidies,jdbcType=DECIMAL}
+				,#{item.merchantSubsidyVouchers,jdbcType=DECIMAL}
+				,#{item.actualMerchantDistCharge,jdbcType=DECIMAL}
+				,#{item.merchantDistCharge,jdbcType=DECIMAL}
+				,#{item.orderDistCharge,jdbcType=DECIMAL}
+				,#{item.platformDistCharge,jdbcType=DECIMAL}
+				,#{item.serviceRate,jdbcType=VARCHAR}
+				,#{item.serviceCharge,jdbcType=DECIMAL}
+				,#{item.refundAmount,jdbcType=VARCHAR}
+				,#{item.settlementAmount,jdbcType=DECIMAL}
+				,#{item.distributionMode,jdbcType=VARCHAR}
+				,#{item.remark,jdbcType=VARCHAR}
+				,#{item.platformActivitiesSubsidies,jdbcType=DECIMAL}
+				,#{item.platformSubsidyVouchers,jdbcType=DECIMAL}
+				,#{item.platformType,jdbcType=VARCHAR}
+				,#{item.isInvalid,jdbcType=VARCHAR}
+				,#{item.activitiesSubsidyBymerchant,jdbcType=DECIMAL}
+				,#{item.activitiesSubsidyBycompany,jdbcType=DECIMAL}
+				,#{item.foodDiscount,jdbcType=DECIMAL}
+				,#{item.specialOffer,jdbcType=DECIMAL}
+				,#{item.bookedTime,jdbcType=TIMESTAMP}
+				,#{item.consigneeName,jdbcType=VARCHAR}
+				,#{item.consigneePhones,jdbcType=VARCHAR}
+				,#{item.activeTime,jdbcType=TIMESTAMP}
+				,#{item.activeTotal,jdbcType=DECIMAL}
+				,#{item.goodsName,jdbcType=VARCHAR}
+				,#{item.goodsQuality,jdbcType=VARCHAR}
+				,#{item.goodsId,jdbcType=VARCHAR}
+				,#{item.goodsPrice,jdbcType=VARCHAR}
+				,#{item.orderSaleRate,jdbcType=DECIMAL}
+				,#{item.targetAddr,jdbcType=VARCHAR}
+		)
+		</foreach>
+	</insert>
+	<update id="update" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		update account_order_detail  set
+		id= #{id,jdbcType=VARCHAR}
+		<if test="storeId != null and '' != storeId">  
+			,store_id = #{storeId,jdbcType=CHAR}
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			,store_name = #{storeId,jdbcType=VARCHAR}
+		</if>
+		<if test="checkNo != null and '' != checkNo">  
+			,check_no = #{checkNo,jdbcType=VARCHAR}
+		</if>
+		<if test="orderType != null and '' != orderType">  
+			,order_type = #{orderType,jdbcType=VARCHAR}
+		</if>
+		<if test="orderTime != null and '' != orderTime">  
+			,order_time = #{orderTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="isInvalid != null and '' != isInvalid">  
+			,is_invalid = #{isInvalid,jdbcType=TIMESTAMP}
+		</if>
+		<if test="overTime != null and '' != overTime">  
+			,over_time = #{overTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="orderNo != null and '' != orderNo">  
+			,order_no = #{orderNo,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice">  
+			,orgin_price = #{orginPrice,jdbcType=DECIMAL}
+		</if>
+		<if test="serviceRate != null and '' != serviceRate">  
+			,service_rate = #{serviceRate,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceCharge != null and '' != serviceCharge">  
+			,service_charge = #{serviceCharge,jdbcType=DECIMAL}
+		</if>
+		<if test="refundAmount != null and '' != refundAmount">  
+			,refund_amount = #{refundAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="distributionMode != null and '' != distributionMode">  
+			,distribution_mode = #{distributionMode,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark">  
+			,remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="actualPrice != null and '' != actualPrice">  
+			,actual_price = #{actualPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="refundAmount != null and '' != refundAmount">  
+			,refund_amount = #{refundAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantActivitiesSubsidies != null and '' != merchantActivitiesSubsidies">  
+			,merchant_activities_subsidies = #{merchantActivitiesSubsidies,jdbcType=DECIMAL}
+		</if>
+		<if test="platformActivitiesSubsidies != null and '' != platformActivitiesSubsidies">  
+			,platform_activities_subsidies = #{platformActivitiesSubsidies,jdbcType=DECIMAL}
+		</if>
+		<if test="merchantDistCharge != null and '' != merchantDistCharge">  
+			,merchant_dist_charge = #{merchantDistCharge,jdbcType=DECIMAL}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge">  
+			,order_dist_charge = #{orderDistCharge,jdbcType=DECIMAL}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge">  
+			,platform_dist_charge = #{platformDistCharge,jdbcType=DECIMAL}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant"> 
+			,activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=DECIMAL}
+		</if>
+	where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- 更新订单数据实际配送费 -->
+	<update id="updateActualDistCharge" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		update account_order_detail  set
+				id= #{id,jdbcType=VARCHAR}
+			<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge">  
+				,actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=DECIMAL}
+			</if>
+			<if test="remark != null and '' != remark">  
+				,remark = #{remark,jdbcType=VARCHAR}
+			</if>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 统计订单数据分店铺 -->
+	<select id="calcuOrderDetail" resultMap="orderStatic" parameterType="com.cyz.staticsystem.finance.model.OrderDetailQuery">
+			select
+				s.STORE_ID as storeId,
+				aod.STORE_NAME as storeName,
+				aod.platform_type as platformType,
+				COUNT(DISTINCT aod.order_no)-sum(aod.is_invalid) as successOrderNum,	
+				sum(case when aod.is_invalid = '0' then aod.orgin_price else 0 end)
+				+sum(case when aod.is_invalid = '0' then aod.meal_fee else 0 end)
+				+sum(case when aod.is_invalid = '0' then aod.platform_dist_charge else 0 end)
+				+sum(case when aod.is_invalid = '0' then aod.merchant_dist_charge else 0 end) as successOrderAmount,
+				sum(aod.is_invalid) as failOrderNum,
+				sum(case when aod.is_invalid = '1' then aod.orgin_price else 0 end)
+				+sum(case when aod.is_invalid = '1' then aod.meal_fee else 0 end)
+				+sum(case when aod.is_invalid = '1' then aod.platform_dist_charge else 0 end)
+				+sum(case when aod.is_invalid = '1' then aod.merchant_dist_charge else 0 end) as failOrderAmount
+			from account_order_detail as aod
+			LEFT JOIN dn_store as s ON  s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or  s.baidu_id = aod.store_BD_id
+			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID 
+					where 1=1 
+				<if test="queryTime != null and '' != queryTime"> 
+					and DATE_FORMAT(aod.order_time,'%Y-%m-%d') = DATE_FORMAT(#{queryTime,jdbcType=TIMESTAMP},'%Y-%m-%d')
+				</if>
+				<if test="username != null and '' != username">  
+					and bui.user_account = #{username,jdbcType=VARCHAR}
+				</if>
+				<if test="password != null and '' != password">  
+					and bui.password = #{password,jdbcType=VARCHAR}
+				</if>
+			GROUP BY s.STORE_NAME,aod.platform_type
+	</select>
+	
+	<!-- 统计订单数据全部 -->
+	<select id="calcuOrderAll" resultMap="orderStatic" parameterType="com.cyz.staticsystem.finance.model.OrderDetailQuery">
+			select
+				s.STORE_ID as storeId,
+				aod.STORE_NAME as storeName,
+				aod.platform_type as platformType,
+				COUNT(DISTINCT aod.order_no)-sum(aod.is_invalid) as successOrderNum,	
+				sum(case when aod.is_invalid = '0' then aod.orgin_price else 0 end)
+				+sum(case when aod.is_invalid = '0' then aod.meal_fee else 0 end)
+				+sum(case when aod.is_invalid = '0' then aod.platform_dist_charge else 0 end)
+				+sum(case when aod.is_invalid = '0' then aod.merchant_dist_charge else 0 end) as successOrderAmount,
+				sum(aod.is_invalid) as failOrderNum,
+				sum(case when aod.is_invalid = '1' then aod.orgin_price else 0 end)
+				+sum(case when aod.is_invalid = '1' then aod.meal_fee else 0 end)
+				+sum(case when aod.is_invalid = '1' then aod.platform_dist_charge else 0 end)
+				+sum(case when aod.is_invalid = '1' then aod.merchant_dist_charge else 0 end) as failOrderAmount
+			from account_order_detail as aod
+			LEFT JOIN dn_store as s ON  s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or  s.baidu_id = aod.store_BD_id
+			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID 
+					where 1=1 
+				<if test="queryTime != null and '' != queryTime"> 
+					and DATE_FORMAT(aod.order_time,'%Y-%m-%d') = DATE_FORMAT(#{queryTime,jdbcType=TIMESTAMP},'%Y-%m-%d')
+				</if>
+				<if test="username != null and '' != username">  
+					and bui.user_account = #{username,jdbcType=VARCHAR}
+				</if>
+				<if test="password != null and '' != password">  
+					and bui.password = #{password,jdbcType=VARCHAR}
+				</if>
+	</select>
+	
+	<select id="calcuOrderDetailNull" resultMap="orderStatic" parameterType="com.cyz.staticsystem.finance.model.OrderDetailQuery">
+		select
+				s.STORE_ID as storeId,
+				aod.STORE_NAME as storeName,
+				aod.platform_type as platformType,
+				0 as successOrderNum,	
+				0 as successOrderAmount,
+				0 as failOrderNum,
+				0 as failOrderAmount
+			from account_order_detail as aod
+			LEFT JOIN dn_store as s ON  s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or  s.baidu_id = aod.store_BD_id
+			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID
+					where 1=1 
+				<if test="username != null and '' != username">  
+					and bui.user_account = #{username,jdbcType=VARCHAR}
+				</if>
+				<if test="password != null and '' != password">  
+					and bui.password = #{password,jdbcType=VARCHAR}
+				</if>
+			GROUP BY s.STORE_NAME,aod.platform_type
+	</select>
+	
+	<!-- 统计商家排名 -->
+	<select id="staticStoreOrder" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		SELECT store_name as storeName, COUNT(DISTINCT order_no)-sum(is_invalid) AS orderNo
+			FROM account_order_detail
+			WHERE 1=1
+			<if test="null != createDate and createDate != ''">
+				and DATE_FORMAT(order_time, '%Y-%m-%d') = DATE_FORMAT(#{createDate,jdbcType=DATE},'%Y-%m-%d')
+			</if>
+			GROUP BY storeName
+			ORDER BY orderNo DESC
+			LIMIT 4
+	</select>
+</mapper>

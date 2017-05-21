@@ -1,0 +1,263 @@
+	ul{
+		margin:0;
+	}
+	.elm{
+		color:#359BF5;
+	}
+	.meituan{
+		color:#3ECF8B;
+	}
+	.baidu{
+		color:#FF2D48;
+	}
+	.search-time {
+	    display: flex;
+	    padding: 20px;
+	    background: white;
+	    height: 80px;
+	    position: absolute;
+   		width: 100%;
+ 		z-index: 99;
+	}
+	.search-time span {
+	    line-height: 30px;
+	    padding-right: 10px;
+	    height: 30px;
+	}
+	#breadcrumbs{
+		display:none;
+	}
+	.today{
+	    width: 100%;
+	    height: auto;
+	    cursor: default;
+	    margin: 0;
+	    position: relative;
+	    margin-top: 100px;
+	    height: auto;
+	}
+	ul{
+		height:100%;
+		width:100%;
+	}
+	.ht200{
+		width:100%;
+		height:200px;
+	}
+	.ht33p{
+		height: 30px;
+		/*margin-top: 5px;*/
+	}
+	.ht33p span:first-child {
+		float: left;
+	}
+	.ht33p span:last-child {
+		float: right;
+	}
+	
+	.ht25p{
+		height: 30px;
+	    border-bottom: 1px solid #ddd;
+	    box-sizing: border-box;
+	}
+	 .ht25p>span:first-child,.ht33p>span:first-child{
+		display:inline-block;
+		height:100%;
+		/* position:absolute;
+		left:20px; */
+	} 
+	 .ht25p>span:last-child,.ht33p>span:last-child{
+		display:inline-block;
+		height:100%;
+	} 
+	.wh50p{
+		width: 50%;
+	    height: 100%;
+	    float: left;
+	    box-sizing: border-box;
+	}
+	.wh50p{
+		width: 50%;
+	    height: 100%;
+	    float: left;
+	    box-sizing: border-box;
+	}
+	.wh50p{
+		width: 50%;
+	    height: 100%;
+	    float: left;
+	    box-sizing: border-box;
+	    text-align:center;
+	    position:relative;
+	}
+	.wh50p>strong{
+		display: block;
+	    font-size: 40px;
+	}
+	.wh50p>span:first-child{
+		display: block;
+	   /*  height: 20%; */
+	}
+	.wh50p>span:last-child{
+		display: block;
+	    height: 20%;
+	}
+	.wh33p{
+		width: 33.33%;
+	    height: 100%;
+	    float: left;
+	    border-right: 1px solid #ddd;
+	    box-sizing: border-box;
+	    text-align:center;
+	}
+	
+	.wh33p:last-child{
+		border-right:0;
+	}
+	.wh33p>strong{
+	    display: block;
+	    font-size: 40px;
+	     height: 60%;
+	    overflow:hidden;
+	}
+	.wh33p>span{
+		display:block;
+	}
+	.today_item{
+	    display: inline-block;
+	    float: left;
+	    height: 100%;
+	    padding: 0 0 20px 0;
+	    box-sizing: border-box;
+	}
+	.today_item:first-child{
+		width:60%;
+		 padding: 0 20px 20px 0;
+	}
+	.today_item:last-child{
+		width:40%;
+	}
+	.today_item>div{
+		background-color:#fff;
+		width:100%;
+	}
+	.today_item>.today_item_title{
+		/* height:20%; */
+		height: 40px;
+		line-height: 40px;
+	    border-bottom: 2px #eee solid;
+	    /* position:relative; */
+	    font-size:14px;
+	}
+	.today_item>.today_item_data{
+    	height: 80%;
+	    padding: 20px;
+	    box-sizing: border-box;
+	}
+	.today_item_title>span{
+		display:inline-block;
+		height:100%;
+		margin-left: 10px;
+	}
+	.today_item_title>a{
+		display:inline-block;
+		text-decoration: underline;
+		margin-right: 10px;
+		float: right;
+		color:#999;
+	}
+	.today_item_title>a:hover {
+		color: #F47115;
+	}
+	.todayRank ul li {
+		height: 25px;
+		border-bottom: 1px solid #eee; 
+	}
+	.todayRank ul li span {
+		line-height: 25px;
+		display: block;
+	}
+	.todayRank ul li span:first-child {
+		float: left;
+	}
+	.todayRank ul li span:last-child {
+		float: right;
+	}
+	ul#detailDayOrderNum{
+	    display: inline-block;
+   		position: relative;
+	}
+	
+	.platform_totalMoney_item{
+		background-color:#fff;
+		height:200px;
+	}
+	.platform_totalMoney_item{
+		background-color:#fff;
+		height:200px;
+	}
+	.platform_totalMoney_item-Name{
+		display:block;
+		height:30%;
+		padding: 10px;
+	}
+	.platform_totalMoney_item-todayValue{
+		color: #3ECF8B;
+		display:block;
+		height:30%;
+		text-align:center;
+		font-size:40px;
+	}
+	.widget-body .col-sm-4:first-child .platform_totalMoney_item-todayValue{
+		color: #359BF5;
+	}
+	.widget-body .col-sm-4:last-child .platform_totalMoney_item-todayValue{
+		color: #FF2D48;
+	}
+	
+input[name='timeQuantum']{
+	visibility:hidden;
+}
+input[name='timeQuantum']+label{
+    background-color: #fff;
+    padding: 2px 6px 3px 2px;
+    text-align: center;
+   	height: 30px;
+    line-height: 30px;
+    position: relative;
+    top: 2px;
+}
+input[name='timeQuantum']:checked+label{
+	background-color: #f47115;
+    color: #fff;
+    padding: 2px 6px 3px 2px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 3px;
+    position: relative;
+    top: 2px;
+}
+.hidden{
+	display:none;
+}
+.inlineBlock{
+	display:inline-block;
+}
+.input-group{
+	margin:0;
+	padding:0;
+}
+.breadcrumb>li, .breadcrumb>li.active{
+	display:inline-block;
+    vertical-align: middle;
+    height:30px;
+    line-height:30px;
+}
+.breadcrumb{
+	line-height:inherit;
+}
+.breadcrumb>li>span{
+	margin-right:4px;
+	vertical-align:middle;
+}

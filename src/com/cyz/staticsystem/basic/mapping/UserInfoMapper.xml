@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.basic.dao.UserInfoMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.basic.model.UserInfo">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="USER_ACCOUNT" property="userAccount" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+		<result column="FULL_NAME" property="fullName" jdbcType="VARCHAR" />
+		<result column="USER_TYPE" property="userType" jdbcType="INTEGER" />
+		<result column="USER_TYPE_NAME" property="userTypeName" jdbcType="VARCHAR" />
+		<result column="MOBILE_PHONE" property="mobilePhone" jdbcType="VARCHAR" />
+		<result column="ID_CARD" property="idCard" jdbcType="VARCHAR" />
+		<result column="ID_CARD_IMG_PATH" property="idCardImgPath" jdbcType="BLOB" />
+		<result column="LAST_LOGIN_TIME" property="lastLoginTime" jdbcType="TIMESTAMP" />
+		<result column="LAST_LOGIN_IP" property="lastLoginIp" jdbcType="VARCHAR" />
+		<result column="STATES" property="states" jdbcType="INTEGER" />
+		<result column="MEMO" property="memo" jdbcType="VARCHAR" />
+		<result column="ENABLE_STATE_DATE" property="enableStateDate" jdbcType="TIMESTAMP" />
+		<result column="ENABLE_END_DATE" property="enableEndDate" jdbcType="TIMESTAMP" />
+		<result column="UPDATED" property="updated" jdbcType="TIMESTAMP" />
+		<result column="UPDATEDBY" property="updatedby" jdbcType="VARCHAR" />
+		<result column="CREATEDBY" property="createdby" jdbcType="VARCHAR" />
+		<result column="CREATED" property="created" jdbcType="TIMESTAMP" />
+		<result column="IS_ACTIVE" property="isActive" jdbcType="INTEGER" />
+		<result column="PLATFORM_TYPE" property="platformType" jdbcType="CHAR" />
+		<result column="STORE_ID" property="storeId" jdbcType="CHAR" />
+		<result column="PLATFORM_STORE_INDEX" property="platformStoreIndex" jdbcType="INTEGER" />
+		<result column="PLATFORM_STORE_NAME" property="platformStoreName" jdbcType="VARCHAR" />
+		<result column="PLATFORM_STORE_SCORE" property="platformStoreScore" jdbcType="DOUBLE" />
+		<result column="MARKETING_MANAGER" property="marketingManager" jdbcType="VARCHAR" />
+		<result column="MARKETING_MANAGER_TEL" property="marketingManagerTel" jdbcType="VARCHAR" />
+		<result column="user_group" property="userGroup" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		 	ID
+			,USER_ACCOUNT
+			,PASSWORD
+			,FULL_NAME
+			,USER_TYPE
+			,USER_TYPE_NAME
+			,MOBILE_PHONE
+			,ID_CARD
+			,ID_CARD_IMG_PATH
+			,LAST_LOGIN_TIME
+			,LAST_LOGIN_IP
+			,STATES
+			,MEMO
+			,ENABLE_STATE_DATE
+			,ENABLE_END_DATE
+			,UPDATED
+			,UPDATEDBY
+			,CREATEDBY
+			,CREATED
+			,IS_ACTIVE
+			,PLATFORM_TYPE
+			,STORE_ID
+			,PLATFORM_STORE_INDEX
+			,PLATFORM_STORE_NAME
+			,PLATFORM_STORE_SCORE
+			,MARKETING_MANAGER
+			,MARKETING_MANAGER_TEL
+			,user_group
+	</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from BASIC_USER_INFO
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<select id="getByUserAccount" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select 
+		<include refid="Base_Column_List" />
+		from BASIC_USER_INFO u
+		where u.USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR}
+		and u.IS_ACTIVE=1 
+		and u.STATES=1
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.basic.model.UserInfo">
+		select
+		<include refid="Base_Column_List" />
+		from BASIC_USER_INFO
+		where 1=1
+		<if test="userAccount != null and '' != userAccount">  
+			and USER_ACCOUNT LIKE CONCAT('%',#{userAccount,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userGroup != null and '' != userGroup">  
+			and user_group = #{userGroup,jdbcType=VARCHAR}
+		</if>
+		<if test="fullName != null and '' != fullName">  
+			and FULL_NAME LIKE CONCAT('%',#{fullName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userType != null and '' != userType">  
+			and USER_TYPE = #{userType,jdbcType=INTEGER}
+		</if>
+		<if test="userTypeName != null and '' != userTypeName">  
+			and USER_TYPE_NAME LIKE CONCAT('%',#{userTypeName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="mobilePhone != null and '' != mobilePhone">  
+			and MOBILE_PHONE LIKE CONCAT('%',#{mobilePhone,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="idCard != null and '' != idCard">  
+			and ID_CARD LIKE CONCAT('%',#{idCard,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="lastLoginTime != null and '' != lastLoginTime">  
+			and LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="lastLoginIp != null and '' != lastLoginIp">  
+			and LAST_LOGIN_IP = #{lastLoginIp,jdbcType=VARCHAR}
+		</if>
+		<if test="states != null and '' != states">  
+			and STATES = #{states,jdbcType=INTEGER}
+		</if>
+		<if test="memo != null and '' != memo">  
+			and MEMO = #{memo,jdbcType=VARCHAR}
+		</if>
+		<if test="enableStateDate != null and '' != enableStateDate">  
+			and ENABLE_STATE_DATE = #{enableStateDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="enableEndDate != null and '' != enableEndDate">  
+			and ENABLE_END_DATE = #{enableEndDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="updated != null and '' != updated">  
+			and UPDATED = #{updated,jdbcType=TIMESTAMP}
+		</if>
+		<if test="updatedby != null and '' != updatedby">  
+			and UPDATEDBY = #{updatedby,jdbcType=VARCHAR}
+		</if>
+		<if test="createdby != null and '' != createdby">  
+			and CREATEDBY = #{createdby,jdbcType=VARCHAR}
+		</if>
+		<if test="created != null and '' != created">  
+			and CREATED = #{created,jdbcType=TIMESTAMP}
+		</if>
+		<if test="isActive != null and '' != isActive">  
+			and IS_ACTIVE = #{isActive,jdbcType=INTEGER}
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and PLATFORM_TYPE = #{platformType,jdbcType=CHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and STORE_ID = #{storeId,jdbcType=CHAR}
+		</if>
+		<if test="platformStoreIndex != null and '' != platformStoreIndex">  
+			and PLATFORM_STORE_INDEX = #{platformStoreIndex,jdbcType=INTEGER}
+		</if>
+		<if test="platformStoreName != null and '' != platformStoreName">  
+			and PLATFORM_STORE_NAME = #{platformStoreName,jdbcType=VARCHAR}
+		</if>
+		<if test="platformStoreScore != null and '' != platformStoreScore">  
+			and PLATFORM_STORE_SCORE = #{platformStoreScore,jdbcType=DOUBLE}
+		</if>
+		<if test="marketingManager != null and '' != marketingManager">  
+			and MARKETING_MANAGER = #{marketingManager,jdbcType=VARCHAR}
+		</if>
+		<if test="marketingManagerTel != null and '' != marketingManagerTel">  
+			and MARKETING_MANAGER_TEL = #{marketingManagerTel,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	
+	<!-- 逻辑删除 -->
+	<update id="logicDeleteByKey" parameterType="java.lang.String">
+	   update BASIC_USER_INFO t 
+	   set t.IS_ACTIVE=0 
+	   where t.ID = #{id,jdbcType=VARCHAR}
+	   and t.id &lt;&gt;'00000000-0000-0000-0000-000000000000'
+	</update>
+	
+	<delete id="deleteByKey" parameterType="java.lang.Integer">
+		delete from BASIC_USER_INFO
+		where ID = #{id,jdbcType=VARCHAR}
+		and ID &lt;&gt; '00000000-0000-0000-0000-000000000000'
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.basic.model.UserInfo">
+		insert into BASIC_USER_INFO (
+		<include refid="Base_Column_List" />
+		)values (
+            #{id,jdbcType=VARCHAR}
+			,#{userAccount,jdbcType=VARCHAR}
+			,#{password,jdbcType=VARCHAR}
+			,#{fullName,jdbcType=VARCHAR}
+			,#{userType,jdbcType=INTEGER}
+			,#{userTypeName,jdbcType=VARCHAR}
+			,#{mobilePhone,jdbcType=VARCHAR}
+			,#{idCard,jdbcType=VARCHAR}
+			,#{idCardImgPath,jdbcType=BLOB}
+			,#{lastLoginTime,jdbcType=TIMESTAMP}
+			,#{lastLoginIp,jdbcType=VARCHAR}
+			,#{states,jdbcType=INTEGER}
+			,#{memo,jdbcType=VARCHAR}
+			,#{enableStateDate,jdbcType=TIMESTAMP}
+			,#{enableEndDate,jdbcType=TIMESTAMP}
+			,#{updated,jdbcType=TIMESTAMP}
+			,#{updatedby,jdbcType=VARCHAR}
+			,#{createdby,jdbcType=VARCHAR}
+			,#{created,jdbcType=TIMESTAMP}
+			,#{isActive,jdbcType=INTEGER}
+			,#{platformType,jdbcType=CHAR}
+			,#{storeId,jdbcType=CHAR}
+			,#{platformStoreIndex,jdbcType=INTEGER}
+			,#{platformStoreName,jdbcType=VARCHAR}
+			,#{platformStoreScore,jdbcType=DOUBLE}
+			,#{marketingManager,jdbcType=VARCHAR}
+			,#{marketingManagerTel,jdbcType=VARCHAR}
+			,#{userGroup,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updatePassWord" parameterType="com.cyz.staticsystem.basic.model.UserInfo">
+			update BASIC_USER_INFO  set PASSWORD = #{password,jdbcType=VARCHAR} where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.basic.model.UserInfo">
+		update BASIC_USER_INFO  set
+                 USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR}
+				,FULL_NAME = #{fullName,jdbcType=VARCHAR}
+				,USER_TYPE = #{userType,jdbcType=INTEGER}
+				,USER_TYPE_NAME = #{userTypeName,jdbcType=VARCHAR}
+				,MOBILE_PHONE = #{mobilePhone,jdbcType=VARCHAR}
+				,ID_CARD = #{idCard,jdbcType=VARCHAR}
+				,ID_CARD_IMG_PATH = #{idCardImgPath,jdbcType=BLOB}
+				,LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP}
+				,LAST_LOGIN_IP = #{lastLoginIp,jdbcType=VARCHAR}
+				,STATES = #{states,jdbcType=INTEGER}
+				,MEMO = #{memo,jdbcType=VARCHAR}
+				,ENABLE_STATE_DATE = #{enableStateDate,jdbcType=TIMESTAMP}
+				,ENABLE_END_DATE = #{enableEndDate,jdbcType=TIMESTAMP}
+				,UPDATED = #{updated,jdbcType=TIMESTAMP}
+				,UPDATEDBY = #{updatedby,jdbcType=VARCHAR}
+				,PLATFORM_TYPE = #{platformType,jdbcType=CHAR}
+				,STORE_ID = #{storeId,jdbcType=CHAR}
+				,PLATFORM_STORE_INDEX = #{platformStoreIndex,jdbcType=INTEGER}
+				,PLATFORM_STORE_NAME = #{platformStoreName,jdbcType=VARCHAR}
+				,PLATFORM_STORE_SCORE = #{platformStoreScore,jdbcType=DOUBLE}
+				,MARKETING_MANAGER = #{marketingManager,jdbcType=VARCHAR}
+				,MARKETING_MANAGER_TEL = #{marketingManagerTel,jdbcType=VARCHAR}
+				,user_group = #{userGroup,jdbcType=VARCHAR}
+			where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="listUserByRid" parameterType="java.util.Map" resultType="java.util.Map">
+		select u.USER_ACCOUNT,u.FULL_NAME 
+		from BASIC_USER_INFO u,sys_ro_personrole p 
+		where u.IS_ACTIVE=1 and p.user_id=u.id and p.role_id=#{roleId,jdbcType=VARCHAR}
+		<if test="fullName != null and '' != fullName">
+			and u.FULL_NAME LIKE CONCAT('%',#{fullName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userAccount != null and '' != userAccount">
+			and u.USER_ACCOUNT LIKE CONCAT('%',#{userAccount,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+		</if>
+	</select>
+</mapper>

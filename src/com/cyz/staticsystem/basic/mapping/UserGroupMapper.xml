@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.basic.dao.UserGroupMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.basic.model.UserGroup">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+			<result column="groupPId" property="groupPId" jdbcType="VARCHAR" />
+			<result column="group_name" property="groupName" jdbcType="VARCHAR" />
+			<result column="group_desc" property="groupDesc" jdbcType="VARCHAR" />
+			<result column="group_states" property="groupStates" jdbcType="CHAR" />
+			<result column="group_creater" property="groupCreater" jdbcType="VARCHAR" />
+			<result column="group_updater" property="groupUpdater" jdbcType="VARCHAR" />
+			<result column="group_create_time" property="groupCreateTime" jdbcType="TIMESTAMP" />
+			<result column="group_update_time" property="groupUpdateTime" jdbcType="TIMESTAMP" />
+				</resultMap>
+	<sql id="Base_Column_List">
+					 	id
+					 	,groupPId
+						,group_name
+						,group_desc
+						,group_states
+						,group_creater
+						,group_updater
+						,group_create_time
+						,group_update_time
+						</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+			ug.id
+			,ug.groupPId
+			,ug.group_name
+			,ug.group_desc
+			,ug.group_states
+			,ui1.user_account as groupCreaterName
+			,ug.group_creater
+			,ui2.user_account as groupUpdaterName
+			,ug.group_updater
+			,ug.group_create_time
+			,ug.group_update_time
+		from basic_user_group as ug
+		left join basic_user_info as ui1 on ui1.id = ug.group_creater
+		left join basic_user_info as ui2 on ui2.id = ug.group_updater
+		where ug.id = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.basic.model.UserGroup">
+		select
+			ug.id
+			,ug.groupPId
+			,ug.group_name
+			,ug.group_desc
+			,ug.group_states
+			,ui1.user_account as groupCreaterName
+			,ug.group_creater
+			,ui2.user_account as groupUpdaterName
+			,ug.group_updater
+			,ug.group_create_time
+			,ug.group_update_time
+		from basic_user_group as ug
+		left join basic_user_info as ui1 on ui1.id = ug.group_creater
+		left join basic_user_info as ui2 on ui2.id = ug.group_updater
+		where 1=1
+		<if test="id != null and '' != id">  
+			and ug.id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="groupName != null and '' != groupName">  
+			and ug.group_name = #{groupName,jdbcType=VARCHAR}
+		</if>
+		<if test="groupDesc != null and '' != groupDesc">  
+			and ug.group_desc = #{groupDesc,jdbcType=VARCHAR}
+		</if>
+		<if test="groupStates != null and '' != groupStates">  
+			and ug.group_states = #{groupStates,jdbcType=CHAR}
+		</if>
+		<if test="groupCreater != null and '' != groupCreater">  
+			and ug.group_creater = #{groupCreater,jdbcType=VARCHAR}
+		</if>
+		<if test="groupUpdater != null and '' != groupUpdater">  
+			and ug.group_updater = #{groupUpdater,jdbcType=VARCHAR}
+		</if>
+		<if test="groupCreateTime != null and '' != groupCreateTime">  
+			and ug.group_create_time = #{groupCreateTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="groupUpdateTime != null and '' != groupUpdateTime">  
+			and ug.group_update_time = #{groupUpdateTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+         	</if>
+	</select>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from basic_user_group
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.basic.model.UserGroup">
+		insert into basic_user_group (
+		<include refid="Base_Column_List" />
+		)values (
+			#{id,jdbcType=VARCHAR}
+			,#{groupPId,jdbcType=VARCHAR}
+			,#{groupName,jdbcType=VARCHAR}
+			,#{groupDesc,jdbcType=VARCHAR}
+			,#{groupStates,jdbcType=CHAR}
+			,#{groupCreater,jdbcType=VARCHAR}
+			,#{groupUpdater,jdbcType=VARCHAR}
+			,#{groupCreateTime,jdbcType=TIMESTAMP}
+			,#{groupUpdateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.basic.model.UserGroup">
+		update basic_user_group  set
+		id= #{id,jdbcType=VARCHAR}
+		,groupPId = #{groupPId,jdbcType=VARCHAR}
+				,group_name = #{groupName,jdbcType=VARCHAR}
+				,group_desc = #{groupDesc,jdbcType=VARCHAR}
+				,group_states = #{groupStates,jdbcType=CHAR}
+				,group_creater = #{groupCreater,jdbcType=VARCHAR}
+				,group_updater = #{groupUpdater,jdbcType=VARCHAR}
+				,group_create_time = #{groupCreateTime,jdbcType=TIMESTAMP}
+				,group_update_time = #{groupUpdateTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

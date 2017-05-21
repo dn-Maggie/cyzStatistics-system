@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.area.dao.ChinaAreaMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.area.model.ChinaArea">
+		<id column="Id" property="id" jdbcType="INTEGER" />
+		<result column="Name" property="name" jdbcType="VARCHAR" />
+		<result column="Pid" property="pid" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+	 	Id
+		,Name
+		,Pid
+	</sql>
+	
+	<select id="selectByPid" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.area.model.ChinaArea">
+		select
+			<include refid="Base_Column_List" />
+		from CHINA_AREA
+		where id !=0 
+		and Pid = #{pid,jdbcType=INTEGER}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.area.model.ChinaArea">
+		select
+			<include refid="Base_Column_List" />
+		from CHINA_AREA
+		where id !=0 
+	</select>
+</mapper>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.basic.dao.BrandMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.basic.model.Brand">
+		<id column="BRAND_ID" property="brandId" jdbcType="CHAR" />
+		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
+		<result column="BRAND_MANAGER" property="brandManager" jdbcType="VARCHAR" />
+		<result column="BRAND_MANAGER_TEL" property="brandManagerTel" jdbcType="VARCHAR" />
+		<result column="STORES_NUMBER" property="storesNumber" jdbcType="INTEGER" />
+		<result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR" />
+		<result column="REGION_CODE" property="regionCode" jdbcType="VARCHAR" />
+		<result column="CITY_CODE" property="cityCode" jdbcType="VARCHAR" />
+		<result column="INDUSTRY_ID" property="industryId" jdbcType="CHAR" />
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="CHAR" />
+		<result column="CONTACT_NAME" property="contactName" jdbcType="VARCHAR" />
+		<result column="CONTACT_TEL" property="contactTel" jdbcType="VARCHAR" />
+		<result column="MERCHANT_NAME" property="merchantName" jdbcType="VARCHAR" />
+		<result column="MERCHANT_TEL" property="merchantTel" jdbcType="VARCHAR" />
+		<result column="SIGN_CONTRACT_DATE" property="signContractDate" jdbcType="TIMESTAMP" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		 	BRAND_ID
+			,BRAND_NAME
+			,BRAND_MANAGER
+			,BRAND_MANAGER_TEL
+			,STORES_NUMBER
+			,PROVINCE_CODE
+			,REGION_CODE
+			,CITY_CODE
+			,INDUSTRY_ID
+			,CATEGORY_ID
+			,CONTACT_NAME
+			,CONTACT_TEL
+			,MERCHANT_NAME
+			,MERCHANT_TEL
+			,SIGN_CONTRACT_DATE
+			,CREATE_DATE
+		</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+			 b.BRAND_ID
+			,b.BRAND_NAME
+			,b.BRAND_MANAGER
+			,b.BRAND_MANAGER_TEL
+			,b.STORES_NUMBER
+			,b.PROVINCE_CODE
+			,b.REGION_CODE
+			,b.CITY_CODE
+			,b.INDUSTRY_ID
+			,b.CATEGORY_ID
+			,i.INDUSTRY_NAME AS industryName
+			,c.CATEGORY_NAME AS categoryName
+			,b.CONTACT_NAME
+			,b.CONTACT_TEL
+			,b.MERCHANT_NAME
+			,b.MERCHANT_TEL
+			,b.SIGN_CONTRACT_DATE
+			,b.CREATE_DATE
+		from dn_brand as b 
+		left join dn_industry i on i.INDUSTRY_ID=b.INDUSTRY_ID
+		left join dn_category c on c.CATEGORY_ID=b.CATEGORY_ID
+		where BRAND_ID = #{brandId,jdbcType=CHAR}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.basic.model.Brand">
+		select
+			 b.BRAND_ID
+			,b.BRAND_NAME
+			,b.BRAND_MANAGER
+			,b.BRAND_MANAGER_TEL
+			,b.STORES_NUMBER
+			,b.PROVINCE_CODE
+			,b.REGION_CODE
+			,b.CITY_CODE
+			,i.INDUSTRY_NAME AS industryName
+			,c.CATEGORY_NAME AS categoryName
+			,b.CONTACT_NAME
+			,b.CONTACT_TEL
+			,b.MERCHANT_NAME
+			,b.MERCHANT_TEL
+			,b.SIGN_CONTRACT_DATE
+			,b.CREATE_DATE
+		from dn_brand as b 
+		left join dn_industry i on i.INDUSTRY_ID=b.INDUSTRY_ID
+		left join dn_category c on c.CATEGORY_ID=b.CATEGORY_ID
+		where 1=1
+		<if test="brandId != null and '' != brandId">  
+			and b.BRAND_ID = #{brandId,jdbcType=CHAR}
+		</if>
+		<if test="brandName != null and '' != brandName">  
+			and b.BRAND_NAME = #{brandName,jdbcType=VARCHAR}
+		</if>
+		<if test="brandManager != null and '' != brandManager">  
+			and b.BRAND_MANAGER like CONCAT('%',#{brandManager,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="brandManagerTel != null and '' != brandManagerTel">  
+			and b.BRAND_MANAGER_TEL = #{brandManagerTel,jdbcType=VARCHAR}
+		</if>
+		<if test="storesNumber != null and '' != storesNumber">  
+			and b.STORES_NUMBER = #{storesNumber,jdbcType=INTEGER}
+		</if>
+		<if test="provinceCode != null and '' != provinceCode">  
+			and b.PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR}
+		</if>
+		<if test="regionCode != null and '' != regionCode">  
+			and b.REGION_CODE = #{regionCode,jdbcType=VARCHAR}
+		</if>
+		<if test="cityCode != null and '' != cityCode">  
+			and b.CITY_CODE = #{cityCode,jdbcType=VARCHAR}
+		</if>
+		<if test="industryId != null and '' != industryId">  
+			and b.INDUSTRY_ID = #{industryId,jdbcType=CHAR}
+		</if>
+		<if test="categoryId != null and '' != categoryId">  
+			and b.CATEGORY_ID = #{categoryId,jdbcType=CHAR}
+		</if>
+		<if test="contactName != null and '' != contactName">  
+			and b.CONTACT_NAME like CONCAT('%',#{contactName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="contactTel != null and '' != contactTel">  
+			and b.CONTACT_TEL = #{contactTel,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantName != null and '' != merchantName">  
+			and b.MERCHANT_NAME ike CONCAT('%',#{merchantName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="merchantTel != null and '' != merchantTel">  
+			and b.MERCHANT_TEL = #{merchantTel,jdbcType=VARCHAR}
+		</if>
+		<if test="signContractDate != null and '' != signContractDate">  
+			and b.SIGN_CONTRACT_DATE = #{signContractDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(b.CREATE_DATE,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(b.CREATE_DATE,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from dn_brand
+		where BRAND_ID = #{brandId,jdbcType=CHAR}
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.basic.model.Brand">
+		insert into dn_brand (
+		<include refid="Base_Column_List" />
+		)values (
+				#{brandId,jdbcType=CHAR}
+				,#{brandName,jdbcType=VARCHAR}
+				,#{brandManager,jdbcType=VARCHAR}
+				,#{brandManagerTel,jdbcType=VARCHAR}
+				,#{storesNumber,jdbcType=INTEGER}
+				,#{provinceCode,jdbcType=VARCHAR}
+				,#{regionCode,jdbcType=VARCHAR}
+				,#{cityCode,jdbcType=VARCHAR}
+				,#{industryId,jdbcType=CHAR}
+				,#{categoryId,jdbcType=CHAR}
+				,#{contactName,jdbcType=VARCHAR}
+				,#{contactTel,jdbcType=VARCHAR}
+				,#{merchantName,jdbcType=VARCHAR}
+				,#{merchantTel,jdbcType=VARCHAR}
+				,#{signContractDate,jdbcType=TIMESTAMP}
+				,#{createDate,jdbcType=TIMESTAMP}
+			)
+	</insert>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.basic.model.Brand">
+		update dn_brand  set
+		BRAND_ID= #{brandId,jdbcType=CHAR}
+		,BRAND_NAME = #{brandName,jdbcType=VARCHAR}
+		,BRAND_MANAGER = #{brandManager,jdbcType=VARCHAR}
+		,BRAND_MANAGER_TEL = #{brandManagerTel,jdbcType=VARCHAR}
+		,STORES_NUMBER = #{storesNumber,jdbcType=INTEGER}
+		,PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR}
+		,REGION_CODE = #{regionCode,jdbcType=VARCHAR}
+		,CITY_CODE = #{cityCode,jdbcType=VARCHAR}
+		,INDUSTRY_ID = #{industryId,jdbcType=CHAR}
+		,CATEGORY_ID = #{categoryId,jdbcType=CHAR}
+		,CONTACT_NAME = #{contactName,jdbcType=VARCHAR}
+		,CONTACT_TEL = #{contactTel,jdbcType=VARCHAR}
+		,MERCHANT_NAME = #{merchantName,jdbcType=VARCHAR}
+		,MERCHANT_TEL = #{merchantTel,jdbcType=VARCHAR}
+		,SIGN_CONTRACT_DATE = #{signContractDate,jdbcType=TIMESTAMP}
+		,CREATE_DATE = #{createDate,jdbcType=TIMESTAMP}
+		where BRAND_ID = #{brandId,jdbcType=CHAR}
+	</update>
+</mapper>

@@ -1,0 +1,2079 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.finance.dao.OperaDateMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.finance.model.OperaDate">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="store_id" property="storeId" jdbcType="VARCHAR" />
+		<result column="store_name" property="storeName" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="invalid_num" property="invalidNum" jdbcType="INTEGER" />
+		<result column="valid_num" property="validNum" jdbcType="INTEGER" />
+		<result column="goods_quality" property="goodsQuality" jdbcType="VARCHAR" />
+		<result column="orgin_price" property="orginPrice" jdbcType="VARCHAR" />
+		<result column="meal_fee" property="mealFee" jdbcType="VARCHAR" />
+		<result column="special_orgin" property="specialOrgin" jdbcType="VARCHAR" />
+		<result column="special_offer" property="specialOffer" jdbcType="VARCHAR" />
+		<result column="activities_subsidy_bymerchant" property="activitiesSubsidyBymerchant" jdbcType="VARCHAR" />
+		<result column="order_dist_charge" property="orderDistCharge" jdbcType="VARCHAR" />
+		<result column="platform_dist_charge" property="platformDistCharge" jdbcType="VARCHAR" />
+		<result column="cyz_dist_charge" property="cyzDistCharge" jdbcType="VARCHAR" />
+		<result column="activities_subsidy_bycompany" property="activitiesSubsidyBycompany" jdbcType="VARCHAR" />
+		<result column="platform_activities_charge" property="platformActivitiesCharge" jdbcType="VARCHAR" />
+		<result column="platform_service_charge" property="platformServiceCharge" jdbcType="VARCHAR" />
+		<result column="product_sale_amount" property="productSaleAmount" jdbcType="VARCHAR" />
+		<result column="amount_receivable" property="amountReceivable" jdbcType="VARCHAR" />
+		<result column="order_sale_rate" property="orderSaleRate" jdbcType="VARCHAR" />
+		<result column="amount_rate_payable" property="amountRatePayable" jdbcType="VARCHAR" />
+		<result column="amount_payable" property="amountPayable" jdbcType="VARCHAR" />
+		<result column="cyz_service_charge" property="cyzServiceCharge" jdbcType="VARCHAR" />
+		<result column="cyz_service_charge_industry_part" property="cyzServiceChargeIndustryPart" jdbcType="VARCHAR" />
+		<result column="cyz_service_charge_opera_part" property="cyzServiceChargeOperaPart" jdbcType="VARCHAR" />
+		<result column="actual_merchant_dist_charge" property="actualMerchantDistCharge" jdbcType="VARCHAR" />
+		<result column="sale_gross_profit" property="saleGrossProfit" jdbcType="VARCHAR" />
+		<result column="sale_gross_profit_rate" property="saleGrossProfitRate" jdbcType="VARCHAR" />
+		<result column="dist_price" property="distPrice" jdbcType="VARCHAR" />
+		<result column="dist_all" property="distAll" jdbcType="VARCHAR" />
+		<result column="dist_diff" property="distDiff" jdbcType="VARCHAR" />
+		<result column="service_all" property="serviceAll" jdbcType="VARCHAR" />
+		<result column="profit_all" property="profitAll" jdbcType="VARCHAR" />
+		<result column="other_all" property="otherAll" jdbcType="VARCHAR" />
+		<result column="allbase_price" property="allbasePrice" jdbcType="VARCHAR" />
+		<result column="allother_base_price" property="allotherBasePrice" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="platform_type" property="platformType" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="SpecialFoodMap" type="com.cyz.staticsystem.finance.model.AccountSpecialFood" >
+		<id jdbcType="VARCHAR" property="id" column="id"/>
+		<result jdbcType="VARCHAR" property="storeId" column="store_id"/>
+		<result jdbcType="VARCHAR" property="orderNo" column="order_no"/>
+		<result jdbcType="VARCHAR" property="storeName" column="store_name"/>
+		<result jdbcType="VARCHAR" property="specialOfferFoodName" column="special_offer_food_name"/>
+		<result jdbcType="TIMESTAMP" property="createDate" column="create_date"/>
+		<result jdbcType="INTEGER" property="saleNum" column="sale_num"/>
+		<result jdbcType="DECIMAL" property="orginPrice" column="orgin_price"/>
+		<result jdbcType="DECIMAL" property="settlementPrice" column="settlement_price"/>
+		<result jdbcType="DECIMAL" property="specialOfferOrginPrice" column="special_offer_orgin_price"/>
+		<result jdbcType="DECIMAL" property="specialOfferSettlement" column="special_offer_settlement"/>
+		<result jdbcType="VARCHAR" property="platformType" column="platform_type"/>
+	</resultMap>
+	<sql id ="Sum_Base_Column_List">
+			od2.id,
+			od2.store_id,
+			od2.store_name,
+			od2.create_date,
+			sum(od2.invalid_num) as invalid_num,
+			sum(od2.valid_num) as valid_num,
+			sum(od2.goods_quality) as goods_quality,
+			sum(od2.orgin_price) as orgin_price,
+			sum(od2.meal_fee) as meal_fee,
+			sum(od2.special_orgin) as special_orgin,
+			sum(od2.special_offer) as special_offer,
+			sum(od2.activities_subsidy_bymerchant) as activities_subsidy_bymerchant,
+			sum(od2.order_dist_charge) as order_dist_charge,
+			sum(od2.platform_dist_charge) as platform_dist_charge,
+			sum(od2.cyz_dist_charge) as cyz_dist_charge,
+			sum(od2.activities_subsidy_bycompany) as activities_subsidy_bycompany,
+			sum(od2.platform_activities_charge) as platform_activities_charge,
+			sum(od2.platform_service_charge) as platform_service_charge,
+			sum(od2.product_sale_amount) as product_sale_amount,
+			sum(od2.amount_receivable) as amount_receivable,
+			od2.order_sale_rate as order_sale_rate,
+			sum(od2.amount_rate_payable) as amount_rate_payable,
+			sum(od2.amount_payable) as amount_payable,
+			sum(od2.cyz_service_charge) as cyz_service_charge,
+			sum(od2.cyz_service_charge_industry_part) as cyz_service_charge_industry_part,
+			sum(od2.cyz_service_charge_opera_part) as cyz_service_charge_opera_part,
+			sum(od2.actual_merchant_dist_charge) as actual_merchant_dist_charge,
+			sum(od2.sale_gross_profit) as sale_gross_profit,
+			(sum(od2.sale_gross_profit)/sum(od2.cyz_service_charge))*100 as sale_gross_profit_rate,
+			sum(od2.dist_price) as dist_price,
+			sum(od2.dist_all) as dist_all, 
+			sum(od2.dist_diff) as dist_diff,
+			sum(od2.service_all) as service_all,
+			sum(od2.profit_all) as profit_all,
+			sum(od2.other_all) as other_all,
+			sum(od2.allbase_price) as allbase_price,
+			sum(od2.allother_base_price) as allother_base_price,
+			od2.remark,
+			od2.platform_type	
+	</sql>
+	<sql id="Base_Column_List">
+	 	id,
+		store_id,
+		store_name,
+		create_date,
+		invalid_num,
+		valid_num,
+		goods_quality,
+		orgin_price,
+		meal_fee,
+		special_orgin,
+		special_offer,
+		activities_subsidy_bymerchant,
+		order_dist_charge,
+		platform_dist_charge,
+		cyz_dist_charge,
+		activities_subsidy_bycompany,
+		platform_activities_charge,
+		platform_service_charge,
+		product_sale_amount,
+		amount_receivable,
+		order_sale_rate,
+		amount_rate_payable,
+		amount_payable,
+		cyz_service_charge,
+		cyz_service_charge_industry_part,
+		cyz_service_charge_opera_part,
+		actual_merchant_dist_charge,
+		sale_gross_profit,
+		sale_gross_profit_rate,
+		dist_price,
+		dist_all,
+		dist_diff,
+		service_all,
+		profit_all,
+		other_all,
+		allbase_price,
+		allother_base_price,
+		remark,
+		platform_type
+	</sql>
+	<sql id="Special_Food_List"> id ,store_id ,store_name ,special_offer_food_name ,create_date ,sale_num ,orgin_price ,settlement_price ,special_offer_orgin_price ,special_offer_settlement ,platform_type </sql>
+	<!--获取符合条件的底价抽佣运营数据 -->
+	<select id="getBasePriceByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from opera_date_base_price
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<!-- 特价菜明细 （按订单）-->
+	<select id="listSpecialFood" resultMap="SpecialFoodMap" parameterType="com.cyz.staticsystem.finance.model.AccountSpecialFood">
+		SELECT
+			asg.id as id,
+			asg.store_id as store_id,
+			asg.store_name as store_name,
+			asg.order_no,
+			asg.platform_type,
+			asg.good_name as special_offer_food_name,
+			aod.order_time as create_date,
+			asg.good_num sale_num,
+			sso.special_offer_food_orgin_price as orgin_price,
+			sso.special_offer_food_price as settlement_price,
+			(sso.special_offer_food_orgin_price)*asg.good_num as special_offer_orgin_price,
+			sso.special_offer_food_price*asg.good_num as special_offer_settlement
+		FROM
+			`account_sale_goods` AS asg
+		LEFT JOIN account_order_detail AS aod ON aod.order_no = asg.order_no 
+		LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id= aod.store_MT_id or s.baidu_id =aod.store_BD_id
+		LEFT JOIN store_special_offer as sso on asg.good_name LIKE CONCAT('%',sso.special_offer_food_name,'%') and asg.store_name = sso.store_name
+		and aod.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+		where sso.special_type = 1
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')]]></if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')]]></if> 
+		<if test="storeId != null and '' != storeId">  
+			and (s.elm_id = #{storeELMId,jdbcType=VARCHAR} or s.meituan_id= #{storeMTId,jdbcType=VARCHAR}  or s.baidu_id =#{storeBDId,jdbcType=VARCHAR}) 
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and aod.platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOfferFoodName != null and '' != specialOfferFoodName">  
+			and asg.good_name like CONCAT('%',#{goodName,jdbcType=VARCHAR},'%') 
+		</if>
+		GROUP BY aod.order_no
+		UNION ALL
+		SELECT
+			asg.id as id,
+			asg.store_id as store_id,
+			asg.store_name as store_name,
+			asg.order_no,
+			asg.platform_type,
+			asg.good_name as special_offer_food_name,
+			aod.order_time as create_date,
+			asg.good_num sale_num,
+			sso.special_offer_food_orgin_price as orgin_price,
+			sso.special_offer_food_price as settlement_price,
+			(sso.special_offer_food_orgin_price)*asg.good_num as special_offer_orgin_price,
+			sso.special_offer_food_price*asg.good_num as special_offer_settlement
+		FROM
+			`account_sale_goods` AS asg
+		LEFT JOIN account_order_detail AS aod ON aod.order_no = asg.order_no
+		LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id= aod.store_MT_id or s.baidu_id =aod.store_BD_id
+		LEFT JOIN store_special_offer as sso on asg.good_name LIKE CONCAT('%',sso.special_offer_food_name,'%') and asg.store_name = sso.store_name
+		 and aod.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+		where sso.special_type = 2
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')]]></if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')]]></if> 
+		<if test="storeId != null and '' != storeId">  
+			and (s.elm_id = #{storeELMId,jdbcType=VARCHAR} or s.meituan_id= #{storeMTId,jdbcType=VARCHAR}  or s.baidu_id =#{storeBDId,jdbcType=VARCHAR})
+		</if>
+		<if test="specialOfferFoodName != null and '' != specialOfferFoodName">  
+			and asg.good_name like CONCAT('%',#{goodName,jdbcType=VARCHAR},'%') 
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and aod.platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		GROUP BY aod.order_no
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	
+	<!-- 特价菜明细(按日期) -->
+	<select id="specialFoodDetail" resultMap="SpecialFoodMap" parameterType="com.cyz.staticsystem.finance.model.AccountSpecialFood">
+		SELECT aosp.special_offer_orgin_price,aosp.special_offer_settlement from (select
+			asg.id as id,
+			asg.store_id as store_id,
+			asg.store_name as store_name,
+			asg.good_name as special_offer_food_name,
+			sso.special_offer_food_orgin_price as orgin_price,
+			sum(asg.good_num) as sale_num,
+			asg.platform_type,
+			sso.special_offer_food_price as settlement_price,
+ 			(sso.special_offer_food_orgin_price)*sum(asg.good_num) as special_offer_orgin_price,
+ 			sso.special_offer_food_price*sum(asg.good_num) as special_offer_settlement,
+			aod.order_time as create_date
+		from account_sale_goods as asg
+		JOIN store_special_offer as sso on asg.good_name LIKE CONCAT('%',sso.special_offer_food_name,'%') and asg.store_name = sso.store_name
+		JOIN account_order_detail as aod on aod.order_no = asg.order_no and asg.store_name = sso.store_name
+		where sso.special_type = 1
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+		<if test="storeName != null and '' != storeName">  
+			and asg.store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOfferFoodName != null and '' != specialOfferFoodName">  
+			and sso.special_offer_food_name = #{specialOfferFoodName,jdbcType=VARCHAR}
+		</if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')]]></if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')]]></if> 
+		<if test="platformType != null and '' != platformType">  
+			and aod.platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		GROUP BY asg.store_name,asg.good_name,create_date
+		UNION ALL
+		select
+			asg.id as id,
+			asg.store_id as store_id,
+			asg.store_name as store_name,
+			asg.good_name as special_offer_food_name,
+			sso.special_offer_food_orgin_price as orgin_price,
+			sum(asg.good_num) as sale_num,
+			asg.platform_type,
+			sso.special_offer_food_price as settlement_price,
+ 			(sso.special_offer_food_orgin_price)*sum(asg.good_num)  as special_offer_food_orgin_price,
+ 			sso.special_offer_food_price*sum(asg.good_num) as special_offer_food_price,
+			aod.order_time as create_date
+		from account_sale_goods as asg
+		JOIN store_special_offer as sso on asg.good_name  = sso.special_offer_food_name  and asg.store_name = sso.store_name
+		JOIN account_order_detail as aod on aod.order_no = asg.order_no and asg.store_name = sso.store_name
+		where sso.special_type = 2
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+		<if test="storeName != null and '' != storeName">  
+			and asg.store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOfferFoodName != null and '' != specialOfferFoodName">  
+			and sso.special_offer_food_name = #{specialOfferFoodName,jdbcType=VARCHAR}
+		</if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="platformType != null and '' != platformType">  
+			and aod.platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		GROUP BY asg.store_name,asg.good_name,create_date) as aosp
+	</select>
+	
+	<!--查看底价抽佣运营表 -->
+	<select id="listBasePriceByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		select
+			<include refid="Base_Column_List" />
+		from opera_date_base_price
+		where 1=1
+		<if test="id != null and '' != id">  
+			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and (store_id =  #{storeELMId,jdbcType=VARCHAR} or store_id= #{storeMTId,jdbcType=VARCHAR}  or store_id =#{storeBDId,jdbcType=VARCHAR}) 
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			and store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="invalidNum != null and '' != invalidNum">  
+			and invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum">  
+			and valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality">  
+			and goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice">  
+			and orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee">  
+			and meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin">  
+			and special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOffer != null and '' != specialOffer">  
+			and special_offer = #{specialOffer,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant">  
+			and activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge">  
+			and order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge">  
+			and platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge">  
+			and cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany">  
+			and activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge">  
+			and platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge">  
+			and platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount">  
+			and product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable">  
+			and amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate">  
+			and order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable">  
+			and amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable">  
+			and amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge">  
+			and cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart">  
+			and cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart">  
+			and cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge">  
+			and actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit">  
+			and sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate">  
+			and sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice">  
+			and dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll">  
+			and dist_all = #{distAll,jdbcType=VARCHAR}
+		</if>
+		<if test="distDiff != null and '' != distDiff">  
+			and dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll">  
+			and service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll">  
+			and profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll">  
+			and other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice">  
+			and allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice">  
+			and allother_base_price = #{allotherBasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark">  
+			and remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	<!--查看深运营表 -->
+	<select id="listDeepOperaByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		select
+			<include refid="Base_Column_List" />
+		from opera_date_deep_opera
+		where 1=1
+		<if test="id != null and '' != id">  
+			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and (store_id =  #{storeELMId,jdbcType=VARCHAR} or store_id= #{storeMTId,jdbcType=VARCHAR}  or store_id =#{storeBDId,jdbcType=VARCHAR}) 
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			and store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="invalidNum != null and '' != invalidNum">  
+			and invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum">  
+			and valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality">  
+			and goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice">  
+			and orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee">  
+			and meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin">  
+			and special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOffer != null and '' != specialOffer">  
+			and special_offer = #{specialOffer,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant">  
+			and activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge">  
+			and order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge">  
+			and platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge">  
+			and cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany">  
+			and activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge">  
+			and platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge">  
+			and platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount">  
+			and product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable">  
+			and amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate">  
+			and order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable">  
+			and amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable">  
+			and amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge">  
+			and cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart">  
+			and cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart">  
+			and cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge">  
+			and actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit">  
+			and sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate">  
+			and sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice">  
+			and dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll">  
+			and dist_all = #{distAll,jdbcType=VARCHAR}
+		</if>
+		<if test="distDiff != null and '' != distDiff">  
+			and dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll">  
+			and service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll">  
+			and profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll">  
+			and other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice">  
+			and allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice">  
+			and allother_base_price = #{allotherBasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark">  
+			and remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	<!--查看销售额抽佣运营表 -->
+	<select id="listSaleRateByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		select
+			<include refid="Base_Column_List" />
+		from opera_date_sale_rate
+		where 1=1
+		<if test="id != null and '' != id">  
+			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and (store_id =  #{storeELMId,jdbcType=VARCHAR} or store_id= #{storeMTId,jdbcType=VARCHAR}  or store_id =#{storeBDId,jdbcType=VARCHAR}) 
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			and store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="invalidNum != null and '' != invalidNum">  
+			and invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum">  
+			and valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality">  
+			and goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice">  
+			and orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee">  
+			and meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin">  
+			and special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOffer != null and '' != specialOffer">  
+			and special_offer = #{specialOffer,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant">  
+			and activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge">  
+			and order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge">  
+			and platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge">  
+			and cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany">  
+			and activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge">  
+			and platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge">  
+			and platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount">  
+			and product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable">  
+			and amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate">  
+			and order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable">  
+			and amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable">  
+			and amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge">  
+			and cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart">  
+			and cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart">  
+			and cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge">  
+			and actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit">  
+			and sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate">  
+			and sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice">  
+			and dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll">  
+			and dist_all = #{distAll,jdbcType=VARCHAR}
+		</if>
+		<if test="distDiff != null and '' != distDiff">  
+			and dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll">  
+			and service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll">  
+			and profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll">  
+			and other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice">  
+			and allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice">  
+			and allother_base_price = #{allotherBasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark">  
+			and remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	<!--查看平台到账抽佣运营表 -->
+	<select id="listPlatformAccountByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		select
+			<include refid="Base_Column_List" />
+		from opera_date_platform_account
+		where 1=1
+		<if test="id != null and '' != id">  
+			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and store_id = #{storeId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			and store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="invalidNum != null and '' != invalidNum">  
+			and invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum">  
+			and valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality">  
+			and goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice">  
+			and orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee">  
+			and meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin">  
+			and special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOffer != null and '' != specialOffer">  
+			and special_offer = #{specialOffer,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant">  
+			and activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge">  
+			and order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge">  
+			and platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge">  
+			and cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany">  
+			and activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge">  
+			and platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge">  
+			and platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount">  
+			and product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable">  
+			and amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate">  
+			and order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable">  
+			and amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable">  
+			and amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge">  
+			and cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart">  
+			and cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart">  
+			and cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge">  
+			and actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit">  
+			and sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate">  
+			and sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice">  
+			and dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll">  
+			and dist_all = #{distAll,jdbcType=VARCHAR}
+		</if>
+		<if test="distDiff != null and '' != distDiff">  
+			and dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll">  
+			and service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll">  
+			and profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll">  
+			and other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice">  
+			and allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice">  
+			and allother_base_price = #{allotherBasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark">  
+			and remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	
+	<!--删除底价运营数据 -->	
+	<delete id="deleteBasePriceByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		delete from opera_date_base_price
+		where store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+	</delete>
+	<!--删除深运营数据 -->	
+	<delete id="deleteDeepOperaByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		delete from opera_date_deep_opera
+		where store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+	</delete>
+	<!--删除销售额抽佣运营数据 -->	
+	<delete id="deleteSaleRateByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		delete from opera_date_sale_rate
+		where store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+	</delete>
+	<!--删除平台到账抽佣运营数据 -->	
+	<delete id="deletePlatformAccountByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		delete from opera_date_platform_account
+		where store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+			and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="platformType != null and '' != platformType">  
+			and platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+	</delete>
+	
+	<!-- 根据订单详细生成底价抽佣运营表 -->
+	<insert id="addBasePriceByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		insert into opera_date_base_price (
+		<include refid="Base_Column_List" />
+		) select <include refid="Sum_Base_Column_List" /> from (
+			SELECT
+				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
+				od.store_id as store_id,
+				od.store_name as store_name,
+				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
+				sum(DISTINCT od.is_invalid) AS invalid_num,
+				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
+				sum(DISTINCT od.goods_quality) AS goods_quality,
+				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.meal_fee) as meal_fee,
+				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
+		as special_orgin,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as special_offer,
+				sum(DISTINCT  od.activities_subsidy_bymerchant)
+		 as activities_subsidy_bymerchant,
+				sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END)  
+		as order_dist_charge,
+				sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END ) 
+		as platform_dist_charge,
+				sum(DISTINCT od.merchant_dist_charge) 
+		as cyz_dist_charge,
+				ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as activities_subsidy_bycompany,
+				sum(DISTINCT od.platform_activities_subsidies) 
+		AS platform_activities_charge,
+				ABS(sum(DISTINCT od.service_charge)) 
+		as platform_service_charge,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee) 
+		as product_sale_amount,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
+				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))+sum(DISTINCT od.merchant_dist_charge) 
+		AS amount_receivable,
+				0 
+		as order_sale_rate,
+				0 
+		as amount_rate_payable,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0 
+		as amount_payable,
+				sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
+		as cyz_service_charge,
+				0 
+		as cyz_service_charge_industry_part,
+				0 
+		as cyz_service_charge_opera_part,
+				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
+		AS actual_merchant_dist_charge,
+				sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
+				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))+sum(DISTINCT od.merchant_dist_charge)-  ((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
+		as sale_gross_profit,
+				(sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
+				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))+sum(DISTINCT od.merchant_dist_charge)- ((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))*100/
+				(sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))
+		as sale_gross_profit_rate,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) 
+		AS dist_price,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) 
+		AS dist_all,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) - sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
+		AS dist_diff,
+				sum(DISTINCT od.platform_activities_subsidies) *0.4 
+		as service_all,
+				0 
+		as profit_all,
+				0 
+		AS other_all,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as allbase_price,
+				0 
+		as allother_base_price, 
+				od.remark,
+				od.platform_type
+			from account_order_detail as od 
+			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
+			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name  = sso.special_offer_food_name and asg.store_name = od.store_name and asg.order_no = od.order_no
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+			WHERE
+				s.is_delete = 0
+				and od.is_invalid = 0
+			<if test="null != propsMap.startDate and propsMap.startDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if>
+			<if test="null != propsMap.endDate and propsMap.endDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if> 
+			<if test="storeId != null and '' != storeId">  
+				and (s.elm_id = #{storeELMId,jdbcType=VARCHAR} or s.meituan_id= #{storeMTId,jdbcType=VARCHAR}  or s.baidu_id =#{storeBDId,jdbcType=VARCHAR}) 
+			</if>
+			<if test="platformType != null and '' != platformType">  
+				and od.platform_type  = #{platformType,jdbcType=VARCHAR}
+			</if>
+			GROUP BY
+				od.order_no,create_date,store_name,platform_type
+		) as od2 group by create_date,platform_type
+	</insert>
+	<!-- 根据订单详细生成销售额抽佣运营表 -->
+	<insert id="addSaleRateByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		insert into opera_date_sale_rate (
+		<include refid="Base_Column_List" />
+		) select <include refid="Sum_Base_Column_List" /> from (
+			SELECT
+				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
+				od.store_id as store_id,
+				od.store_name as store_name,
+				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
+				sum(DISTINCT od.is_invalid) AS invalid_num,
+				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
+				sum(DISTINCT od.goods_quality) AS goods_quality,
+				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.meal_fee) as meal_fee,
+				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
+		as special_orgin,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as special_offer,
+				sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as activities_subsidy_bymerchant,
+				sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END)  
+		as order_dist_charge,
+				sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END ) 
+		as platform_dist_charge,
+				sum(DISTINCT od.merchant_dist_charge) 
+		as cyz_dist_charge,
+				ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as activities_subsidy_bycompany,
+				sum(DISTINCT od.platform_activities_subsidies) 
+		AS platform_activities_charge,
+				ABS(sum(DISTINCT od.service_charge)) 
+		as platform_service_charge,
+				sum(DISTINCT od.orgin_price) + sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as product_sale_amount,
+				sum(DISTINCT od.orgin_price) + sum(DISTINCT od.meal_fee) + sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-ABS(sum(DISTINCT od.service_charge))-
+				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant)) 
+		AS amount_receivable,
+				0.7 
+		as order_sale_rate,
+				0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
+		as amount_rate_payable,
+				0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as amount_payable,
+				0.3*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
+		as cyz_service_charge,
+				0 
+		as cyz_service_charge_industry_part,
+				0 
+		as cyz_service_charge_opera_part,
+				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN od.merchant_dist_charge ELSE 0 END ) 
+		AS actual_merchant_dist_charge,
+				sum(DISTINCT od.orgin_price)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers)- 
+				sum(DISTINCT  od.activities_subsidy_bymerchant))-sum(DISTINCT od.service_charge) -
+				(0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)) 
+		as sale_gross_profit,
+				(sum(DISTINCT od.orgin_price)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers) - 
+				sum(DISTINCT  od.activities_subsidy_bymerchant))-sum(DISTINCT od.service_charge) -
+				(0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)))*100/
+				(0.3*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)))
+		as sale_gross_profit_rate,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) 
+		AS dist_price,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) 
+		AS dist_all,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) - sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
+		AS dist_diff,
+				sum(DISTINCT od.platform_activities_subsidies) *0.4 
+		as service_all,
+				0 
+		as profit_all,
+				0 
+		AS other_all,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as allbase_price,
+				0 
+		as allother_base_price, 
+				od.remark,
+				od.platform_type
+			from account_order_detail as od 
+			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
+			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name  = sso.special_offer_food_name and asg.store_name = od.store_name and asg.order_no = od.order_no
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+			WHERE
+				s.is_delete = 0
+				and od.is_invalid = 0
+			<if test="null != propsMap.startDate and propsMap.startDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if>
+			<if test="null != propsMap.endDate and propsMap.endDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if> 
+			<if test="storeId != null and '' != storeId">  
+				AND (s.elm_id = #{storeELMId,jdbcType=VARCHAR} or s.meituan_id= #{storeMTId,jdbcType=VARCHAR}  or s.baidu_id =#{storeBDId,jdbcType=VARCHAR}) 
+			</if>
+			<if test="platformType != null and '' != platformType">  
+				and od.platform_type  = #{platformType,jdbcType=VARCHAR}
+			</if>
+			GROUP BY
+				od.order_no,create_date,store_name,platform_type
+		) as od2 group by create_date,platform_type
+	</insert>
+	<!-- 根据订单详细生成平台到账抽佣运营表 -->
+	<insert id="addPlatformAccountByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		insert into opera_date_platform_account (
+		<include refid="Base_Column_List" />
+		) select <include refid="Sum_Base_Column_List" /> from (
+			SELECT
+				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
+				od.store_id as store_id,
+				od.store_name as store_name,
+				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
+				sum(DISTINCT od.is_invalid) AS invalid_num,
+				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
+				sum(DISTINCT od.goods_quality) AS goods_quality,
+				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.meal_fee) as meal_fee,
+				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
+		as special_orgin,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as special_offer,
+				sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as activities_subsidy_bymerchant,
+				sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END)  
+		as order_dist_charge,
+				sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END ) 
+		as platform_dist_charge,
+				sum(DISTINCT od.merchant_dist_charge) 
+		as cyz_dist_charge,
+				ABS(sum(DISTINCT od.merchant_activities_subsidies))  + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as activities_subsidy_bycompany,
+				sum(DISTINCT od.platform_activities_subsidies) 
+		AS platform_activities_charge,
+				ABS(sum(DISTINCT od.service_charge)) as platform_service_charge,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as product_sale_amount,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-ABS(sum(DISTINCT od.service_charge))-
+				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant)) 
+		AS amount_receivable,
+				0.95 
+		as order_sale_rate,
+				0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
+				(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers)- sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
+		as amount_rate_payable,
+				0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
+				(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as amount_payable,
+				0.05*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
+				(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
+		as cyz_service_charge,
+				0 
+		as cyz_service_charge_industry_part,
+				0 
+		as cyz_service_charge_opera_part,
+				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
+		AS actual_merchant_dist_charge,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(ABS(sum(DISTINCT od.merchant_activities_subsidies))  + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant))-ABS(sum(DISTINCT od.service_charge)) -
+					(0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+					-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
+					(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)) 
+		as sale_gross_profit,
+				(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))-ABS(sum(DISTINCT od.service_charge)) -
+					(0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+					-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
+					(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)))*100/
+				(0.05*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
+				(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)))
+		as sale_gross_profit_rate,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) 
+		AS dist_price,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) 
+		AS dist_all,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) - sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
+		AS dist_diff,
+				sum(DISTINCT od.platform_activities_subsidies) *0.4 
+		as service_all,
+				0 
+		as profit_all,
+				0 
+		AS other_all,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as allbase_price,
+				0 
+		as allother_base_price, 
+				od.remark,
+				od.platform_type
+			from account_order_detail as od 
+			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
+			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name  = sso.special_offer_food_name and asg.store_name = od.store_name and asg.order_no = od.order_no
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+			WHERE
+				s.is_delete = 0
+				and od.is_invalid = 0
+			<if test="null != propsMap.startDate and propsMap.startDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if>
+			<if test="null != propsMap.endDate and propsMap.endDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if> 
+			<if test="storeId != null and '' != storeId">  
+				AND (s.elm_id = #{storeELMId,jdbcType=VARCHAR} or s.meituan_id= #{storeMTId,jdbcType=VARCHAR}  or s.baidu_id =#{storeBDId,jdbcType=VARCHAR}) 
+			</if>
+			<if test="platformType != null and '' != platformType">  
+				and od.platform_type  = #{platformType,jdbcType=VARCHAR}
+			</if>
+			GROUP BY
+				od.order_no,create_date,store_name,platform_type
+		) as od2 group by create_date,platform_type
+	</insert>
+	<!-- 根据订单详细生成深运营表 -->
+	<insert id="addDeepOperaByOrderDetail" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		insert into opera_date_deep_opera (
+		<include refid="Base_Column_List" />
+		) select <include refid="Sum_Base_Column_List" /> from (
+			SELECT
+				CONCAT(od.order_time,od.store_id,od.platform_type) as id,
+				od.store_id as store_id,
+				od.store_name as store_name,
+				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
+				sum(DISTINCT od.is_invalid) AS invalid_num,
+				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
+				sum(DISTINCT od.goods_quality) AS goods_quality,
+				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.meal_fee) as meal_fee,
+				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
+		as special_orgin,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as special_offer,
+				sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as activities_subsidy_bymerchant,
+				sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) 
+		as order_dist_charge,
+				sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )
+		as platform_dist_charge,
+				sum(DISTINCT od.merchant_dist_charge) 
+		as cyz_dist_charge,
+				ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant) 
+		as activities_subsidy_bycompany,
+				sum(DISTINCT od.platform_activities_subsidies) 
+		AS platform_activities_charge,
+				ABS(sum(DISTINCT od.service_charge)) 
+		as platform_service_charge,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee) 
+		as product_sale_amount,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)
+				+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) 
+				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END)
+				+sum(DISTINCT od.merchant_dist_charge)
+				-(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant))
+				-ABS(sum(DISTINCT od.service_charge))
+		AS amount_receivable,
+				0.65 
+		as order_sale_rate,
+				(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee)
+		as amount_rate_payable,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0 
+		as amount_payable,
+				sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
+		as cyz_service_charge,
+				(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 
+		as cyz_service_charge_industry_part,
+				(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.25
+		as cyz_service_charge_opera_part,
+				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
+		AS actual_merchant_dist_charge,
+				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)-
+				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant) )-
+				ABS(sum(DISTINCT od.service_charge))-
+				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee))-
+				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 )
+		as sale_gross_profit,
+				 (sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)-
+				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant) )-
+				ABS(sum(DISTINCT od.service_charge))-
+				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee))-
+				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 ))*100/
+				(sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))
+		as sale_gross_profit_rate,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) 
+		AS dist_price,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) 
+		AS dist_all,
+				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END) * (COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid)) - sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
+		AS dist_diff,
+				sum(DISTINCT od.platform_activities_subsidies) *0.4 
+		as service_all,
+				0 
+		as profit_all,
+				0 
+		AS other_all,
+				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+		as allbase_price,
+				0 
+		as allother_base_price, 
+				od.remark,
+				od.platform_type
+			from account_order_detail as od 
+			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
+			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name like CONCAT('%',sso.special_offer_food_name,'%') and asg.store_name = od.store_name and asg.order_no = od.order_no
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
+			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
+			WHERE
+				s.is_delete = 0
+				and od.is_invalid = 0
+			<if test="null != propsMap.startDate and propsMap.startDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if>
+			<if test="null != propsMap.endDate and propsMap.endDate != ''">
+				<![CDATA[
+				and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if> 
+			<if test="storeId != null and '' != storeId">  
+				AND (s.elm_id = #{storeELMId,jdbcType=VARCHAR} or s.meituan_id= #{storeMTId,jdbcType=VARCHAR}  or s.baidu_id =#{storeBDId,jdbcType=VARCHAR}) 
+			</if>
+			<if test="platformType != null and '' != platformType">  
+				and od.platform_type  = #{platformType,jdbcType=VARCHAR}
+			</if>
+			GROUP BY
+				od.order_no,create_date,store_name,platform_type
+		) as od2 group by create_date,platform_type
+	</insert>
+	
+	<!-- 插入一条底价运营数据 -->	
+	<insert id="add" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		insert into opera_date_base_price (
+		<include refid="Base_Column_List" />
+		)values (
+			#{id,jdbcType=VARCHAR}
+			,#{storeId,jdbcType=VARCHAR}
+			,#{storeName,jdbcType=VARCHAR}
+			,#{createDate,jdbcType=TIMESTAMP}
+			,#{invalidNum,jdbcType=INTEGER}
+			,#{validNum,jdbcType=INTEGER}
+			,#{goodsQuality,jdbcType=VARCHAR}
+			,#{orginPrice,jdbcType=VARCHAR}
+			,#{mealFee,jdbcType=VARCHAR}
+			,#{specialOrgin,jdbcType=VARCHAR}
+			,#{specialOffer,jdbcType=VARCHAR}
+			,#{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+			,#{orderDistCharge,jdbcType=VARCHAR}
+			,#{platformDistCharge,jdbcType=VARCHAR}
+			,#{cyzDistCharge,jdbcType=VARCHAR}
+			,#{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+			,#{platformActivitiesCharge,jdbcType=VARCHAR}
+			,#{platformServiceCharge,jdbcType=VARCHAR}
+			,#{productSaleAmount,jdbcType=VARCHAR}
+			,#{amountReceivable,jdbcType=VARCHAR}
+			,#{orderSaleRate,jdbcType=VARCHAR}
+			,#{amountRatePayable,jdbcType=VARCHAR}
+			,#{amountPayable,jdbcType=VARCHAR}
+			,#{cyzServiceCharge,jdbcType=VARCHAR}
+			,#{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+			,#{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+			,#{actualMerchantDistCharge,jdbcType=VARCHAR}
+			,#{saleGrossProfit,jdbcType=VARCHAR}
+			,#{saleGrossProfitRate,jdbcType=VARCHAR}
+			,#{distPrice,jdbcType=VARCHAR}
+			,#{distAll,jdbcType=VARCHAR}
+			,#{distDiff,jdbcType=VARCHAR}
+			,#{serviceAll,jdbcType=VARCHAR}
+			,#{profitAll,jdbcType=VARCHAR}
+			,#{otherAll,jdbcType=VARCHAR}
+			,#{allbasePrice,jdbcType=VARCHAR}
+			,#{allotherBasePrice,jdbcType=VARCHAR}
+			,#{remark,jdbcType=VARCHAR}
+			,#{platformType,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!--更新一条底价抽佣运营数据 -->	
+	<update id="updateBasePrice" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		update opera_date_base_price  set
+		id= #{id,jdbcType=VARCHAR}
+		<if test="storeId != null and '' != storeId">  
+		,store_id = #{storeId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeName != null and '' != storeName"> 
+		,store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="createDate != null and '' != createDate"> 
+		,create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="invalidNum != null and '' != invalidNum"> 
+		,invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum"> 
+		,valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality"> 
+		,goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice"> 
+		,orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee"> 
+		,meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin"> 
+		,special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOffer != null and '' != specialOffer"> 
+		,special_offer = #{specialOffer,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant"> 
+		,activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge"> 
+		,order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge"> 
+		,platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge"> 
+		,cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany"> 
+		,activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge"> 
+		,platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge"> 
+		,platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount"> 
+		,product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable"> 
+		,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate"> 
+		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable"> 
+		,amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable"> 
+		,amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
+		,cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart"> 
+		,cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
+		,cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge"> 
+		,actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
+		,sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
+		,sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice"> 
+		,dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll"> 
+		,dist_all = #{distAll,jdbcType=VARCHAR}
+		</if>
+		<if test="distDiff != null and '' != distDiff"> 
+		,dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll"> 
+		,service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll"> 
+		,profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll"> 
+		,other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice"> 
+		,allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		,special_offer = #{allbasePrice,jdbcType=VARCHAR}
+		,amount_payable = #{allbasePrice,jdbcType=VARCHAR} +allother_base_price
+		,cyz_service_charge = product_sale_amount -(#{allbasePrice,jdbcType=VARCHAR} +allother_base_price)
+		,sale_gross_profit = product_sale_amount + order_dist_charge - platform_service_charge - platform_dist_charge - activities_subsidy_bycompany + cyz_dist_charge-(#{allbasePrice,jdbcType=VARCHAR} +allother_base_price)
+		,sale_gross_profit_rate = ((product_sale_amount + order_dist_charge-platform_service_charge-platform_dist_charge-activities_subsidy_bycompany+cyz_dist_charge-(#{allbasePrice,jdbcType=VARCHAR} +allother_base_price))/(product_sale_amount -(#{allbasePrice,jdbcType=VARCHAR} +allother_base_price)))*100
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice"> 
+		,allother_base_price = #{allotherBasePrice,jdbcType=VARCHAR}
+		,amount_payable = allbase_price +#{allotherBasePrice,jdbcType=VARCHAR}
+		,cyz_service_charge = product_sale_amount -(allbase_price + #{allotherBasePrice,jdbcType=VARCHAR})
+		,sale_gross_profit = product_sale_amount + order_dist_charge- platform_service_charge - platform_dist_charge - activities_subsidy_bycompany + cyz_dist_charge - (allbase_price +#{allotherBasePrice,jdbcType=VARCHAR})
+		,sale_gross_profit_rate = ((product_sale_amount+order_dist_charge-platform_service_charge-platform_dist_charge-activities_subsidy_bycompany+cyz_dist_charge-(allbase_price +#{allotherBasePrice,jdbcType=VARCHAR}))/(product_sale_amount -(#{allbasePrice,jdbcType=VARCHAR} +allother_base_price)))*100
+		</if>
+		<if test="remark != null and '' != remark"> 
+		,remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType"> 
+		,platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+	where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<!--更新一条销售额抽佣运营数据 -->	
+	<update id="updateSaleRate" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		update opera_date_sale_rate  set
+		store_name = #{storeName,jdbcType=VARCHAR}
+		<if test="id != null and '' != id">  
+		,id= #{id,jdbcType=VARCHAR}
+		</if>  
+		<if test="storeId != null and '' != storeId">  
+		,store_id = #{storeId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeName != null and '' != storeName"> 
+		,store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="createDate != null and '' != createDate"> 
+		,create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="invalidNum != null and '' != invalidNum"> 
+		,invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum"> 
+		,valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality"> 
+		,goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice"> 
+		,orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee"> 
+		,meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin"> 
+		,special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		,amount_rate_payable = (orgin_price - #{specialOrgin,jdbcType=VARCHAR})*order_sale_rate
+		,amount_payable = (orgin_price - #{specialOrgin,jdbcType=VARCHAR})*order_sale_rate + special_offer +meal_fee
+		,cyz_service_charge = (orgin_price - #{specialOrgin,jdbcType=VARCHAR})*(1-order_sale_rate)
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - #{specialOrgin,jdbcType=VARCHAR})*order_sale_rate + special_offer +meal_fee)
+		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - #{specialOrgin,jdbcType=VARCHAR})*order_sale_rate + special_offer +meal_fee))*100/
+			((orgin_price - #{specialOrgin,jdbcType=VARCHAR})*(1-order_sale_rate))
+		,activities_subsidy_bymerchant = #{specialOrgin,jdbcType=VARCHAR} - special_offer
+		</if>
+		<if test="specialOffer != null and '' != specialOffer"> 
+		,special_offer = #{specialOffer,jdbcType=VARCHAR}
+		,amount_payable = (orgin_price - special_orgin)*order_sale_rate+ #{specialOffer,jdbcType=VARCHAR} +meal_fee
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*order_sale_rate + #{specialOffer,jdbcType=VARCHAR} +meal_fee)
+		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*order_sale_rate + #{specialOffer,jdbcType=VARCHAR} +meal_fee))*100/
+			((orgin_price - special_orgin)*(1-order_sale_rate))
+		,activities_subsidy_bymerchant = special_orgin - #{specialOffer,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant"> 
+		,activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge"> 
+		,order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge"> 
+		,platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge"> 
+		,cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany"> 
+		,activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		,sale_gross_profit = product_sale_amount - #{activitiesSubsidyBycompany,jdbcType=VARCHAR} - platform_service_charge - ((orgin_price - special_orgin)*order_sale_rate +special_offer +meal_fee)
+		,sale_gross_profit_rate = (product_sale_amount - #{activitiesSubsidyBycompany,jdbcType=VARCHAR}- platform_service_charge - ((orgin_price - special_orgin)*order_sale_rate + special_offer + meal_fee))*100/
+			((orgin_price - special_orgin)*(1-order_sale_rate))
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge"> 
+		,platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge"> 
+		,platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount"> 
+		,product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable"> 
+		,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate"> 
+		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		,amount_rate_payable = (orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR}
+		,amount_payable = (orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee
+		,cyz_service_charge = (orgin_price - special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR})
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee)
+		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee))*100/
+			((orgin_price - special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR}))
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable"> 
+		,amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable"> 
+		,amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
+		,cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart"> 
+		,cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
+		,cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge"> 
+		,actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
+		,sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
+		,sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice"> 
+		,dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll"> 
+		,dist_all = #{distAll,jdbcType=VARCHAR}
+		</if>
+		<if test="distDiff != null and '' != distDiff"> 
+		,dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll"> 
+		,service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll"> 
+		,profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll"> 
+		,other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice"> 
+		,allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice"> 
+		,allother_base_pric#{allotherBasePrice,jdbcType=VARCHAR}rice,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark"> 
+		,remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType"> 
+		,platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		where store_name = #{storeName,jdbcType=VARCHAR} 
+		<if test="id != null and '' != id"> 
+		 and id = #{id,jdbcType=VARCHAR} 
+		</if>
+	</update>
+	<!--更新一条平台到账抽佣运营数据 -->	
+	<update id="updatePlatformAccount" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		update opera_date_platform_account  set
+		store_name = #{storeName,jdbcType=VARCHAR}
+		<if test="id != null and '' != id">  
+		,id= #{id,jdbcType=VARCHAR}
+		</if>  
+		<if test="storeId != null and '' != storeId">  
+		,store_id = #{storeId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeName != null and '' != storeName"> 
+		,store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="createDate != null and '' != createDate"> 
+		,create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="invalidNum != null and '' != invalidNum"> 
+		,invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum"> 
+		,valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality"> 
+		,goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice"> 
+		,orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee"> 
+		,meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin"> 
+		,special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		,activities_subsidy_bymerchant =  #{specialOrgin,jdbcType=VARCHAR} - special_offer
+		</if>
+		<if test="specialOffer != null and '' != specialOffer"> 
+		,special_offer = #{specialOffer,jdbcType=VARCHAR}
+		,activities_subsidy_bymerchant =  special_orgin - #{specialOffer,jdbcType=VARCHAR}
+		
+		,amount_rate_payable = (amount_receivable - #{specialOffer,jdbcType=VARCHAR})* order_saleRate
+		,amount_payable = (amount_receivable - #{specialOffer,jdbcType=VARCHAR})*order_saleRate+ #{specialOffer,jdbcType=VARCHAR}
+		,cyz_service_charge = (amount_receivable - #{specialOffer,jdbcType=VARCHAR})*(1-order_saleRate)
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - #{specialOffer,jdbcType=VARCHAR})*order_saleRate+ #{specialOffer,jdbcType=VARCHAR})
+		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - #{specialOffer,jdbcType=VARCHAR})*order_saleRate+ #{specialOffer,jdbcType=VARCHAR}))*100/
+			((amount_receivable - #{specialOffer,jdbcType=VARCHAR})*(1-order_saleRate))
+			
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant"> 
+		,activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge"> 
+		,order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge"> 
+		,platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge"> 
+		,cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany"> 
+		,activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge"> 
+		,platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge"> 
+		,platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount"> 
+		,product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable"> 
+		,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate"> 
+		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		,amount_rate_payable = (amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}
+		,amount_payable = (amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer
+		,cyz_service_charge = (amount_receivable - special_offer)*(1-#{orderSaleRate,jdbcType=VARCHAR})
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer)
+		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer))*100/
+			((amount_receivable - special_offer)*(1-#{orderSaleRate,jdbcType=VARCHAR}))
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable"> 
+		,amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable"> 
+		,amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
+		,cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart"> 
+		,cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
+		,cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge"> 
+		,actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
+		,sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
+		,sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice"> 
+		,dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll"> 
+		,dist_all = #{distAll,jdbcType=VARCHAR}
+		</if>
+		<if test="distDiff != null and '' != distDiff"> 
+		,dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll"> 
+		,service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll"> 
+		,profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll"> 
+		,other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice"> 
+		,allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice"> 
+		,allother_base_price = #{allotherBasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark"> 
+		,remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType"> 
+		,platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		where store_name = #{storeName,jdbcType=VARCHAR} 
+		<if test="id != null and '' != id"> 
+		 and id = #{id,jdbcType=VARCHAR} 
+		</if>
+	</update>
+	<!--更新一条深运营数据 -->	
+	<update id="updateDeepOpera" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		update opera_date_deep_opera  set
+		store_name = #{storeName,jdbcType=VARCHAR}
+		<if test="storeId != null and '' != storeId">  
+		,store_id = #{storeId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeName != null and '' != storeName"> 
+		,store_name = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="createDate != null and '' != createDate"> 
+		,create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="invalidNum != null and '' != invalidNum"> 
+		,invalid_num = #{invalidNum,jdbcType=INTEGER}
+		</if>
+		<if test="validNum != null and '' != validNum"> 
+		,valid_num = #{validNum,jdbcType=INTEGER}
+		</if>
+		<if test="goodsQuality != null and '' != goodsQuality"> 
+		,goods_quality = #{goodsQuality,jdbcType=VARCHAR}
+		</if>
+		<if test="orginPrice != null and '' != orginPrice"> 
+		,orgin_price = #{orginPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="mealFee != null and '' != mealFee"> 
+		,meal_fee = #{mealFee,jdbcType=VARCHAR}
+		</if>
+		<if test="specialOrgin != null and '' != specialOrgin"> 
+		,special_orgin = #{specialOrgin,jdbcType=VARCHAR}
+		,amount_rate_payable = (orgin_price-#{specialOrgin,jdbcType=VARCHAR})*0.65 +special_offer +meal_fee
+		,cyz_service_charge_opera_part = (orgin_price-#{specialOrgin,jdbcType=VARCHAR})*0.25
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price-#{specialOrgin,jdbcType=VARCHAR})*0.65 +special_offer +meal_fee)-((orgin_price-#{specialOrgin,jdbcType=VARCHAR})*0.1)
+		,cyz_service_charge_industry_part = (orgin_price-#{specialOrgin,jdbcType=VARCHAR})*0.1
+		,activities_subsidy_bymerchant =  #{specialOrgin,jdbcType=VARCHAR} - special_offer
+		</if>
+		<if test="specialOffer != null and '' != specialOffer"> 
+		,special_offer = #{specialOffer,jdbcType=VARCHAR}
+		,amount_rate_payable = (orgin_price-special_orgin)*0.65 +#{specialOffer,jdbcType=VARCHAR} +meal_fee
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price-special_orgin)*0.65 +#{specialOffer,jdbcType=VARCHAR} +meal_fee)-((orgin_price-special_orgin)*0.1)
+		,activities_subsidy_bymerchant =  special_orgin - #{specialOffer,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant"> 
+		,activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
+		</if>
+		<if test="orderDistCharge != null and '' != orderDistCharge"> 
+		,order_dist_charge = #{orderDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformDistCharge != null and '' != platformDistCharge"> 
+		,platform_dist_charge = #{platformDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzDistCharge != null and '' != cyzDistCharge"> 
+		,cyz_dist_charge = #{cyzDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="activitiesSubsidyBycompany != null and '' != activitiesSubsidyBycompany"> 
+		,activities_subsidy_bycompany = #{activitiesSubsidyBycompany,jdbcType=VARCHAR}
+		</if>
+		<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge"> 
+		,platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="platformServiceCharge != null and '' != platformServiceCharge"> 
+		,platform_service_charge = #{platformServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="productSaleAmount != null and '' != productSaleAmount"> 
+		,product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable"> 
+		,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate"> 
+		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		,amount_rate_payable =  (orgin_price- special_orgin)*#{orderSaleRate,jdbcType=VARCHAR}+special_offer+meal_fee
+		,cyz_service_charge_opera_part = (orgin_price-special_orgin)*(1-0.1-#{orderSaleRate,jdbcType=VARCHAR})
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price-special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} +special_offer +meal_fee)-((orgin_price-special_orgin)*0.1)
+		,cyz_service_charge_industry_part = (orgin_price-special_orgin)*0.1
+		,cyz_service_charge = (orgin_price-special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR})
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable"> 
+		,amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable"> 
+		,amount_payable = #{amountPayable,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
+		,cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart"> 
+		,cyz_service_charge_industry_part = #{cyzServiceChargeIndustryPart,jdbcType=VARCHAR}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
+		,cyz_service_charge_opera_part = #{cyzServiceChargeOperaPart,jdbcType=VARCHAR}
+		</if>
+		<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge"> 
+		,actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		,dist_diff = dist_all - #{actualMerchantDistCharge,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
+		,sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
+		,sale_gross_profit_rate = #{saleGrossProfitRate,jdbcType=VARCHAR}
+		</if>
+		<if test="distPrice != null and '' != distPrice"> 
+		,dist_price = #{distPrice,jdbcType=VARCHAR}
+		</if>
+		<if test="distAll != null and '' != distAll"> 
+		,dist_all = #{distAll,jdbcType=VARCHAR}
+		,dist_diff = #{distAll,jdbcType=VARCHAR} - actual_merchant_dist_charge
+		</if>
+		<if test="distDiff != null and '' != distDiff"> 
+		,dist_diff = #{distDiff,jdbcType=VARCHAR}
+		</if>
+		<if test="serviceAll != null and '' != serviceAll"> 
+		,service_all = #{serviceAll,jdbcType=VARCHAR}
+		</if>
+		<if test="profitAll != null and '' != profitAll"> 
+		,profit_all = #{profitAll,jdbcType=VARCHAR}
+		</if>
+		<if test="otherAll != null and '' != otherAll"> 
+		,other_all = #{otherAll,jdbcType=VARCHAR}
+		</if>
+		<if test="allbasePrice != null and '' != allbasePrice"> 
+		,allbase_price = #{allbasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="allotherBasePrice != null and '' != allotherBasePrice"> 
+		,allother_base_price = #{allotherBasePrice,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null and '' != remark"> 
+		,remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType"> 
+		,platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		where store_name = #{storeName,jdbcType=VARCHAR} 
+		<if test="id != null and '' != id"> 
+		 and id = #{id,jdbcType=VARCHAR} 
+		</if>
+	</update>
+
+
+	<!--更新销售额抽佣运营数据 -->	
+	<update id="updateSaleRateSum" parameterType="com.cyz.staticsystem.finance.model.OperaDate" >
+		update opera_date_sale_rate  set
+		store_name = #{storeName,jdbcType=VARCHAR}
+		<if test="productSaleAmount != null and '' != productSaleAmount"> 
+		,product_sale_amount = ${productSaleAmount}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable"> 
+		,amount_receivable = ${amountReceivable}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable"> 
+		,amount_rate_payable = ${amountRatePayable}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable"> 
+		,amount_payable = ${amountPayable}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
+		,cyz_service_charge = ${cyzServiceCharge}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart"> 
+		,cyz_service_charge_industry_part = ${cyzServiceChargeIndustryPart}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
+		,cyz_service_charge_opera_part = ${cyzServiceChargeOperaPart}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
+		,sale_gross_profit = ${saleGrossProfit}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
+		,sale_gross_profit_rate = ${saleGrossProfitRate}
+		</if>
+		where store_name =   #{storeName,jdbcType=VARCHAR}
+		<if test="id != null and '' != id"> 
+		 and id =   #{id,jdbcType=VARCHAR}
+		</if>
+	</update>
+	<!--更新平台到账抽佣运营数据 -->	
+	<update id="updatePlatformAccountSum" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		update opera_date_platform_account  set
+		store_name =  #{storeName,jdbcType=VARCHAR}
+		<if test="productSaleAmount != null and '' != productSaleAmount"> 
+		,product_sale_amount = ${productSaleAmount}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable"> 
+		,amount_receivable = ${amountReceivable}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable"> 
+		,amount_rate_payable = ${amountRatePayable}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable"> 
+		,amount_payable = ${amountPayable}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
+		,cyz_service_charge = ${cyzServiceCharge}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart"> 
+		,cyz_service_charge_industry_part = ${cyzServiceChargeIndustryPart}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
+		,cyz_service_charge_opera_part = ${cyzServiceChargeOperaPart}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
+		,sale_gross_profit = ${saleGrossProfit}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
+		,sale_gross_profit_rate = ${saleGrossProfitRate}
+		</if>
+		where store_name =  #{storeName,jdbcType=VARCHAR}
+		<if test="id != null and '' != id"> 
+		 and id =  #{id,jdbcType=VARCHAR}
+		</if>
+	</update>
+	<!--更新深运营数据 -->	
+	<update id="updateDeepOperaSum" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
+		update opera_date_deep_opera  set
+		store_name =  #{storeName,jdbcType=VARCHAR}
+		<if test="productSaleAmount != null and '' != productSaleAmount"> 
+		,product_sale_amount = ${productSaleAmount}
+		</if>
+		<if test="amountReceivable != null and '' != amountReceivable"> 
+		,amount_receivable = ${amountReceivable}
+		</if>
+		<if test="amountRatePayable != null and '' != amountRatePayable"> 
+		,amount_rate_payable = ${amountRatePayable}
+		</if>
+		<if test="amountPayable != null and '' != amountPayable"> 
+		,amount_payable = ${amountPayable}
+		</if>
+		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
+		,cyz_service_charge = ${cyzServiceCharge}
+		</if>
+		<if test="cyzServiceChargeIndustryPart != null and '' != cyzServiceChargeIndustryPart"> 
+		,cyz_service_charge_industry_part = ${cyzServiceChargeIndustryPart}
+		</if>
+		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
+		,cyz_service_charge_opera_part = ${cyzServiceChargeOperaPart}
+		</if>
+		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
+		,sale_gross_profit = ${saleGrossProfit}
+		</if>
+		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
+		,sale_gross_profit_rate = ${saleGrossProfitRate}
+		</if>
+		where store_name =  #{storeName,jdbcType=VARCHAR}
+		<if test="id != null and '' != id"> 
+		 and id =  #{id,jdbcType=VARCHAR}
+		</if>
+	</update>
+</mapper>

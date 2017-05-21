@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.basic.dao.CategoryMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.basic.model.Category">
+		<id column="CATEGORY_ID" property="categoryId" jdbcType="CHAR" />
+									<result column="CATEGORY_NAME" property="categoryName" jdbcType="VARCHAR" />
+									</resultMap>
+		<sql id="Base_Column_List">
+		 	CATEGORY_ID
+			,CATEGORY_NAME
+		</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from dn_category
+		where CATEGORY_ID = #{categoryId,jdbcType=CHAR}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.basic.model.Category">
+		select
+		<include refid="Base_Column_List" />
+		from dn_category
+		where 1=1
+		<if test="categoryId != null and '' != categoryId">  
+			and CATEGORY_ID = #{categoryId,jdbcType=CHAR}
+		</if>
+		<if test="categoryName != null and '' != categoryName">  
+			and CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from dn_category
+		where CATEGORY_ID = #{categoryId,jdbcType=CHAR}
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.basic.model.Category">
+		insert into dn_category (
+		<include refid="Base_Column_List" />
+		)values (
+										#{categoryId,jdbcType=CHAR}
+										,#{categoryName,jdbcType=VARCHAR}
+									)
+	</insert>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.basic.model.Category">
+		update dn_category  set
+		CATEGORY_ID= #{categoryId,jdbcType=CHAR}
+													,CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR}
+							where CATEGORY_ID = #{categoryId,jdbcType=CHAR}
+	</update>
+</mapper>

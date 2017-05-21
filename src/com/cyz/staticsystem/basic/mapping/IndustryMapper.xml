@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.basic.dao.IndustryMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.basic.model.Industry">
+		<id column="INDUSTRY_ID" property="industryId" jdbcType="CHAR" />
+															<result column="INDUSTRY_NAME" property="industryName" jdbcType="VARCHAR" />
+									</resultMap>
+	<sql id="Base_Column_List">
+						 	INDUSTRY_ID
+										,INDUSTRY_NAME
+						</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from dn_industry
+		where INDUSTRY_ID = #{industryId,jdbcType=CHAR}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.basic.model.Industry">
+		select
+		<include refid="Base_Column_List" />
+		from dn_industry
+		where 1=1
+		<if test="industryId != null and '' != industryId">  
+			and INDUSTRY_ID = #{industryId,jdbcType=CHAR}
+		</if>
+		<if test="industryName != null and '' != industryName">  
+			and INDUSTRY_NAME = #{industryName,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from dn_industry
+		where INDUSTRY_ID = #{industryId,jdbcType=CHAR}
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.basic.model.Industry">
+		insert into dn_industry (
+		<include refid="Base_Column_List" />
+		)values (
+										#{industryId,jdbcType=CHAR}
+														,#{industryName,jdbcType=VARCHAR}
+									)
+	</insert>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.basic.model.Industry">
+		update dn_industry  set
+		INDUSTRY_ID= #{industryId,jdbcType=CHAR}
+													,INDUSTRY_NAME = #{industryName,jdbcType=VARCHAR}
+							where INDUSTRY_ID = #{industryId,jdbcType=CHAR}
+	</update>
+</mapper>

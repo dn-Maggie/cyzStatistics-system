@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.store.dao.StoreMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.store.model.Store">
+		<id column="STORE_ID" property="storeId" jdbcType="CHAR" />
+		<result column="STORE_NAME" property="storeName" jdbcType="VARCHAR" />
+		<result column="business_area" property="businessArea" jdbcType="VARCHAR" />
+		<result column="BRAND_ID" property="brandId" jdbcType="VARCHAR" />
+		<result column="STORE_ADDRESS" property="storeAddress" jdbcType="VARCHAR" />
+		<result column="WORK_TIME_BEGIN" property="workTimeBegin" jdbcType="TIME" />
+		<result column="WORK_TIME_END" property="workTimeEnd" jdbcType="TIME" />
+		<result column="STORE_OWNER_NAME" property="storeOwnerName" jdbcType="VARCHAR" />
+		<result column="STORE_OWNER_TEL" property="storeOwnerTel" jdbcType="VARCHAR" />
+		<result column="PRO_INVOICE_FLAG" property="proInvoiceFlag" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="OPERATE_DATE" property="operateDate" jdbcType="DATE" />
+		<result column="SETTLEMENT_METHOD" property="settlementMethod" jdbcType="VARCHAR" />
+		<result column="STORE_TEL" property="storeTel" jdbcType="VARCHAR" />
+		<result column="REAL_IMAGE_PATH_1" property="realImagePath1" jdbcType="VARCHAR" />
+		<result column="REAL_IMAGE_PATH_2" property="realImagePath2" jdbcType="VARCHAR" />
+		<result column="REAL_IMAGE_PATH_3" property="realImagePath3" jdbcType="VARCHAR" />
+		<result column="AVERAGE_SALES" property="averageSales" jdbcType="VARCHAR" />
+		<result column="ELM_SALE" property="elmSale" jdbcType="VARCHAR" />
+		<result column="MEITUAN_SALE" property="meituanSale" jdbcType="VARCHAR" />
+		<result column="BAIDU_SALE" property="baiduSale" jdbcType="VARCHAR" />
+		<result column="elm_id" property="elmId" jdbcType="VARCHAR" />
+		<result column="elm_username" property="elmUsername" jdbcType="VARCHAR" />
+		<result column="elm_pwd" property="elmPwd" jdbcType="VARCHAR" />
+		<result column="ELM_RATE" property="elmRate" jdbcType="VARCHAR" />
+		<result column="meituan_id" property="meituanId" jdbcType="VARCHAR" />
+		<result column="meituan_pwd" property="meituanPwd" jdbcType="VARCHAR" />
+		<result column="MEITUAN_RATE" property="meituanRate" jdbcType="VARCHAR" />
+		<result column="baidu_id" property="baiduId" jdbcType="VARCHAR" />
+		<result column="baidu_pwd" property="baidupwd" jdbcType="VARCHAR" />
+		<result column="BAIDU_RATE" property="baiduRate" jdbcType="VARCHAR" />
+		<result column="registrant" property="registrant" jdbcType="VARCHAR" />
+		<result column="regist_date" property="registDate" jdbcType="DATE" />
+		<result column="business_license_img" property="businessLicenseImg" jdbcType="VARCHAR" />
+		<result column="health_license_img" property="healthLicenseImg" jdbcType="VARCHAR" />
+		<result column="menu_img" property="menuImg" jdbcType="VARCHAR" />
+		<result column="corporate_idcard_front" property="corporateIdcardFront" jdbcType="VARCHAR" />
+		<result column="corporate_idcard_back" property="corporateIdcardBack" jdbcType="VARCHAR" />
+		<result column="canteen_img" property="canteenImg" jdbcType="VARCHAR" />
+		<result column="kitchen_img" property="kitchenImg" jdbcType="VARCHAR" />
+		<result column="door_img" property="doorImg" jdbcType="VARCHAR" />
+		<result column="corporate_withidcard_front" property="corporateWithidcardFront" jdbcType="VARCHAR" />
+		<result column="corporate_withidcard_back" property="corporateWithidcardBack" jdbcType="VARCHAR" />
+		<result column="owner_userId" property="ownerUserId" jdbcType="VARCHAR" />
+		<result column="bound_type" property="boundType" jdbcType="VARCHAR" />
+		<result column="store_type" property="storeType" jdbcType="VARCHAR" />
+		<result column="store_dist_mode" property="storeDistMode" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ResultMapByPlatform" type="com.cyz.staticsystem.store.model.StoreByPlatform">
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="shopId" property="shopId" jdbcType="VARCHAR" />
+		<result column="platformType" property="platformType" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		 	 STORE_ID
+			,STORE_NAME
+			,business_area
+			,BRAND_ID
+			,STORE_ADDRESS
+			,WORK_TIME_BEGIN
+			,WORK_TIME_END
+			,STORE_OWNER_NAME
+			,STORE_OWNER_TEL
+			,PRO_INVOICE_FLAG
+			,REMARK
+			,OPERATE_DATE
+			,SETTLEMENT_METHOD
+			,STORE_TEL
+			,REAL_IMAGE_PATH_1
+			,REAL_IMAGE_PATH_2
+			,REAL_IMAGE_PATH_3
+			,AVERAGE_SALES
+			,ELM_SALE
+			,MEITUAN_SALE
+			,BAIDU_SALE
+			,elm_id
+			,elm_username
+			,elm_pwd
+			,ELM_RATE
+			,meituan_id
+			,meituan_pwd
+			,MEITUAN_RATE
+			,baidu_id
+			,baidu_pwd
+			,BAIDU_RATE
+			,registrant
+			,regist_date
+			,business_license_img
+			,health_license_img
+			,menu_img
+			,corporate_idcard_front
+			,corporate_idcard_back
+			,canteen_img
+			,kitchen_img
+			,door_img
+			,corporate_withidcard_front
+			,corporate_withidcard_back
+			,owner_userId
+			,bound_type
+			,store_type
+			,store_dist_mode
+			,is_delete
+		</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		 	s.STORE_ID
+			,s.STORE_NAME
+			,s.business_area
+			,s.BRAND_ID
+			,b.BRAND_NAME as brandName
+			,s.STORE_ADDRESS
+			,s.WORK_TIME_BEGIN
+			,s.WORK_TIME_END
+			,s.STORE_OWNER_NAME
+			,s.STORE_OWNER_TEL
+			,s.PRO_INVOICE_FLAG
+			,s.REMARK
+			,s.OPERATE_DATE
+			,s.SETTLEMENT_METHOD
+			,s.STORE_TEL
+			,s.REAL_IMAGE_PATH_1
+			,s.REAL_IMAGE_PATH_2
+			,s.REAL_IMAGE_PATH_3
+			,s.AVERAGE_SALES
+			,s.ELM_SALE
+			,s.MEITUAN_SALE
+			,s.BAIDU_SALE
+			,s.elm_id
+			,s.elm_username
+			,s.elm_pwd
+			,s.ELM_RATE
+			,s.meituan_id
+			,s.meituan_pwd
+			,s.MEITUAN_RATE
+			,s.baidu_id
+			,s.baidu_pwd
+			,s.BAIDU_RATE
+			,s.registrant
+			,s.regist_date
+			,s.business_license_img
+			,s.health_license_img
+			,s.menu_img
+			,s.corporate_idcard_front
+			,s.corporate_idcard_back
+			,s.canteen_img
+			,s.kitchen_img
+			,s.door_img
+			,s.corporate_withidcard_front
+			,s.corporate_withidcard_back
+			,s.owner_userId
+			,s.bound_type
+			,s.store_type
+			,s.store_dist_mode
+			,s.is_delete
+		from dn_store as s
+		left join dn_brand as b on b.BRAND_ID = s.BRAND_ID
+		where s.STORE_ID = #{storeId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.store.model.Store">
+		SELECT
+			s.STORE_ID
+			,s.STORE_NAME
+			,s.business_area
+			,s.BRAND_ID
+			,b.BRAND_NAME as brandName
+			,s.STORE_ADDRESS
+			,s.WORK_TIME_BEGIN
+			,s.WORK_TIME_END
+			,s.STORE_OWNER_NAME
+			,s.STORE_OWNER_TEL
+			,s.PRO_INVOICE_FLAG
+			,s.REMARK
+			,s.OPERATE_DATE
+			,s.SETTLEMENT_METHOD
+			,s.STORE_TEL
+			,s.AVERAGE_SALES
+			,s.ELM_SALE
+			,s.MEITUAN_SALE
+			,s.BAIDU_SALE
+			,s.elm_id
+			,s.elm_username
+			,s.elm_pwd
+			,s.ELM_RATE
+			,s.meituan_id
+			,s.meituan_pwd
+			,s.MEITUAN_RATE
+			,s.baidu_id
+			,s.baidu_pwd
+			,s.BAIDU_RATE
+			,s.registrant
+			,s.regist_date
+			,s.owner_userId
+			,s.bound_type
+			,c.CATEGORY_NAME as store_type
+			,s.store_dist_mode
+			,s.is_delete
+		FROM
+			dn_store as s
+		left join dn_brand as b on b.BRAND_ID = s.BRAND_ID
+		left join dn_category as c on c.CATEGORY_ID = b.CATEGORY_ID
+		where 1=1
+		<if test="isDelete != null and '' != isDelete">  
+			and s.is_delete = #{isDelete,jdbcType=VARCHAR}
+		</if>
+		<if test="categoryId != null and '' != categoryId">  
+			and c.CATEGORY_ID = #{categoryId,jdbcType=VARCHAR}
+		</if>
+		<if test="ownerUserId != null and '' != ownerUserId">  
+			and s.owner_userId = #{ownerUserId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and s.STORE_ID = #{storeId,jdbcType=VARCHAR}
+		</if>
+		<if test="businessArea != null and '' != businessArea">  
+			and s.business_area = #{businessArea,jdbcType=VARCHAR}
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			and s.STORE_NAME  = #{storeName,jdbcType=VARCHAR}
+		</if>
+		<if test="brandId != null and '' != brandId">  
+			and s.BRAND_ID = #{brandId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeAddress != null and '' != storeAddress">  
+			and s.STORE_ADDRESS like CONCAT('%',#{storeAddress,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="workTimeBegin != null and '' != workTimeBegin">  
+			and s.WORK_TIME_BEGIN = #{workTimeBegin,jdbcType=TIME}
+		</if>
+		<if test="workTimeEnd != null and '' != workTimeEnd">  
+			and s.WORK_TIME_END = #{workTimeEnd,jdbcType=TIME}
+		</if>
+		<if test="storeOwnerName != null and '' != storeOwnerName">  
+			and s.STORE_OWNER_NAME like CONCAT('%',#{storeOwnerName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="storeOwnerTel != null and '' != storeOwnerTel">  
+			and s.STORE_OWNER_TEL = #{storeOwnerTel,jdbcType=VARCHAR}
+		</if>
+		<if test="proInvoiceFlag != null and '' != proInvoiceFlag">  
+			and s.PRO_INVOICE_FLAG = #{proInvoiceFlag,jdbcType=CHAR}
+		</if>
+		<if test="remark != null and '' != remark">  
+			and s.REMARK = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="operateDate != null and '' != operateDate">  
+			and s.OPERATE_DATE = #{operateDate,jdbcType=DATE}
+		</if>
+		<if test="settlementMethod != null and '' != settlementMethod">  
+			and s.SETTLEMENT_METHOD = #{settlementMethod,jdbcType=VARCHAR}
+		</if>
+		<if test="storeTel != null and '' != storeTel">  
+			and s.STORE_TEL = #{storeTel,jdbcType=VARCHAR}
+		</if>
+		<if test="storeDistMode != null and '' != storeDistMode">  
+			and s.store_dist_mode like CONCAT('%',#{storeDistMode,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	<!-- 根据饿了么账号密码查询验证是否存在（提供给远程接口使用） -->
+	<select id="listStoreByElm" resultMap="ResultMapByPlatform" parameterType="com.cyz.staticsystem.store.model.Store">
+		SELECT
+			s.elm_id as shopId
+			,s.elm_username as username
+			,s.elm_pwd as password
+			,'elm' as platformType
+		FROM
+			dn_store as s
+		where s.is_delete = 0
+	</select>
+	<!-- 根据美团账号密码查询验证是否存在（提供给远程接口使用） -->
+	<select id="listStoreByMt" resultMap="ResultMapByPlatform" parameterType="com.cyz.staticsystem.store.model.Store">
+		SELECT
+			s.meituan_id as username
+			,s.meituan_pwd as password
+			,'mt' as platformType
+		FROM
+			dn_store as s
+		where s.is_delete = 0
+	</select>
+	<!-- 根据百度外卖账号密码查询验证是否存在（提供给远程接口使用） -->
+	<select id="listStoreByBdwm" resultMap="ResultMapByPlatform" parameterType="com.cyz.staticsystem.store.model.Store">
+		SELECT
+			s.baidu_id as username
+			,s.baidu_pwd as password
+			,'bdwm' as platformType
+		FROM
+			dn_store as s
+		where s.is_delete = 0
+	</select>
+	<!-- 逻辑删除  -->
+	<update id="deleteByKey" parameterType="java.lang.String">
+		update dn_store set is_delete = 1
+		where STORE_ID = #{storeId,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.store.model.Store">
+		insert into dn_store (
+		<include refid="Base_Column_List" />
+		)values (
+			#{storeId,jdbcType=VARCHAR}
+			,#{storeName,jdbcType=VARCHAR}
+			,#{businessArea,jdbcType=VARCHAR}
+			,#{brandId,jdbcType=VARCHAR}
+			,#{storeAddress,jdbcType=VARCHAR}
+			,#{workTimeBegin,jdbcType=TIME}
+			,#{workTimeEnd,jdbcType=TIME}
+			,#{storeOwnerName,jdbcType=VARCHAR}
+			,#{storeOwnerTel,jdbcType=VARCHAR}
+			,#{proInvoiceFlag,jdbcType=CHAR}
+			,#{remark,jdbcType=VARCHAR}
+			,#{operateDate,jdbcType=DATE}
+			,#{settlementMethod,jdbcType=VARCHAR}
+			,#{storeTel,jdbcType=VARCHAR}
+			,#{realImagePath1,jdbcType=VARCHAR}
+			,#{realImagePath2,jdbcType=VARCHAR}
+			,#{realImagePath3,jdbcType=VARCHAR}
+			,#{averageSales,jdbcType=VARCHAR}
+			,#{elmSale,jdbcType=VARCHAR}
+			,#{meituanSale,jdbcType=VARCHAR}
+			,#{baiduSale,jdbcType=VARCHAR}
+			,#{elmId,jdbcType=VARCHAR}
+			,#{elmUsername,jdbcType=VARCHAR}
+			,#{elmPwd,jdbcType=VARCHAR}
+			,#{elmRate,jdbcType=VARCHAR}
+			,#{meituanId,jdbcType=VARCHAR}
+			,#{meituanPwd,jdbcType=VARCHAR}
+			,#{meituanRate,jdbcType=VARCHAR}
+			,#{baiduId,jdbcType=VARCHAR}
+			,#{baidupwd,jdbcType=VARCHAR}
+			,#{baiduRate,jdbcType=VARCHAR}
+			,#{registrant,jdbcType=VARCHAR}
+			,#{registDate,jdbcType=DATE}
+			,#{businessLicenseImg,jdbcType=VARCHAR}
+			,#{healthLicenseImg,jdbcType=VARCHAR}
+			,#{menuImg,jdbcType=VARCHAR}
+			,#{corporateIdcardFront,jdbcType=VARCHAR}
+			,#{corporateIdcardBack,jdbcType=VARCHAR}
+			,#{canteenImg,jdbcType=VARCHAR}
+			,#{kitchenImg,jdbcType=VARCHAR}
+			,#{doorImg,jdbcType=VARCHAR}
+			,#{corporateWithidcardFront,jdbcType=VARCHAR}
+			,#{corporateWithidcardBack,jdbcType=VARCHAR}
+			,#{ownerUserId,jdbcType=VARCHAR}
+			,#{boundType,jdbcType=VARCHAR}
+			,#{storeType,jdbcType=VARCHAR}
+			,#{storeDistMode,jdbcType=VARCHAR}
+			,0
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.store.model.Store">
+		update dn_store  set
+			STORE_ID= #{storeId,jdbcType=VARCHAR}
+			<if test="storeName != null and '' != storeName">  
+			,STORE_NAME = #{storeName,jdbcType=VARCHAR}
+			</if>
+			<if test="businessArea != null and '' != businessArea">  
+			,business_area = #{businessArea,jdbcType=VARCHAR}
+			</if>
+			<if test="brandId != null and '' != brandId">  
+			,BRAND_ID = #{brandId,jdbcType=VARCHAR}
+			</if>
+			<if test="storeAddress != null and '' != storeAddress"> 
+			,STORE_ADDRESS = #{storeAddress,jdbcType=VARCHAR}
+			</if>
+			<if test="workTimeBegin != null and '' != workTimeBegin">  
+			,WORK_TIME_BEGIN = #{workTimeBegin,jdbcType=TIME}
+			</if>
+			<if test="workTimeEnd != null and '' != workTimeEnd">  
+			,WORK_TIME_END = #{workTimeEnd,jdbcType=TIME}
+			</if>
+			<if test="storeOwnerName != null and '' != storeOwnerName">  
+			,STORE_OWNER_NAME = #{storeOwnerName,jdbcType=VARCHAR}
+			</if>
+			<if test="storeOwnerTel != null and '' != storeOwnerTel">  
+			,STORE_OWNER_TEL = #{storeOwnerTel,jdbcType=VARCHAR}
+			</if>
+			<if test="proInvoiceFlag != null and '' != proInvoiceFlag">  
+			,PRO_INVOICE_FLAG = #{proInvoiceFlag,jdbcType=CHAR}
+			</if>
+			<if test="remark != null and '' != remark">  
+			,REMARK = #{remark,jdbcType=VARCHAR}
+			</if>
+			<if test="operateDate != null and '' != operateDate">  
+			,OPERATE_DATE = #{operateDate,jdbcType=DATE}
+			</if>
+			<if test="settlementMethod != null and '' != settlementMethod">  
+			,SETTLEMENT_METHOD = #{settlementMethod,jdbcType=VARCHAR}
+			</if>
+			<if test="storeTel != null and '' != storeTel">  
+			,STORE_TEL = #{storeTel,jdbcType=VARCHAR}
+			</if>
+			<if test="averageSales != null and '' != averageSales">  
+			,AVERAGE_SALES = #{averageSales,jdbcType=VARCHAR}
+			</if>
+			<if test="elmSale != null and '' != elmSale">  
+			,ELM_SALE = #{elmSale,jdbcType=VARCHAR}
+			</if>
+			<if test="meituanSale != null and '' != meituanSale">  
+			,MEITUAN_SALE = #{meituanSale,jdbcType=VARCHAR}
+			</if>
+			<if test="baiduSale != null and '' != baiduSale">  
+			,BAIDU_SALE = #{baiduSale,jdbcType=VARCHAR}
+			</if>
+			<if test="elmId != null and '' != elmId">  
+			,elm_id = #{elmId,jdbcType=VARCHAR}
+			</if>
+			<if test="elmUsername != null and '' != elmUsername">  
+			,elm_username = #{elmUsername,jdbcType=VARCHAR}
+			</if>
+			<if test="elmPwd != null and '' != elmPwd">  
+			,elm_pwd = #{elmPwd,jdbcType=VARCHAR}
+			</if>
+			<if test="elmRate != null and '' != elmRate">  
+			,ELM_RATE = #{elmRate,jdbcType=VARCHAR}
+			</if>
+			<if test="meituanId != null and '' != meituanId">  
+			,meituan_id = #{meituanId,jdbcType=VARCHAR}
+			</if>
+			<if test="meituanPwd != null and '' != meituanPwd">  
+			,meituan_pwd = #{meituanPwd,jdbcType=VARCHAR}
+			</if>
+			<if test="meituanRate != null and '' != meituanRate">  
+			,MEITUAN_RATE = #{meituanRate,jdbcType=VARCHAR}
+			</if>
+			<if test="baiduId != null and '' != baiduId">  
+			,baidu_id = #{baiduId,jdbcType=VARCHAR}
+			</if>
+			<if test="baidupwd != null and '' != baidupwd">  
+			,baidu_pwd = #{baidupwd,jdbcType=VARCHAR}
+			</if>
+			<if test="baiduRate != null and '' != baiduRate">  
+			,BAIDU_RATE = #{baiduRate,jdbcType=VARCHAR}
+			</if>
+			<if test="registrant != null and '' != registrant">  
+			,registrant = #{registrant,jdbcType=VARCHAR}
+			</if>
+			<if test="registDate != null and '' != registDate">  
+			,regist_date = #{registDate,jdbcType=DATE}
+			</if>
+			<if test="ownerUserId != null and '' != ownerUserId">  
+			,owner_userId = #{ownerUserId,jdbcType=VARCHAR}
+			</if>
+			<if test="boundType != null and '' != boundType">  
+			,bound_type = #{boundType,jdbcType=VARCHAR}
+			</if>
+			<if test="storeType != null and '' != storeType">  
+			,store_type = #{storeType,jdbcType=VARCHAR}
+			</if>
+			<if test="storeDistMode != null and '' != storeDistMode">  
+			,store_dist_mode = #{storeDistMode,jdbcType=VARCHAR}
+			</if>
+		where STORE_ID = #{storeId,jdbcType=VARCHAR} and is_delete = 0
+	</update>
+	
+	<update id="updateImg" parameterType="com.cyz.staticsystem.store.model.Store">
+		update dn_store  set
+			STORE_ID = #{storeId,jdbcType=VARCHAR}
+			<if test="realImagePath1 != null and '' != realImagePath1">  
+			,REAL_IMAGE_PATH_1 = #{realImagePath1,jdbcType=VARCHAR}
+			</if>
+			<if test="realImagePath2 != null and '' != realImagePath2">  
+			,REAL_IMAGE_PATH_2 = #{realImagePath2,jdbcType=VARCHAR}
+			</if>
+			<if test="realImagePath3 != null and '' != realImagePath3"> 
+			,REAL_IMAGE_PATH_3 = #{realImagePath3,jdbcType=VARCHAR}
+			</if>
+			<if test="businessLicenseImg != null and '' != businessLicenseImg"> 
+			,business_license_img = #{businessLicenseImg,jdbcType=VARCHAR}
+			</if>
+			<if test="healthLicenseImg != null and '' != healthLicenseImg"> 
+			,health_license_img = #{healthLicenseImg,jdbcType=VARCHAR}
+			</if>
+			<if test="menuImg != null and '' != menuImg"> 
+			,menu_img = #{menuImg,jdbcType=VARCHAR}
+			</if>
+			<if test="corporateIdcardFront != null and '' != corporateIdcardFront"> 
+			,corporate_idcard_front = #{corporateIdcardFront,jdbcType=VARCHAR}
+			</if>
+			<if test="corporateIdcardBack != null and '' != corporateIdcardBack"> 
+			,corporate_idcard_back = #{corporateIdcardBack,jdbcType=VARCHAR}
+			</if>
+			<if test="canteenImg != null and '' != canteenImg"> 
+			,canteen_img = #{canteenImg,jdbcType=VARCHAR}
+			</if>
+			<if test="kitchenImg != null and '' != kitchenImg"> 
+			,kitchen_img = #{kitchenImg,jdbcType=VARCHAR}
+			</if>
+			<if test="doorImg != null and '' != doorImg"> 
+			,door_img = #{doorImg,jdbcType=VARCHAR}
+			</if>
+			<if test="corporateWithidcardFront != null and '' != corporateWithidcardFront"> 
+			,corporate_withidcard_front = #{corporateWithidcardFront,jdbcType=VARCHAR}
+			</if>
+			<if test="corporateWithidcardBack != null and '' != corporateWithidcardBack"> 
+			,corporate_withidcard_back = #{corporateWithidcardBack,jdbcType=VARCHAR}
+			</if>
+		where STORE_ID = #{storeId,jdbcType=VARCHAR} and is_delete = 0
+	</update>
+	<!-- 模板导入，批量增加 -->
+	<insert id="addStores" parameterType="java.util.List">
+		insert into dn_store (
+			STORE_ID
+			,STORE_NAME
+			,business_area
+			,STORE_ADDRESS
+			,STORE_TEL
+			,store_type
+			,OPERATE_DATE
+			,WORK_TIME_BEGIN
+			,WORK_TIME_END
+			,store_dist_mode
+			,STORE_OWNER_NAME
+			,STORE_OWNER_TEL
+			,PRO_INVOICE_FLAG
+			,SETTLEMENT_METHOD
+			,registrant
+			,regist_date
+			,REMARK
+			,AVERAGE_SALES
+			,elm_id
+			,elm_username
+			,elm_pwd
+			,ELM_RATE
+			,meituan_id
+			,meituan_pwd
+			,MEITUAN_RATE
+			,MEITUAN_SALE
+			,baidu_id
+			,baidu_pwd
+			,BAIDU_RATE
+			,BAIDU_SALE
+			,owner_userId
+			,bound_type
+			,is_delete
+		)values
+		<foreach collection="list" item="item" index="index" separator="," >
+		(
+			#{item.storeId,jdbcType=VARCHAR}
+			,#{item.storeName,jdbcType=VARCHAR}
+			,#{item.businessArea,jdbcType=VARCHAR}
+			,#{item.storeAddress,jdbcType=VARCHAR}
+			,#{item.storeTel,jdbcType=VARCHAR}
+			,#{item.storeType,jdbcType=VARCHAR}
+			,#{item.operateDate,jdbcType=VARCHAR}
+			,#{item.workTimeBegin,jdbcType=VARCHAR}
+			,#{item.workTimeEnd,jdbcType=VARCHAR}
+			,#{item.storeDistMode,jdbcType=VARCHAR}
+			,#{item.storeOwnerName,jdbcType=VARCHAR}
+			,#{item.storeOwnerTel,jdbcType=VARCHAR}
+			,#{item.proInvoiceFlag,jdbcType=VARCHAR}
+			,#{item.settlementMethod,jdbcType=VARCHAR}
+			,#{item.registrant,jdbcType=VARCHAR}
+			,#{item.registDate,jdbcType=VARCHAR}
+			,#{item.remark,jdbcType=VARCHAR}
+			,#{item.averageSales,jdbcType=VARCHAR}
+			,#{item.elmId,jdbcType=VARCHAR}
+			,#{item.elmUsername,jdbcType=VARCHAR}
+			,#{item.elmPwd,jdbcType=VARCHAR}
+			,#{item.elmRate,jdbcType=VARCHAR}
+			,#{item.meituanId,jdbcType=VARCHAR}
+			,#{item.meituanPwd,jdbcType=VARCHAR}
+			,#{item.meituanRate,jdbcType=VARCHAR}
+			,#{item.meituanSale,jdbcType=VARCHAR}
+			,#{item.baiduId,jdbcType=VARCHAR}
+			,#{item.baidupwd,jdbcType=VARCHAR}
+			,#{item.baiduRate,jdbcType=VARCHAR}
+			,#{item.baiduSale,jdbcType=VARCHAR}
+			,#{item.ownerUserId,jdbcType=VARCHAR}
+			,#{item.boundType,jdbcType=VARCHAR}
+			,0
+		)
+		</foreach>
+	</insert>
+	<!-- 统计今日商家数量 -->
+	<select id="staticStoreNum" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.store.model.Store">
+		SELECT
+		'商家总数' as storeName, count(*) AS averageSales
+		FROM `dn_store`
+		UNION ALL
+		SELECT 
+		'商家新增数量' as storeName,count(*) AS averageSales
+		FROM `dn_store`
+		WHERE DATE_FORMAT(regist_date, '%Y-%c-%d') = DATE_FORMAT(#{registDate,jdbcType=DATE},'%Y-%c-%d')
+		UNION ALL
+		SELECT 
+		'商家退出数量' as storeName,count(*) AS averageSales
+		FROM `dn_store`
+		WHERE is_delete = 1
+	</select>
+</mapper>

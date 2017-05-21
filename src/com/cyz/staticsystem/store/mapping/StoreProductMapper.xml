@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyz.staticsystem.store.dao.StoreProductMapper">
+	<resultMap id="BaseResultMap" type="com.cyz.staticsystem.store.model.StoreProduct">
+		<id column="store_product_id" property="storeProductId" jdbcType="VARCHAR" />
+		<result column="store_id" property="storeId" jdbcType="CHAR" />
+		<result column="product_class_id" property="productClassId" jdbcType="CHAR" />
+		<result column="product_class_name" property="productClassName" jdbcType="VARCHAR" />
+		<result column="product_id" property="productId" jdbcType="CHAR" />
+		<result column="product_name" property="productName" jdbcType="VARCHAR" />
+		<result column="PRODUCT_IMAGE_PATH" property="productImagePath" jdbcType="VARCHAR" />
+		<result column="PRODUCT_UNIT_PRICE" property="productUnitPrice" jdbcType="DOUBLE" />
+		<result column="PRODUCT_STOCKS" property="productStocks" jdbcType="INTEGER" />
+		<result column="PRODUCT_STATUS" property="productStatus" jdbcType="CHAR" />
+		<result column="merchant_discount" property="merchantDiscount" jdbcType="DECIMAL" />
+		<result column="merchant_discount_begin" property="merchantDiscountBegin" jdbcType="TIMESTAMP" />
+		<result column="merchant_discount_end" property="merchantDiscountEnd" jdbcType="TIMESTAMP" />
+		<result column="special_offer" property="specialOffer" jdbcType="DECIMAL" />
+		<result column="special_offer_begin" property="specialOfferBegin" jdbcType="TIMESTAMP" />
+		<result column="special_offer_end" property="specialOfferEnd" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+	 	store_product_id
+		,store_id
+		,product_class_id
+		,product_class_name
+		,product_id
+		,product_name
+		,PRODUCT_IMAGE_PATH
+		,PRODUCT_UNIT_PRICE
+		,PRODUCT_STOCKS
+		,PRODUCT_STATUS
+		,merchant_discount
+		,merchant_discount_begin
+		,merchant_discount_end
+		,special_offer
+		,special_offer_begin
+		,special_offer_end
+	</sql>
+	
+	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+			sp.store_product_id
+			,s.STORE_NAME AS storeName
+			,sp.store_id
+			,sp.product_class_id
+			,(CASE
+				WHEN sp.product_class_name IS NOT NULL THEN
+				sp.product_class_name
+				ELSE
+				pc.product_class_name
+			END
+			) AS productClassName
+			,sp.product_id
+			,(CASE
+				WHEN sp.product_name IS NOT NULL THEN
+				sp.product_name
+				ELSE
+				p.product_name
+			END
+			) AS productName
+			,(CASE
+				WHEN sp.PRODUCT_IMAGE_PATH IS NOT NULL THEN
+				sp.PRODUCT_IMAGE_PATH
+				ELSE
+				p.PRODUCT_IMAGE_PATH
+			END
+			) AS ProductImagePath
+			,sp.PRODUCT_UNIT_PRICE
+			,sp.PRODUCT_STOCKS
+			,sp.PRODUCT_STATUS
+			,sp.merchant_discount
+			,sp.merchant_discount_begin
+			,sp.merchant_discount_end
+			,sp.special_offer
+			,sp.special_offer_begin
+			,sp.special_offer_end
+		from store_product as sp
+		left join dn_product as p on p.PRODUCT_ID = sp.product_id
+		left join dn_store as s on s.STORE_ID = sp.store_id
+		left join dn_product_class as pc on pc.PRODUCT_CLASS_ID = sp.product_class_id
+		where sp.store_product_id = #{storeProductId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.store.model.StoreProduct">
+		select
+			sp.store_product_id
+			,s.STORE_NAME AS storeName
+			,sp.store_id
+			,sp.product_class_id
+			,(CASE
+				WHEN sp.product_class_name IS NOT NULL THEN
+				sp.product_class_name
+				ELSE
+				pc.product_class_name
+			END
+			) AS productClassName
+			,sp.product_id
+			,(CASE
+				WHEN sp.product_name IS NOT NULL THEN
+				sp.product_name
+				ELSE
+				p.product_name
+			END
+			) AS productName
+			,(CASE
+				WHEN sp.PRODUCT_IMAGE_PATH IS NOT NULL THEN
+				sp.PRODUCT_IMAGE_PATH
+				ELSE
+				p.PRODUCT_IMAGE_PATH
+			END
+			) AS ProductImagePath
+			,sp.PRODUCT_UNIT_PRICE
+			,sp.PRODUCT_STOCKS
+			,sp.PRODUCT_STATUS
+			,sp.merchant_discount
+			,sp.merchant_discount_begin
+			,sp.merchant_discount_end
+			,sp.special_offer
+			,sp.special_offer_begin
+			,sp.special_offer_end
+		from store_product as sp
+		left join dn_product as p on p.PRODUCT_ID = sp.product_id
+		left join dn_store as s on s.STORE_ID = sp.store_id
+		left join dn_product_class as pc on pc.PRODUCT_CLASS_ID = sp.product_class_id
+		where 1=1
+		<if test="ownerUserId != null and '' != ownerUserId">  
+			and s.owner_userId = #{ownerUserId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeProductId != null and '' != storeProductId">  
+			and sp.store_product_id = #{storeProductId,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and sp.store_id = #{storeId,jdbcType=CHAR}
+		</if>
+		<if test="storeName != null and '' != storeName">  
+			and s.STORE_NAME like CONCAT('%',#{storeName,jdbcType=CHAR},'%') 
+		</if>
+		<if test="productClassId != null and '' != productClassId">  
+			and sp.product_class_id = #{productClassId,jdbcType=CHAR}
+		</if>
+		<if test="productClassName != null and '' != productClassName">  
+			and sp.product_class_name like CONCAT('%',#{productClassName,jdbcType=VARCHAR},'%') 
+		</if>
+		<if test="productId != null and '' != productId">  
+			and sp.product_id = #{productId,jdbcType=CHAR}
+		</if>
+		<if test="productName != null and '' != productName">  
+			and sp.product_name like CONCAT('%', #{productName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="productImagePath != null and '' != productImagePath">  
+			and sp.PRODUCT_IMAGE_PATH = #{productImagePath,jdbcType=VARCHAR}
+		</if>
+		<if test="productUnitPrice != null and '' != productUnitPrice">  
+			and sp.PRODUCT_UNIT_PRICE = #{productUnitPrice,jdbcType=DOUBLE}
+		</if>
+		<if test="productStocks != null and '' != productStocks">  
+			and sp.PRODUCT_STOCKS = #{productStocks,jdbcType=INTEGER}
+		</if>
+		<if test="productStatus != null and '' != productStatus">  
+			and sp.PRODUCT_STATUS = #{productStatus,jdbcType=CHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	<delete id="deleteByKey" parameterType="java.lang.String">
+		delete from store_product
+		where store_product_id = #{storeProductId,jdbcType=VARCHAR}
+	</delete>
+	
+	<insert id="add" parameterType="com.cyz.staticsystem.store.model.StoreProduct">
+		insert into store_product (
+		<include refid="Base_Column_List" />
+		)values (
+		#{storeProductId,jdbcType=VARCHAR}
+		,#{storeId,jdbcType=CHAR}
+		,#{productClassId,jdbcType=CHAR}
+		,#{productClassName,jdbcType=VARCHAR}
+		,#{productId,jdbcType=CHAR}
+		,#{productName,jdbcType=VARCHAR}
+		,#{productImagePath,jdbcType=VARCHAR}
+		,#{productUnitPrice,jdbcType=DOUBLE}
+		,#{productStocks,jdbcType=INTEGER}
+		,#{productStatus,jdbcType=CHAR}
+		,#{merchantDiscount,jdbcType=DECIMAL}
+		,#{merchantDiscountBegin,jdbcType=TIMESTAMP}
+		,#{merchantDiscountEnd,jdbcType=TIMESTAMP}
+		,#{specialOffer,jdbcType=DECIMAL}
+		,#{specialOfferBegin,jdbcType=TIMESTAMP}
+		,#{specialOfferEnd,jdbcType=TIMESTAMP}
+					)
+	</insert>
+	
+	<update id="update" parameterType="com.cyz.staticsystem.store.model.StoreProduct">，
+		update store_product  set
+			store_id = #{storeId,jdbcType=CHAR}
+			,product_class_id = #{productClassId,jdbcType=CHAR}
+			,product_class_name = #{productClassName,jdbcType=VARCHAR}
+			,product_id = #{productId,jdbcType=CHAR}
+			,product_name = #{productName,jdbcType=VARCHAR}
+			,PRODUCT_IMAGE_PATH = #{productImagePath,jdbcType=VARCHAR}
+			,PRODUCT_UNIT_PRICE = #{productUnitPrice,jdbcType=DOUBLE}
+			,PRODUCT_STOCKS = #{productStocks,jdbcType=INTEGER}
+			,PRODUCT_STATUS = #{productStatus,jdbcType=CHAR}
+			,merchant_discount = #{merchantDiscount,jdbcType=DECIMAL}
+			,merchant_discount_begin = #{merchantDiscountBegin,jdbcType=TIMESTAMP}
+			,merchant_discount_end = #{merchantDiscountEnd,jdbcType=TIMESTAMP}
+			,special_offer = #{specialOffer,jdbcType=DECIMAL}
+			,special_offer_begin = #{specialOfferBegin,jdbcType=TIMESTAMP}
+			,special_offer_end = #{specialOfferEnd,jdbcType=TIMESTAMP}
+		where store_product_id = #{storeProductId,jdbcType=VARCHAR}
+	</update>
+</mapper>

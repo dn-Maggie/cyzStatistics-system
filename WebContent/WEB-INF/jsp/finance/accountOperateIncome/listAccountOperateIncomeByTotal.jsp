@@ -136,11 +136,9 @@ var deepTotalModel = {url: "<m:url value='/accountOperaTotal/listAccountOperaTot
 					<li>
 						<div class="time_bg">
 							<input type="text" placeholder="截止日期"  class="search_time150 date-picker" name="propsMap['endDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
-							<i class="search_time_ico2" ></i>
 						</div>
 						<div class="time_bg">
 							<input type="text" placeholder="起始日期" class="search_time150 date-picker" name="propsMap['startDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
-							<i class="search_time_ico2" ></i>
 						</div>
 					</li>
 					<li>

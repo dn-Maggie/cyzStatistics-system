@@ -122,11 +122,7 @@ function orderIndex(){
 	}
 }
 function cellFormatter(value, options, rData){
-	/*if(rData.raw){*/
 		return accounting.formatMoney(value,"",2).replace(".00","").replace(",","");
-	/*}else if($(".calcu:eq("+options.colModel.serial+")").val().length>0){
-		return accounting.formatMoney(eval($(".calcu:eq("+options.colModel.serial+")").val()),"",2).replace(".00","").replace(",","");
-	}else{return accounting.formatMoney(value,"",2).replace(".00","").replace(",","");}*/
 }
 //添加行
 function addTr(){
@@ -275,7 +271,7 @@ $(function() {
 	           		paramDatas.storeName ="${storeName}";
 		           		$ .ajax({
 		           			type: "post",
-		    				url: baseUrl+"/operaDate/updateOperaDate.do?type=orderSaleRate",
+		    				url: baseUrl+"/operaDate/updateOperaDate.do?type=otherSum",
 		    				data: paramDatas,
 							cache:false,
 		    				dataType:"json"

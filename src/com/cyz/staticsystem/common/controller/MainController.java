@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cyz.staticsystem.basic.model.Brand;
 import com.cyz.staticsystem.basic.model.UserInfo;
 import com.cyz.staticsystem.basic.service.UserInfoService;
 import com.cyz.staticsystem.common.Constant;
@@ -102,8 +103,7 @@ public class MainController {
 		ModelAndView m = new ModelAndView("WEB-INF/jsp/common/adminMain");
 		Map<String, Object> map = m.getModel();
 		map.put("menus", menus);
-		m.addObject("activityType", dictInfoService.getDictInfoListByType("activityType"));
-		m.addObject("tradingArea", dictInfoService.getDictInfoListByType("tradingArea"));
+		m.addObject("tradingArea", storeService.getBussinessArea());
 		return m;
 	}
 	
@@ -119,6 +119,13 @@ public class MainController {
 		ModelAndView mv = new ModelAndView("WEB-INF/jsp/common/adminHomePage");
 		Map<String,Object> model = new HashMap<String,Object>();
 		mv.addObject("model", model);
+		mv.addObject("tradingArea", storeService.getBussinessArea());
+		Store store = new Store();
+	 	store.setIsDelete(0);
+ 		if(!Utils.isSuperAdmin(request)){
+ 			store.setOwnerUserId(Utils.getLoginUserInfoId(request));
+		}
+		mv.addObject("store",storeService.listByCondition(store));
 		return mv;
 	}
 	/**

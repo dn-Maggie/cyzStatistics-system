@@ -164,8 +164,8 @@
 		FROM
 			`account_sale_goods` AS asg
 		LEFT JOIN account_order_detail AS aod ON aod.order_no = asg.order_no 
-		LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id= aod.store_MT_id or s.baidu_id =aod.store_BD_id
-		LEFT JOIN store_special_offer as sso on asg.good_name LIKE CONCAT('%',sso.special_offer_food_name,'%') and asg.store_name = sso.store_name
+		LEFT JOIN dn_store as s on (s.elm_id = aod.store_ELM_id or s.meituan_id= aod.store_MT_id or s.baidu_id =aod.store_BD_id)
+		LEFT JOIN store_special_offer as sso on asg.good_name LIKE CONCAT('%',sso.special_offer_food_name,'%') and s.store_id = sso.store_id
 		and aod.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
 		where sso.special_type = 1
 		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
@@ -201,8 +201,8 @@
 		FROM
 			`account_sale_goods` AS asg
 		LEFT JOIN account_order_detail AS aod ON aod.order_no = asg.order_no
-		LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id= aod.store_MT_id or s.baidu_id =aod.store_BD_id
-		LEFT JOIN store_special_offer as sso on asg.good_name LIKE CONCAT('%',sso.special_offer_food_name,'%') and asg.store_name = sso.store_name
+		LEFT JOIN dn_store as s on (s.elm_id = aod.store_ELM_id or s.meituan_id= aod.store_MT_id or s.baidu_id =aod.store_BD_id)
+		LEFT JOIN store_special_offer as sso on asg.good_name LIKE CONCAT('%',sso.special_offer_food_name,'%') and s.store_id = sso.store_id
 		 and aod.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
 		where sso.special_type = 2
 		<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
@@ -926,7 +926,7 @@
 				sum(DISTINCT od.is_invalid) AS invalid_num,
 				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
 				sum(DISTINCT od.goods_quality) AS goods_quality,
-				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount) as orgin_price,
 				sum(DISTINCT od.meal_fee) as meal_fee,
 				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
 		as special_orgin,
@@ -946,9 +946,9 @@
 		AS platform_activities_charge,
 				ABS(sum(DISTINCT od.service_charge)) 
 		as platform_service_charge,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee) 
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee) 
 		as product_sale_amount,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
 				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))+sum(DISTINCT od.merchant_dist_charge) 
 		AS amount_receivable,
 				0 
@@ -957,7 +957,7 @@
 		as amount_rate_payable,
 				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0 
 		as amount_payable,
-				sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
 		as cyz_service_charge,
 				0 
 		as cyz_service_charge_industry_part,
@@ -965,12 +965,12 @@
 		as cyz_service_charge_opera_part,
 				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
 		AS actual_merchant_dist_charge,
-				sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
 				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))+sum(DISTINCT od.merchant_dist_charge)-  ((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
 		as sale_gross_profit,
-				(sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) -ABS(sum(DISTINCT od.service_charge))-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )-
 				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))+sum(DISTINCT od.merchant_dist_charge)- ((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))*100/
-				(sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))
 		as sale_gross_profit_rate,
 				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) 
 		AS dist_price,
@@ -992,8 +992,8 @@
 				od.platform_type
 			from account_order_detail as od 
 			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
-			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
-			LEFT JOIN account_sale_goods as asg on asg.good_name  = sso.special_offer_food_name and asg.store_name = od.store_name and asg.order_no = od.order_no
+			LEFT JOIN store_special_offer as sso on sso.store_id = s.STORE_ID and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name like CONCAT('%',sso.special_offer_food_name,'%') and asg.order_no = od.order_no
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
 			WHERE
@@ -1032,7 +1032,7 @@
 				sum(DISTINCT od.is_invalid) AS invalid_num,
 				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
 				sum(DISTINCT od.goods_quality) AS goods_quality,
-				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount) as orgin_price,
 				sum(DISTINCT od.meal_fee) as meal_fee,
 				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
 		as special_orgin,
@@ -1052,19 +1052,19 @@
 		AS platform_activities_charge,
 				ABS(sum(DISTINCT od.service_charge)) 
 		as platform_service_charge,
-				sum(DISTINCT od.orgin_price) + sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant) 
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount) + sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant) 
 		as product_sale_amount,
-				sum(DISTINCT od.orgin_price) + sum(DISTINCT od.meal_fee) + sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount) + sum(DISTINCT od.meal_fee) + sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-ABS(sum(DISTINCT od.service_charge))-
 				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant)) 
 		AS amount_receivable,
 				0.7 
 		as order_sale_rate,
-				0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
+				0.7*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
 		as amount_rate_payable,
-				0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
+				0.7*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
 		as amount_payable,
-				0.3*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
+				0.3*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
 		as cyz_service_charge,
 				0 
 		as cyz_service_charge_industry_part,
@@ -1072,14 +1072,14 @@
 		as cyz_service_charge_opera_part,
 				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN od.merchant_dist_charge ELSE 0 END ) 
 		AS actual_merchant_dist_charge,
-				sum(DISTINCT od.orgin_price)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers)- 
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers)- 
 				sum(DISTINCT  od.activities_subsidy_bymerchant))-sum(DISTINCT od.service_charge) -
-				(0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)) 
+				(0.7*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)) 
 		as sale_gross_profit,
-				(sum(DISTINCT od.orgin_price)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers) - 
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers) - 
 				sum(DISTINCT  od.activities_subsidy_bymerchant))-sum(DISTINCT od.service_charge) -
-				(0.7*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)))*100/
-				(0.3*(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)))
+				(0.7*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+ sum(DISTINCT od.meal_fee)+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)))*100/
+				(0.3*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)))
 		as sale_gross_profit_rate,
 				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) 
 		AS dist_price,
@@ -1101,8 +1101,8 @@
 				od.platform_type
 			from account_order_detail as od 
 			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
-			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
-			LEFT JOIN account_sale_goods as asg on asg.good_name  = sso.special_offer_food_name and asg.store_name = od.store_name and asg.order_no = od.order_no
+			LEFT JOIN store_special_offer as sso on sso.store_id = s.STORE_ID and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name like CONCAT('%',sso.special_offer_food_name,'%') and asg.order_no = od.order_no
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
 			WHERE
@@ -1141,7 +1141,7 @@
 				sum(DISTINCT od.is_invalid) AS invalid_num,
 				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
 				sum(DISTINCT od.goods_quality) AS goods_quality,
-				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount) as orgin_price,
 				sum(DISTINCT od.meal_fee) as meal_fee,
 				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
 		as special_orgin,
@@ -1160,23 +1160,23 @@
 				sum(DISTINCT od.platform_activities_subsidies) 
 		AS platform_activities_charge,
 				ABS(sum(DISTINCT od.service_charge)) as platform_service_charge,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant) 
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant) 
 		as product_sale_amount,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-ABS(sum(DISTINCT od.service_charge))-
 				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant)) 
 		AS amount_receivable,
 				0.95 
 		as order_sale_rate,
-				0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				0.95*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
 				(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers)- sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
 		as amount_rate_payable,
-				0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				0.95*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
 				(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) 
 		as amount_payable,
-				0.05*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				0.05*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
 				(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)) 
 		as cyz_service_charge,
@@ -1186,16 +1186,16 @@
 		as cyz_service_charge_opera_part,
 				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
 		AS actual_merchant_dist_charge,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(ABS(sum(DISTINCT od.merchant_activities_subsidies))  + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant))-ABS(sum(DISTINCT od.service_charge)) -
-					(0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(ABS(sum(DISTINCT od.merchant_activities_subsidies))  + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant))-ABS(sum(DISTINCT od.service_charge)) -
+					(0.95*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 					-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
 					(sum(DISTINCT od.merchant_activities_subsidies)  + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)) 
 		as sale_gross_profit,
-				(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))-ABS(sum(DISTINCT od.service_charge)) -
-					(0.95*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)- sum(DISTINCT  od.activities_subsidy_bymerchant)-(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers)) - sum(DISTINCT  od.activities_subsidy_bymerchant))-ABS(sum(DISTINCT od.service_charge)) -
+					(0.95*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 					-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
 					(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))+(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end)))*100/
-				(0.05*(sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
+				(0.05*(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) - sum(DISTINCT  od.activities_subsidy_bymerchant)
 				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END )+sum(DISTINCT od.merchant_dist_charge)-sum(DISTINCT od.service_charge)-
 				(sum(DISTINCT od.merchant_activities_subsidies) + sum(DISTINCT od.merchant_subsidy_vouchers) - sum(DISTINCT  od.activities_subsidy_bymerchant))-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end)))
 		as sale_gross_profit_rate,
@@ -1219,8 +1219,8 @@
 				od.platform_type
 			from account_order_detail as od 
 			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
-			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
-			LEFT JOIN account_sale_goods as asg on asg.good_name  = sso.special_offer_food_name and asg.store_name = od.store_name and asg.order_no = od.order_no
+			LEFT JOIN store_special_offer as sso on sso.store_id = s.STORE_ID and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name like CONCAT('%',sso.special_offer_food_name,'%') and asg.order_no = od.order_no
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
 			WHERE
@@ -1252,14 +1252,14 @@
 		<include refid="Base_Column_List" />
 		) select <include refid="Sum_Base_Column_List" /> from (
 			SELECT
-				CONCAT(od.order_time,od.store_id,od.platform_type) as id,
+				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
 				od.store_id as store_id,
 				od.store_name as store_name,
 				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
 				sum(DISTINCT od.is_invalid) AS invalid_num,
 				COUNT(DISTINCT od.order_no) - sum(DISTINCT od.is_invalid) AS valid_num,
 				sum(DISTINCT od.goods_quality) AS goods_quality,
-				sum(DISTINCT od.orgin_price) as orgin_price,
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount) as orgin_price,
 				sum(DISTINCT od.meal_fee) as meal_fee,
 				(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end) 
 		as special_orgin,
@@ -1279,9 +1279,9 @@
 		AS platform_activities_charge,
 				ABS(sum(DISTINCT od.service_charge)) 
 		as platform_service_charge,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee) 
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee) 
 		as product_sale_amount,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)
 				+ sum(DISTINCT CASE WHEN od.order_dist_charge IS NOT NULL THEN  od.order_dist_charge ELSE 0 END) 
 				-sum(DISTINCT CASE WHEN od.platform_dist_charge IS NOT NULL THEN  od.platform_dist_charge ELSE 0 END)
 				+sum(DISTINCT od.merchant_dist_charge)
@@ -1290,30 +1290,30 @@
 		AS amount_receivable,
 				0.65 
 		as order_sale_rate,
-				(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee)
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee)
 		as amount_rate_payable,
 				(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0 
 		as amount_payable,
-				sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0) 
 		as cyz_service_charge,
-				(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 
 		as cyz_service_charge_industry_part,
-				(sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.25
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.25
 		as cyz_service_charge_opera_part,
 				sum(DISTINCT CASE WHEN od.merchant_dist_charge IS NOT NULL THEN  od.merchant_dist_charge ELSE 0 END ) 
 		AS actual_merchant_dist_charge,
-				sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)-
+				sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)-
 				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant) )-
 				ABS(sum(DISTINCT od.service_charge))-
-				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee))-
-				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 )
+				((sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee))-
+				((sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 )
 		as sale_gross_profit,
-				 (sum(DISTINCT od.orgin_price)+ sum(DISTINCT od.meal_fee)-
+				 (sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+ sum(DISTINCT od.meal_fee)-
 				(ABS(sum(DISTINCT od.merchant_activities_subsidies)) + ABS(sum(DISTINCT od.merchant_subsidy_vouchers))- sum(DISTINCT  od.activities_subsidy_bymerchant) )-
 				ABS(sum(DISTINCT od.service_charge))-
-				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee))-
-				((sum(DISTINCT od.orgin_price)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 ))*100/
-				(sum(DISTINCT od.orgin_price)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))
+				((sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.65 +(case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) +sum(DISTINCT od.meal_fee))-
+				((sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)-(case when sso.special_offer_food_orgin_price is not null then sso.special_offer_food_orgin_price*asg.good_num else 0 end))*0.1 ))*100/
+				(sum(DISTINCT od.orgin_price) - sum(DISTINCT od.refund_amount)+sum(DISTINCT od.meal_fee)-((case when sso.special_offer_food_price is not null then sso.special_offer_food_price*asg.good_num else 0 end) + 0))
 		as sale_gross_profit_rate,
 				(CASE WHEN s.store_type = '1' THEN 12.5 ELSE 7.5 END ) 
 		AS dist_price,
@@ -1335,8 +1335,8 @@
 				od.platform_type
 			from account_order_detail as od 
 			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
-			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
-			LEFT JOIN account_sale_goods as asg on asg.good_name like CONCAT('%',sso.special_offer_food_name,'%') and asg.store_name = od.store_name and asg.order_no = od.order_no
+			LEFT JOIN store_special_offer as sso on sso.store_id = s.STORE_ID and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN account_sale_goods as asg on asg.good_name like CONCAT('%',sso.special_offer_food_name,'%') and asg.order_no = od.order_no
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
 			WHERE
@@ -1416,9 +1416,6 @@
 		id= #{id,jdbcType=VARCHAR}
 		<if test="storeId != null and '' != storeId">  
 		,store_id = #{storeId,jdbcType=VARCHAR}
-		</if>
-		<if test="storeName != null and '' != storeName"> 
-		,store_name = #{storeName,jdbcType=VARCHAR}
 		</if>
 		<if test="createDate != null and '' != createDate"> 
 		,create_date = #{createDate,jdbcType=TIMESTAMP}
@@ -1537,20 +1534,14 @@
 		<if test="platformType != null and '' != platformType"> 
 		,platform_type = #{platformType,jdbcType=VARCHAR}
 		</if>
-	where id = #{id,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
 	</update>
 	<!--更新一条销售额抽佣运营数据 -->	
 	<update id="updateSaleRate" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
 		update opera_date_sale_rate  set
-		store_name = #{storeName,jdbcType=VARCHAR}
-		<if test="id != null and '' != id">  
-		,id= #{id,jdbcType=VARCHAR}
-		</if>  
+		id= #{id,jdbcType=VARCHAR}
 		<if test="storeId != null and '' != storeId">  
 		,store_id = #{storeId,jdbcType=VARCHAR}
-		</if>
-		<if test="storeName != null and '' != storeName"> 
-		,store_name = #{storeName,jdbcType=VARCHAR}
 		</if>
 		<if test="createDate != null and '' != createDate"> 
 		,create_date = #{createDate,jdbcType=TIMESTAMP}
@@ -1618,15 +1609,6 @@
 		<if test="amountReceivable != null and '' != amountReceivable"> 
 		,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
 		</if>
-		<if test="orderSaleRate != null and '' != orderSaleRate"> 
-		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
-		,amount_rate_payable = (orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR}
-		,amount_payable = (orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee
-		,cyz_service_charge = (orgin_price - special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR})
-		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee)
-		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee))*100/
-			((orgin_price - special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR}))
-		</if>
 		<if test="amountRatePayable != null and '' != amountRatePayable"> 
 		,amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
 		</if>
@@ -1681,23 +1663,14 @@
 		<if test="platformType != null and '' != platformType"> 
 		,platform_type = #{platformType,jdbcType=VARCHAR}
 		</if>
-		where store_name = #{storeName,jdbcType=VARCHAR} 
-		<if test="id != null and '' != id"> 
-		 and id = #{id,jdbcType=VARCHAR} 
-		</if>
+		where  id = #{id,jdbcType=VARCHAR} 
 	</update>
 	<!--更新一条平台到账抽佣运营数据 -->	
 	<update id="updatePlatformAccount" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
 		update opera_date_platform_account  set
-		store_name = #{storeName,jdbcType=VARCHAR}
-		<if test="id != null and '' != id">  
-		,id= #{id,jdbcType=VARCHAR}
-		</if>  
+		id= #{id,jdbcType=VARCHAR}
 		<if test="storeId != null and '' != storeId">  
 		,store_id = #{storeId,jdbcType=VARCHAR}
-		</if>
-		<if test="storeName != null and '' != storeName"> 
-		,store_name = #{storeName,jdbcType=VARCHAR}
 		</if>
 		<if test="createDate != null and '' != createDate"> 
 		,create_date = #{createDate,jdbcType=TIMESTAMP}
@@ -1724,14 +1697,12 @@
 		<if test="specialOffer != null and '' != specialOffer"> 
 		,special_offer = #{specialOffer,jdbcType=VARCHAR}
 		,activities_subsidy_bymerchant =  special_orgin - #{specialOffer,jdbcType=VARCHAR}
-		
 		,amount_rate_payable = (amount_receivable - #{specialOffer,jdbcType=VARCHAR})* order_saleRate
 		,amount_payable = (amount_receivable - #{specialOffer,jdbcType=VARCHAR})*order_saleRate+ #{specialOffer,jdbcType=VARCHAR}
 		,cyz_service_charge = (amount_receivable - #{specialOffer,jdbcType=VARCHAR})*(1-order_saleRate)
 		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - #{specialOffer,jdbcType=VARCHAR})*order_saleRate+ #{specialOffer,jdbcType=VARCHAR})
 		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - #{specialOffer,jdbcType=VARCHAR})*order_saleRate+ #{specialOffer,jdbcType=VARCHAR}))*100/
 			((amount_receivable - #{specialOffer,jdbcType=VARCHAR})*(1-order_saleRate))
-			
 		</if>
 		<if test="activitiesSubsidyBymerchant != null and '' != activitiesSubsidyBymerchant"> 
 		,activities_subsidy_bymerchant = #{activitiesSubsidyBymerchant,jdbcType=VARCHAR}
@@ -1759,15 +1730,6 @@
 		</if>
 		<if test="amountReceivable != null and '' != amountReceivable"> 
 		,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
-		</if>
-		<if test="orderSaleRate != null and '' != orderSaleRate"> 
-		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
-		,amount_rate_payable = (amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}
-		,amount_payable = (amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer
-		,cyz_service_charge = (amount_receivable - special_offer)*(1-#{orderSaleRate,jdbcType=VARCHAR})
-		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer)
-		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer))*100/
-			((amount_receivable - special_offer)*(1-#{orderSaleRate,jdbcType=VARCHAR}))
 		</if>
 		<if test="amountRatePayable != null and '' != amountRatePayable"> 
 		,amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
@@ -1823,20 +1785,14 @@
 		<if test="platformType != null and '' != platformType"> 
 		,platform_type = #{platformType,jdbcType=VARCHAR}
 		</if>
-		where store_name = #{storeName,jdbcType=VARCHAR} 
-		<if test="id != null and '' != id"> 
-		 and id = #{id,jdbcType=VARCHAR} 
-		</if>
+		where id = #{id,jdbcType=VARCHAR} 
 	</update>
 	<!--更新一条深运营数据 -->	
 	<update id="updateDeepOpera" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
 		update opera_date_deep_opera  set
-		store_name = #{storeName,jdbcType=VARCHAR}
+		id = #{id,jdbcType=VARCHAR} 
 		<if test="storeId != null and '' != storeId">  
 		,store_id = #{storeId,jdbcType=VARCHAR}
-		</if>
-		<if test="storeName != null and '' != storeName"> 
-		,store_name = #{storeName,jdbcType=VARCHAR}
 		</if>
 		<if test="createDate != null and '' != createDate"> 
 		,create_date = #{createDate,jdbcType=TIMESTAMP}
@@ -1897,14 +1853,6 @@
 		<if test="amountReceivable != null and '' != amountReceivable"> 
 		,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
 		</if>
-		<if test="orderSaleRate != null and '' != orderSaleRate"> 
-		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
-		,amount_rate_payable =  (orgin_price- special_orgin)*#{orderSaleRate,jdbcType=VARCHAR}+special_offer+meal_fee
-		,cyz_service_charge_opera_part = (orgin_price-special_orgin)*(1-0.1-#{orderSaleRate,jdbcType=VARCHAR})
-		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price-special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} +special_offer +meal_fee)-((orgin_price-special_orgin)*0.1)
-		,cyz_service_charge_industry_part = (orgin_price-special_orgin)*0.1
-		,cyz_service_charge = (orgin_price-special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR})
-		</if>
 		<if test="amountRatePayable != null and '' != amountRatePayable"> 
 		,amount_rate_payable = #{amountRatePayable,jdbcType=VARCHAR}
 		</if>
@@ -1961,17 +1909,14 @@
 		<if test="platformType != null and '' != platformType"> 
 		,platform_type = #{platformType,jdbcType=VARCHAR}
 		</if>
-		where store_name = #{storeName,jdbcType=VARCHAR} 
-		<if test="id != null and '' != id"> 
-		 and id = #{id,jdbcType=VARCHAR} 
-		</if>
+		where id = #{id,jdbcType=VARCHAR} 
 	</update>
 
 
-	<!--更新销售额抽佣运营数据 -->	
+	<!--配置销售额抽佣运营数据表头 -->	
 	<update id="updateSaleRateSum" parameterType="com.cyz.staticsystem.finance.model.OperaDate" >
 		update opera_date_sale_rate  set
-		store_name = #{storeName,jdbcType=VARCHAR}
+		operator = #{operator,jdbcType=VARCHAR}
 		<if test="productSaleAmount != null and '' != productSaleAmount"> 
 		,product_sale_amount = ${productSaleAmount}
 		</if>
@@ -1983,6 +1928,15 @@
 		</if>
 		<if test="amountPayable != null and '' != amountPayable"> 
 		,amount_payable = ${amountPayable}
+		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate"> 
+		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		,amount_rate_payable = (orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR}
+		,amount_payable = (orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee
+		,cyz_service_charge = (orgin_price - special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR})
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee)
+		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price - special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} + special_offer +meal_fee))*100/
+			((orgin_price - special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR}))
 		</if>
 		<if test="cyzServiceCharge != null and '' != cyzServiceCharge"> 
 		,cyz_service_charge = ${cyzServiceCharge}
@@ -1999,15 +1953,12 @@
 		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
 		,sale_gross_profit_rate = ${saleGrossProfitRate}
 		</if>
-		where store_name =   #{storeName,jdbcType=VARCHAR}
-		<if test="id != null and '' != id"> 
-		 and id =   #{id,jdbcType=VARCHAR}
-		</if>
+		where store_id =  #{storeELMId,jdbcType=VARCHAR}  or  store_id =  #{storeMTId,jdbcType=VARCHAR}  or store_id = #{storeBDId,jdbcType=VARCHAR}
 	</update>
-	<!--更新平台到账抽佣运营数据 -->	
+	<!--配置平台到账抽佣运营数据表头 -->	
 	<update id="updatePlatformAccountSum" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
 		update opera_date_platform_account  set
-		store_name =  #{storeName,jdbcType=VARCHAR}
+		operator = #{operator,jdbcType=VARCHAR}
 		<if test="productSaleAmount != null and '' != productSaleAmount"> 
 		,product_sale_amount = ${productSaleAmount}
 		</if>
@@ -2029,21 +1980,27 @@
 		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
 		,cyz_service_charge_opera_part = ${cyzServiceChargeOperaPart}
 		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate"> 
+		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		,amount_rate_payable = (amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}
+		,amount_payable = (amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer
+		,cyz_service_charge = (amount_receivable - special_offer)*(1-#{orderSaleRate,jdbcType=VARCHAR})
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer)
+		,sale_gross_profit_rate = (product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((amount_receivable - special_offer)*#{orderSaleRate,jdbcType=VARCHAR}+ special_offer))*100/
+			((amount_receivable - special_offer)*(1-#{orderSaleRate,jdbcType=VARCHAR}))
+		</if>
 		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
 		,sale_gross_profit = ${saleGrossProfit}
 		</if>
 		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
 		,sale_gross_profit_rate = ${saleGrossProfitRate}
 		</if>
-		where store_name =  #{storeName,jdbcType=VARCHAR}
-		<if test="id != null and '' != id"> 
-		 and id =  #{id,jdbcType=VARCHAR}
-		</if>
+		where store_id =  #{storeELMId,jdbcType=VARCHAR}  or  store_id =  #{storeMTId,jdbcType=VARCHAR}  or store_id = #{storeBDId,jdbcType=VARCHAR}
 	</update>
-	<!--更新深运营数据 -->	
+	<!--配置深运营数据表头  -->	
 	<update id="updateDeepOperaSum" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
 		update opera_date_deep_opera  set
-		store_name =  #{storeName,jdbcType=VARCHAR}
+		operator = #{operator,jdbcType=VARCHAR}
 		<if test="productSaleAmount != null and '' != productSaleAmount"> 
 		,product_sale_amount = ${productSaleAmount}
 		</if>
@@ -2065,15 +2022,20 @@
 		<if test="cyzServiceChargeOperaPart != null and '' != cyzServiceChargeOperaPart"> 
 		,cyz_service_charge_opera_part = ${cyzServiceChargeOperaPart}
 		</if>
+		<if test="orderSaleRate != null and '' != orderSaleRate"> 
+		,order_sale_rate = #{orderSaleRate,jdbcType=VARCHAR}
+		,amount_rate_payable =  (orgin_price- special_orgin)*#{orderSaleRate,jdbcType=VARCHAR}+special_offer+meal_fee
+		,cyz_service_charge_opera_part = (orgin_price-special_orgin)*(1-0.1-#{orderSaleRate,jdbcType=VARCHAR})
+		,sale_gross_profit = product_sale_amount - activities_subsidy_bycompany - platform_service_charge - ((orgin_price-special_orgin)*#{orderSaleRate,jdbcType=VARCHAR} +special_offer +meal_fee)-((orgin_price-special_orgin)*0.1)
+		,cyz_service_charge_industry_part = (orgin_price-special_orgin)*0.1
+		,cyz_service_charge = (orgin_price-special_orgin)*(1-#{orderSaleRate,jdbcType=VARCHAR})
+		</if>
 		<if test="saleGrossProfit != null and '' != saleGrossProfit"> 
 		,sale_gross_profit = ${saleGrossProfit}
 		</if>
 		<if test="saleGrossProfitRate != null and '' != saleGrossProfitRate"> 
 		,sale_gross_profit_rate = ${saleGrossProfitRate}
 		</if>
-		where store_name =  #{storeName,jdbcType=VARCHAR}
-		<if test="id != null and '' != id"> 
-		 and id =  #{id,jdbcType=VARCHAR}
-		</if>
+		where store_id =  #{storeELMId,jdbcType=VARCHAR}  or  store_id =  #{storeMTId,jdbcType=VARCHAR}  or store_id = #{storeBDId,jdbcType=VARCHAR}
 	</update>
 </mapper>

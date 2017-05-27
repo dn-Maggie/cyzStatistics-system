@@ -26,7 +26,7 @@ public class OperaDate extends Model{
 				   			private String storeELMId;
 				   			private String storeMTId;
 				   			private String storeBDId;
-				   			
+				   			private String operator; //操作人
 		   		
 				   			public String getStoreELMId() {
 								return storeELMId;
@@ -1170,6 +1170,14 @@ public class OperaDate extends Model{
 
 			public void setMtMealFee(BigDecimal mtMealFee) {
 				this.mtMealFee = mtMealFee;
+			}
+
+			public String getOperator() {
+				return operator;
+			}
+
+			public void setOperator(String operator) {
+				this.operator = operator;
 			}
 		   		
 		

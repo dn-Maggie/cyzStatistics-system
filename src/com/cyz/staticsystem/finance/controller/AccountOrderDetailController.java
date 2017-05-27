@@ -36,6 +36,7 @@ import com.cyz.staticsystem.common.util.Utils;
 import com.cyz.staticsystem.finance.model.AccountOperaTotal;
 import com.cyz.staticsystem.finance.model.AccountOrderDetail;
 import com.cyz.staticsystem.finance.model.AccountSaleGoods;
+import com.cyz.staticsystem.finance.model.OperaDetailStatic;
 import com.cyz.staticsystem.finance.service.AccountOperaTotalService;
 import com.cyz.staticsystem.finance.service.AccountOrderDetailService;
 import com.cyz.staticsystem.store.model.Store;
@@ -114,8 +115,7 @@ public class AccountOrderDetailController{
 		 	store.setIsDelete(0);
 			boolean isAdmin = true;
 	 		if(!Utils.isSuperAdmin(request)){
-	 			//store.setOwnerUserId(Utils.getLoginUserInfoId(request));
-	 			isAdmin = false;
+	 			store.setOwnerUserId(Utils.getLoginUserInfoId(request));
 			}
 			mv.addObject("brand",brandService.listByCondition(brand));
 			mv.addObject("store",storeService.listByCondition(store));
@@ -203,5 +203,46 @@ public class AccountOrderDetailController{
 		List<AccountOrderDetail> list = accountOrderDetailService.listByCondition(accountOrderDetail);
 		ExcelExpUtils.exportListToExcel(list, response, epb.getFieldlist(),
 				"订单明细列表", "订单明细列表");
+	}
+	
+	/**
+	 * 全盘信息页面
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/toListDetailStatic")
+	public ModelAndView toListDetailStatic(HttpServletRequest request){
+		 ModelAndView mv = new ModelAndView("WEB-INF/jsp/staticAnalysis/detailStatic");
+		 Store store = new Store();
+		 Brand brand = new Brand();
+		 	store.setIsDelete(0);
+			boolean isAdmin = true;
+	 		if(!Utils.isSuperAdmin(request)){
+	 			//store.setOwnerUserId(Utils.getLoginUserInfoId(request));
+	 			isAdmin = false;
+			}
+			mv.addObject("brand",brandService.listByCondition(brand));
+			mv.addObject("store",storeService.listByCondition(store));
+			mv.addObject("isAdmin",isAdmin);
+	 		return mv;
+	}
+	/**
+	 * 查询全盘信息页面
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/listDetailStatic")
+	public void listDetailStatic(AccountOrderDetail accountOrderDetail,HttpServletRequest request,
+			HttpServletResponse response, Page page){
+		accountOrderDetail.setPage(page);	
+		if(accountOrderDetail.getStoreId()!=""&&accountOrderDetail.getStoreId()!=null){
+			Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
+			accountOrderDetail.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			accountOrderDetail.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			accountOrderDetail.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+		}
+		List<OperaDetailStatic> list = accountOrderDetailService.listDetailStatic(accountOrderDetail);
+		AjaxUtils.sendAjaxForPage(request, response, page, list);
 	}
 }

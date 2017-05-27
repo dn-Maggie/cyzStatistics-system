@@ -33,8 +33,10 @@ $(function() {
 		// 将options传给ajaxForm
 		$('#storeSpecialOfferFormEdit').ajaxSubmit(options);
 	});
-
 });
+function chooseId(){
+	$("#edit_storeName").val($("#edit_storeId").find("option:selected").text());
+}
 </script>
 </head>
   
@@ -46,10 +48,10 @@ $(function() {
 			<tr>	
 				<td class="inputLabelTd">店铺名称：</td>
 				<td class="inputTd">
-					<%--input id="edit_storeId" name="storeId" type="text" class="text" value="${storeSpecialOffer.storeId}"/--%> 
-					<select class="search_select choose_select" name="storeName" id="edit_storeName">
+					<input id="edit_storeName" name="storeName" type="hidden" /> 
+					<select class="search_select choose_select" name="storeId" id="edit_storeId" onchange="chooseId()">
 						<c:forEach var="store" items="${store}">
-							<option value="${store.storeName}"> <c:out value="${store.storeName}"></c:out> </option>
+							<option value="${store.storeId}"> <c:out value="${store.storeName}"></c:out> </option>
 		             	</c:forEach>
 					</select>
 				</td>

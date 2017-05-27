@@ -54,27 +54,6 @@
 	height: 100px;
 	vertical-align: middle;
 }
-input[name='timeQuantum']{
-	visibility:hidden;
-}
-input[name='timeQuantum']+label{
-    background-color: #fff;
-    font-size: 12px;
-    padding: 1px 6px 3px 2px;
-    text-align: center;
-   height: 20px;
-    line-height: 20px;
-}
-input[name='timeQuantum']:checked+label{
-	background-color: #f47115;
-    color: #fff;
-    font-size: 12px;
-    padding: 1px 6px 3px 2px;
-    text-align: center;
-    height: 20px;
-    line-height: 20px;
-    border-radius: 3px;
-}
 .hidden{
 	display:none;
 }
@@ -126,7 +105,6 @@ jQuery(function($) {
 				ace.settings.check('main-container', 'fixed')
 			} catch (e) {
 			}
-			
 		</script-->
 		<div class="main-container-inner">
 			<a class="menu-toggler" id="menu-toggler" href="#"> <span
@@ -135,12 +113,6 @@ jQuery(function($) {
 			<%@ include file="left.jsp"%>
 			<div class="main-content">
 				<div class="breadcrumbs" id="breadcrumbs" style="display:none">
-					<!--script type="text/javascript">
-						try {
-							ace.settings.check('breadcrumbs', 'fixed');
-						} catch (e) {
-						}
-					</script-->
 					<form id="queryForm">
 					<ul class="breadcrumb">
 						<li class="posiText"><i class="icon-home home-icon"></i> <a href="${ctx}/index.do">首页</a></li>
@@ -148,42 +120,15 @@ jQuery(function($) {
 						<li style="margin-right:10px;"><span class="nowDate"></span></li>
 						<li class="hidden">
 							<span>商圈</span>
-							<select class="search_select_nowidth" name="bussinessCir" id="bussinessCir">
-								<option>请选择</option>
+							<select class="search_select_nowidth" name="storeArea" id="storeArea">
+								<option value="">请选择</option>
 								<c:forEach items="${tradingArea}" var="tradingArea">
-									<option value="${tradingArea.dictCode}"><c:out value="${tradingArea.dictName}"></c:out></option>
+									<option value="${tradingArea.businessArea}"><c:out value="${tradingArea.businessArea}"></c:out></option>
 								</c:forEach>
 							</select>
 						</li>
-						<li style="margin-right:10px;"  class="hidden">
-							<span>活动类型</span>
-							<select class="search_select_nowidth" name="activityType" id="activityType">
-								<option>请选择</option>
-								<c:forEach items="${activityType}" var="activityType">
-									<option value="${activityType.dictCode}"><c:out value="${activityType.dictName}"></c:out></option>
-								</c:forEach>
-							</select>
-						</li>
-						<li style="margin-right:10px"  class="hidden">
-							<input type="radio" name="timeQuantum" id="timeQuantum_today"><label for="timeQuantum_today">今天</label>
-							<input type="radio" name="timeQuantum" id="timeQuantum_yesterday"><label for="timeQuantum_yesterday">昨天</label>
-							<input type="radio" name="timeQuantum" id="timeQuantum_7"><label for="timeQuantum_7">近7天</label>
-							<input type="radio" name="timeQuantum" id="timeQuantum_30"><label for="timeQuantum_30">近30天</label>
-							<input type="radio" name="timeQuantum" id="timeQuantum_90"><label for="timeQuantum_90">近90天</label>
-						</li>
-						<li style="width:220px;display:inline-block;vertical-align: middle;"  class="hidden">
-							<div class="input-group">
-								<span class="input-group-addon">
-									<i class="icon-calendar bigger-110"></i>
-								</span>
-								<input class="form-control" type="text" name="date-range-picker" id="id-date-range-picker-1" />
-							</div>
-						</li>
-						<li  class="hidden"><input type="text" name="keyWord" id="keyWord" class="form-control" placeholder="请输入搜索关键字"></li>
-						<li  class="hidden"><input type="button" class="search_btn_default" value="查询"></li>
 					</ul>
 					</form>
-					
 					<!-- .breadcrumb -->
 					<!-- #nav-search -->
 				</div>
@@ -237,18 +182,16 @@ jQuery(function($) {
 	<!-- <![endif]-->
 
 	<!--[if IE]>
-<script type="text/javascript">
- window.jQuery || document.write("<script src='${ctx}/static/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
-</script>
-<![endif]-->
+	<script type="text/javascript">
+	 window.jQuery || document.write("<script src='${ctx}/static/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+	</script>
+	<![endif]-->
 
 	<script type="text/javascript">
 			if("ontouchend" in document) document.write("<script src='${ctx}/static/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
 		</script>
 	<!-- script src="${ctx}/static/js/bootstrap.min.js"></script-->
 	<!-- script src="${ctx}/static/js/typeahead-bs2.min.js"></script-->
-
-
 	<!-- inline scripts related to this page -->
 	<script type="text/javascript">
 	function loadingMask(wrap) {
@@ -360,13 +303,11 @@ jQuery(function($) {
 			window.onresize = function() {
 				cmainFrame();
 			}
-			 /* $("[name='stopPropagation']").click(function(event) { 
-					 event.stopPropagation();
-	         });   */
 			$(".dropdown-toggle").click(function(event) {
 				getModuleName(event.target.parentElement.dataset.modulename);
        		}); 
 		});
+		
 	</script>
 
 </body>

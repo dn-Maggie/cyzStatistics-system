@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cyz.staticsystem.common.util.Utils;
+import com.cyz.staticsystem.basic.model.Category;
+import com.cyz.staticsystem.basic.service.CategoryService;
+import com.cyz.staticsystem.common.bean.ResultMessage;
 import com.cyz.staticsystem.common.excel.ImportExcelUtil;
 import com.cyz.staticsystem.common.page.Page;
 import com.cyz.staticsystem.common.util.AjaxUtils;
@@ -26,6 +30,8 @@ import com.cyz.staticsystem.staticAnalysis.model.BidStaticAnalysis;
 import com.cyz.staticsystem.staticAnalysis.model.DemandAnalysis;
 import com.cyz.staticsystem.staticAnalysis.model.StoreActiveAnalysis;
 import com.cyz.staticsystem.staticAnalysis.service.AnalysisService;
+import com.cyz.staticsystem.store.model.Store;
+import com.cyz.staticsystem.store.service.StoreService;
 
 
 
@@ -41,25 +47,10 @@ import com.cyz.staticsystem.staticAnalysis.service.AnalysisService;
 public class StaticAnalysisController{
 	@Resource
 	private AnalysisService analysisService;
- 	/**
- 	* 进入总览页面
- 	* @return ModelAndView 返回到新增页面
- 	*/
- 	@RequestMapping("/toAllStatic")
-	public ModelAndView toAllStatic(){
-		ModelAndView mv = new ModelAndView("WEB-INF/jsp/staticAnalysis/allStatic");
-		return mv;
-	}
- 	/**
-	 * 总览数据分析
-	 * @return ModelAndView
-	 */
-	@RequestMapping("/allStatic")
-	public void allStatic(BidStaticAnalysis bidStaticAnalysis,HttpServletRequest request,HttpServletResponse response, Page page){
-		bidStaticAnalysis.setPage(page);	
-		List<BidStaticAnalysis> list = analysisService.allStatic(null);
-		AjaxUtils.sendAjaxForPage(request, response, page, list);
-	}
+	@Resource
+	private StoreService storeService;
+	@Resource
+	private CategoryService categoryService;
  	/**
  	* 进入竞价分析页面
  	* @return ModelAndView 返回到新增页面
@@ -84,8 +75,16 @@ public class StaticAnalysisController{
 	 * @return ModelAndView
 	 */
 	@RequestMapping("/toStoreActivity")
-	public ModelAndView toStoreActivity(){
+	public ModelAndView toStoreActivity(HttpServletRequest request,HttpServletResponse response){
 		 ModelAndView mv = new ModelAndView("WEB-INF/jsp/staticAnalysis/storeActivity");
+		 Store store = new Store();
+	 		store.setIsDelete(0);
+	 		if(!Utils.isSuperAdmin(request)){
+	 			store.setOwnerUserId(Utils.getLoginUserInfoId(request));
+			}
+	 	 mv.addObject("store",storeService.listByCondition(store));
+	 	 mv.addObject("category",categoryService.listByCondition(new Category()));
+		 mv.addObject("tradingArea", storeService.getBussinessArea());
 		 return mv;
 	}
 	/**
@@ -95,17 +94,47 @@ public class StaticAnalysisController{
 	@RequestMapping("/listStoreActivity")
 	public void listStoreActivity(StoreActiveAnalysis storeActiveAnalysis,HttpServletRequest request,HttpServletResponse response, Page page){
 		storeActiveAnalysis.setPage(page);	
+		if(storeActiveAnalysis.getStoreId()!=""&&storeActiveAnalysis.getStoreId()!=null){
+			Store s = storeService.getByPrimaryKey(storeActiveAnalysis.getStoreId());
+			storeActiveAnalysis.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			storeActiveAnalysis.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			storeActiveAnalysis.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+		}
 		List<StoreActiveAnalysis> list = analysisService.storeActiveAnalysis(storeActiveAnalysis);
 		AjaxUtils.sendAjaxForPage(request, response, page, list);
 	}
+	
+	/**
+	 * 活动数据更新
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/updateStoreActivity")
+	public void updateStoreActiveAnalysis(StoreActiveAnalysis storeActiveAnalysis,HttpServletRequest request,HttpServletResponse response, Page page){
+		ResultMessage rs = new ResultMessage();
+		rs = analysisService.updateStoreActiveAnalysis(storeActiveAnalysis);
+		AjaxUtils.sendAjaxForObjectStr(response,rs);
+	}
+	
+	
 	
 	/**
  	* 进入精准客户需求分析页面
  	* @return ModelAndView 返回到新增页面
  	*/
  	@RequestMapping("/toDemandAnalysis")
-	public ModelAndView toDemandAnalysis(){
+	public ModelAndView toDemandAnalysis(HttpServletRequest request){
 		ModelAndView mv = new ModelAndView("WEB-INF/jsp/staticAnalysis/demandAnalysis");
+		Store store = new Store();
+ 		store.setIsDelete(0);
+ 		if(!Utils.isSuperAdmin(request)){
+ 			store.setOwnerUserId(Utils.getLoginUserInfoId(request));
+		}
+ 		mv.addObject("store",storeService.listByCondition(store));
+ 		mv.addObject("category",categoryService.listByCondition(new Category()));
+		mv.addObject("tradingArea", storeService.getBussinessArea());
 		return mv;
 	}
  	/**
@@ -115,6 +144,15 @@ public class StaticAnalysisController{
 	@RequestMapping("/demandAnalysis")
 	public void demandAnalysis(DemandAnalysis demandAnalysis,HttpServletRequest request,HttpServletResponse response, Page page){
 		demandAnalysis.setPage(page);	
+		if(demandAnalysis.getStoreId()!=""&&demandAnalysis.getStoreId()!=null){
+			Store s = storeService.getByPrimaryKey(demandAnalysis.getStoreId());
+			demandAnalysis.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			demandAnalysis.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			demandAnalysis.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+		}
 		List<DemandAnalysis> list = analysisService.demandAnalysis(demandAnalysis);
 		AjaxUtils.sendAjaxForPage(request, response, page, list);
 	}

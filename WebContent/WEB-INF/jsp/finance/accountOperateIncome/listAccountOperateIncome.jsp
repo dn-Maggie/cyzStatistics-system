@@ -10,11 +10,7 @@
 var gridObj = {};
 //格式化cell
 function cellFormat(value, options, rData){
-	/*if(rData.raw){*/
 		return accounting.formatMoney(value,"",2).replace(".00","").replace(",","");
-	/*}else if(options.colModel.calculate.indexOf("rData")>0){
-		return accounting.formatMoney(eval(options.colModel.calculate),"",2).replace(".00","").replace(",","");
-	}return accounting.formatMoney(value,"",2).replace(".00","").replace(",","");*/
 };
 //汇总运营表头
 var totalColModel = {
@@ -298,11 +294,9 @@ var platformAccountModel = {
 				<li>
 					<div class="time_bg">
 					<input type="text" placeholder="截止日期"  class="search_time150 date-picker" name="propsMap['endDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
-					<i class="search_time_ico2" ></i>
 					</div>
 					<div class="time_bg">
 					<input type="text" placeholder="起始日期" class="search_time150 date-picker" name="propsMap['startDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
-					<i class="search_time_ico2" ></i>
 					</div>
 				</li>
 				<li class="date_area">

@@ -12,9 +12,9 @@ var gridObj = {};
 var goodsModel = {url: "<m:url value='/accountOrderDetail/listAccountSaleGoods.do'/>",
 						colModel:[
 						{name : "id",hidden : true,key : true,label:"主键",index : "id"},						
-						{name : "storeName",label:"商户名称",index : "store_name"}, 
-						{name : "goodName",label:"菜品名称",index : "good_name"},	
-						{name : "goodNum",label:"销售数量",index : "good_num"},		
+						{name : "storeName",label:"商户名称",index : "store_name",width:300}, 
+						{name : "goodName",label:"菜品名称",index : "good_name",width:300},	
+						{name : "goodNum",label:"销售数量",index : "good_num",width:300},		
 						{name : "goodUnitPrice",label:"结算单价",index : "good_unit_price",formatter:Finance.formatAccountting},	
 						/* {name : "goodActualPrice",label:"实际支付单价",index : "good_actual_price",formatter:Finance.formatAccountting}, */	
 						{name:"goodsPrice",label:"销售额",formatter:Finance.formatAccountting},
@@ -51,11 +51,9 @@ var goodsModel = {url: "<m:url value='/accountOrderDetail/listAccountSaleGoods.d
 				<li>
 					<div class="time_bg">
 					<input type="text" placeholder="截止日期"  class="search_time150 date-picker" name="propsMap['endDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
-					<i class="search_time_ico2" ></i>
 					</div>
 					<div class="time_bg">
 					<input type="text" placeholder="起始日期" class="search_time150 date-picker" name="propsMap['startDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
-					<i class="search_time_ico2" ></i>
 					</div>
 				</li>
 				 <li><select class="search_select" name="platformType" id="platformType"><option value=""></option>

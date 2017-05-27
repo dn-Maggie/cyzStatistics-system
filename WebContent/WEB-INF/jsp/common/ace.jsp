@@ -131,5 +131,11 @@
 ::-webkit-scrollbar-thumb{background-color:#F47115;}
 ::-webkit-scrollbar-thumb:hover {background-color:#F47115}
 ::-webkit-scrollbar-thumb:active {background-color:#F47115}
+.chosen-container .chosen-results li em{
+	text-decoration:none!important;
+	border:0;
+	width:auto;
+	height:auto;
+}
 </style>
 <script src="<%=request.getContextPath() %>/js/ace-common.js"></script>

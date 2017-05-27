@@ -11,6 +11,7 @@ import com.cyz.staticsystem.finance.dao.AccountCheckMapper;
 import com.cyz.staticsystem.finance.dao.AccountOrderDetailMapper;
 import com.cyz.staticsystem.finance.model.AccountOrderDetail;
 import com.cyz.staticsystem.finance.model.AccountSaleGoods;
+import com.cyz.staticsystem.finance.model.OperaDetailStatic;
 import com.cyz.staticsystem.finance.model.OrderDetailQuery;
 import com.cyz.staticsystem.finance.model.OrderDetailStatic;
  
@@ -112,5 +113,17 @@ public class AccountOrderDetailServiceImpl implements AccountOrderDetailService{
 	 * 统计订单数据（空值情况）*/
 	public List<OrderDetailStatic> calcuOrderDetailNull(OrderDetailQuery odq) {
 		return accountOrderDetailMapper.calcuOrderDetailNull(odq);
+	}
+
+	/**
+	 *全盘信息数据*/
+	public List<OperaDetailStatic> listDetailStatic(AccountOrderDetail accountOrderDetail) {
+		return accountOrderDetailMapper.listDetailStatic(accountOrderDetail);
+	}
+
+	/**
+	 *全盘信息数据（全部）*/
+	public List<OrderDetailStatic> calcuOperaStatic(OrderDetailQuery odq) {
+		return accountOrderDetailMapper.calcuOperaStatic(odq);
 	}
 }

@@ -1,23 +1,31 @@
 package com.cyz.staticsystem.finance.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cyz.staticsystem.common.bean.RespMess;
+import com.cyz.staticsystem.common.excel.ExcelExpUtils;
+import com.cyz.staticsystem.common.excel.ExpParamBean;
+import com.cyz.staticsystem.common.page.Page;
 import com.cyz.staticsystem.common.util.AjaxUtils;
 import com.cyz.staticsystem.common.util.DateUtil;
 import com.cyz.staticsystem.common.util.StringUtil;
 import com.cyz.staticsystem.common.util.Utils;
 import com.cyz.staticsystem.finance.model.AccountOrderDetail;
+import com.cyz.staticsystem.finance.model.OperaDetailStatic;
 import com.cyz.staticsystem.finance.model.OrderDetailQuery;
 import com.cyz.staticsystem.finance.model.OrderDetailStatic;
 import com.cyz.staticsystem.finance.service.AccountOrderDetailService;
@@ -60,83 +68,80 @@ public class ConfigController{
 		return mv;
 	}	 
 	/**
-	 * 统计订单数据
+	 * 统计运营订单数据
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping("/calcuOrderDetail")
+	@RequestMapping("/calcuOperaDetail")
 	public void calcuOrderDetail(@RequestBody String str,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		RespMess rm = new RespMess();
 		OrderDetailQuery odq = new OrderDetailQuery();
 		AccountOrderDetail orders = new AccountOrderDetail();
-		Store store = new Store();
+		JSONObject jo = JSONObject.fromObject(str);
+		JSONArray allList = new JSONArray();
+		Map<String, Object> map = new HashMap<String, Object>();
 		try{
-			JSONObject jo = JSONObject.fromObject(str);
+			try{
+				map.put("startDate",DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"));
+				map.put("endDate",DateUtil.parseStringToDate(jo.getString("queryTime"), "yyyy-MM-dd"));
+			}catch(Exception e){
+				map.put("startDate",DateUtil.now());
+				map.put("endDate",DateUtil.now());
+			}
+			odq.setPropsMap(map);
+			orders.setPropsMap(map);
 			odq.setUsername(jo.getString("username").trim());
 			odq.setPassword(jo.getString("password").trim());
-			odq.setQueryTime(jo.getString("queryTime"));
-			//运营系统显示今日商家排名
-			orders.setCreateDate(DateUtil.parseStringToDate(odq.getQueryTime(), "yyyy-MM-dd"));
-			rm.setStoreOrderList(accountOrderDetailService.staticStoreOrder(orders));
-			//运营系统显示今日商家总量
-			store.setRegistDate(DateUtil.parseStringToDate(odq.getQueryTime(), "yyyy-MM-dd"));
-			rm.setStoreNumList(storeService.staticStoreNum(store));
+			odq.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
+			orders.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
+			if(odq.getStoreId()!=""&&odq.getStoreId()!=null){
+				Store s = storeService.getByPrimaryKey(jo.getString("storeId"));
+				odq.setStoreELMId(StringUtils.defaultIfEmpty(
+						s.getElmId(), "0"));
+				odq.setStoreMTId(StringUtils.defaultIfEmpty(
+						s.getMeituanId(), "0"));
+				odq.setStoreBDId(StringUtils.defaultIfEmpty(
+						s.getBaiduId(), "0"));
+				orders.setStoreELMId(StringUtils.defaultIfEmpty(
+						s.getElmId(), "0"));
+				orders.setStoreMTId(StringUtils.defaultIfEmpty(
+						s.getMeituanId(), "0"));
+				orders.setStoreBDId(StringUtils.defaultIfEmpty(
+						s.getBaiduId(), "0"));
+			}
 			//如果是超级管理员，可以看到所有
 			if(Utils.isSuperAdmin(request)){
 				odq.setUsername(null);
 				odq.setPassword(null);
+				orders.setBrandName(null);
 			}
 			//否则看自己所属账号下的店铺
 			else{
 				odq.setUsername(new String(odq.getUsername().getBytes("ISO-8859-1"),"utf-8"));
 				odq.setPassword(odq.getPassword());
+				orders.setBrandName(odq.getUsername());
 			}
 			
-			List<OrderDetailStatic> osList = accountOrderDetailService.calcuOrderDetail(odq);
-			if(osList.size()==0){
-				odq.setQueryTime("");
-				osList = accountOrderDetailService.calcuOrderDetailNull(odq);
-			}
-			JSONArray allList = new JSONArray();
-			Integer successOrderNum = 0;
-			Integer elmsuccessOrderNum = 0;
-			Integer mtsuccessOrderNum = 0;
-			Integer bdwmsuccessOrderNum = 0;
-			double successOrderPrice = 0;
-			double elmsuccessOrderPrice = 0;
-			double mtsuccessOrderPrice = 0;
-			double bdwmsuccessOrderPrice = 0;
-			//计算饿了么、美团、百度外卖平台分别的销售量
-			for(int i = 0;i<osList.size();i++){
-				successOrderPrice+=osList.get(i).getSuccessOrderAmount();
-				successOrderNum+=osList.get(i).getSuccessOrderNum();
-				if("elm".equals(osList.get(i).getPlatformType())){
-					elmsuccessOrderNum+=osList.get(i).getSuccessOrderNum();
-					elmsuccessOrderPrice+=osList.get(i).getSuccessOrderAmount();
-				}else if("mt".equals(osList.get(i).getPlatformType())){
-					mtsuccessOrderNum+=osList.get(i).getSuccessOrderNum();
-					mtsuccessOrderPrice+=osList.get(i).getSuccessOrderAmount();
-				}else if("bdwm".equals(osList.get(i).getPlatformType())){
-					bdwmsuccessOrderNum+=osList.get(i).getSuccessOrderNum();
-					bdwmsuccessOrderPrice+=osList.get(i).getSuccessOrderAmount();
-				}
+			List<OrderDetailStatic> osList = accountOrderDetailService.calcuOperaStatic(odq);
+			List<OperaDetailStatic> osListdetail = accountOrderDetailService.listDetailStatic(orders);
+			RespMess rs = new RespMess();
+			for(int i = 0;i<osListdetail.size();i++){
+				rs.setSuccessOrderPrice(rs.getSuccessOrderPrice()+osListdetail.get(i).getSuccessOrderAmount());
+				rs.setSuccessOrderNum(rs.getSuccessOrderNum()+osListdetail.get(i).getSuccessOrderNum());
+				rs.setElmsuccessOrderNum(rs.getElmsuccessOrderNum()+osListdetail.get(i).getElmsuccessOrderNum());
+				rs.setElmsuccessOrderPrice(rs.getElmsuccessOrderPrice()+osListdetail.get(i).getElmsuccessOrderAmount());
+				rs.setMtsuccessOrderNum(rs.getMtsuccessOrderNum()+osListdetail.get(i).getMtsuccessOrderNum());
+				rs.setMtsuccessOrderPrice(rs.getMtsuccessOrderPrice()+osListdetail.get(i).getMtsuccessOrderAmount());
+				rs.setBdwmsuccessOrderNum(rs.getBdwmsuccessOrderNum()+osListdetail.get(i).getBdwmsuccessOrderNum());
+				rs.setBdwmsuccessOrderPrice(rs.getBdwmsuccessOrderPrice()+osListdetail.get(i).getBdwmsuccessOrderAmount());
 			}
 			allList.add(osList);
-			
 			rm.setRespMsg("成功");
 			rm.setRespCode("0000");
 			rm.setResult(allList);
-			rm.setSuccessOrderPrice(successOrderPrice);
-			rm.setSuccessOrderNum(successOrderNum);
-			rm.setElmsuccessOrderNum(elmsuccessOrderNum);
-			rm.setMtsuccessOrderNum(mtsuccessOrderNum);
-			rm.setBdwmsuccessOrderNum(bdwmsuccessOrderNum);
-			
-			rm.setElmsuccessOrderPrice(elmsuccessOrderPrice);
-			rm.setMtsuccessOrderPrice(mtsuccessOrderPrice);
-			rm.setBdwmsuccessOrderPrice(bdwmsuccessOrderPrice);
-			
 			rm.setUsername(odq.getUsername());
+			//运营详细数据
+			rm.setOperaStatic(rs);
 		}catch(Exception e){
 			rm.setRespMsg("失败");
 			rm.setRespCode("9999");
@@ -148,10 +153,150 @@ public class ConfigController{
 		AjaxUtils.sendAjaxForObjectStr(response, rm);
 	}	 
 	/**
-	 * 统计商家排名
+	 * 统计财务单数据
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping("/calcuOrderDetail")
+	public void calcuOperaDetail(@RequestBody String str,HttpServletRequest request,
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		RespMess rm = new RespMess();
+		OrderDetailQuery odq = new OrderDetailQuery();
+		JSONObject jo = JSONObject.fromObject(str);
+		JSONArray allList = new JSONArray();
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			try{
+				map.put("startDate",DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"));
+				map.put("endDate",DateUtil.parseStringToDate(jo.getString("queryTime"), "yyyy-MM-dd"));
+			}catch(Exception e){
+				map.put("startDate",DateUtil.now());
+				map.put("endDate",DateUtil.now());
+			}
+			odq.setPropsMap(map);
+			odq.setUsername(jo.getString("username").trim());
+			odq.setPassword(jo.getString("password").trim());
+			odq.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
+			
+			if(odq.getStoreId()!=""&&odq.getStoreId()!=null){
+				Store s = storeService.getByPrimaryKey(jo.getString("storeId"));
+				odq.setStoreELMId(StringUtils.defaultIfEmpty(
+						s.getElmId(), "0"));
+				odq.setStoreMTId(StringUtils.defaultIfEmpty(
+						s.getMeituanId(), "0"));
+				odq.setStoreBDId(StringUtils.defaultIfEmpty(
+						s.getBaiduId(), "0"));
+			}
+			//如果是超级管理员，可以看到所有
+			if(Utils.isSuperAdmin(request)){
+				odq.setUsername(null);
+				odq.setPassword(null);
+			}else{//否则看自己所属账号下的店铺
+				odq.setUsername(new String(odq.getUsername().getBytes("ISO-8859-1"),"utf-8"));
+				odq.setPassword(odq.getPassword());
+			}
+			
+			List<OrderDetailStatic> osList = accountOrderDetailService.calcuOrderDetail(odq);
+			
+			if(osList.size()==0){
+				odq.setQueryTime("");
+				osList = accountOrderDetailService.calcuOrderDetailNull(odq);
+			}
+			RespMess rs = new RespMess();
+			//计算饿了么、美团、百度外卖平台分别的销售量
+			for(int i = 0;i<osList.size();i++){
+				rs.setSuccessOrderPrice(rs.getSuccessOrderPrice()+osList.get(i).getSuccessOrderAmount());
+				rs.setSuccessOrderNum(rs.getSuccessOrderNum()+osList.get(i).getSuccessOrderNum());
+				if("elm".equals(osList.get(i).getPlatformType())){
+					rs.setElmsuccessOrderNum(rs.getElmsuccessOrderNum()+osList.get(i).getSuccessOrderNum());
+					rs.setElmsuccessOrderPrice(rs.getElmsuccessOrderPrice()+osList.get(i).getSuccessOrderAmount());
+				}else if("mt".equals(osList.get(i).getPlatformType())){
+					rs.setMtsuccessOrderNum(rs.getMtsuccessOrderNum()+osList.get(i).getSuccessOrderNum());
+					rs.setMtsuccessOrderPrice(rs.getMtsuccessOrderPrice()+osList.get(i).getSuccessOrderAmount());
+				}else if("bdwm".equals(osList.get(i).getPlatformType())){
+					rs.setBdwmsuccessOrderNum(rs.getBdwmsuccessOrderNum()+osList.get(i).getSuccessOrderNum());
+					rs.setBdwmsuccessOrderPrice(rs.getBdwmsuccessOrderPrice()+osList.get(i).getSuccessOrderAmount());
+				}
+			}
+			allList.add(osList);
+			rm.setRespMsg("成功");
+			rm.setRespCode("0000");
+			rm.setResult(allList);
+			rm.setUsername(odq.getUsername());
+			//财务数据
+			rm.setAccountStatic(rs);
+		}catch(Exception e){
+			rm.setRespMsg("失败");
+			rm.setRespCode("9999");
+			rm.setResult(null);
+			rm.setSuccessOrderPrice(0);
+			rm.setSuccessOrderNum(0);
+			rm.setUsername(odq.getUsername());
+		}
+		AjaxUtils.sendAjaxForObjectStr(response, rm);
+	}	 
+	/**
+	 * 统计今日商家排名
 	 */
 	@RequestMapping("/staticStoreOrder")
-	public List<AccountOrderDetail> staticStoreOrder(AccountOrderDetail orders){
-		return accountOrderDetailService.staticStoreOrder(orders);
+	public void staticStoreOrder(@RequestBody String str,HttpServletRequest request,HttpServletResponse response){
+		RespMess rm = new RespMess();
+		AccountOrderDetail orders = new AccountOrderDetail();
+		JSONObject jo = JSONObject.fromObject(str);
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			map.put("startDate",DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"));
+			map.put("endDate",DateUtil.parseStringToDate(jo.getString("queryTime"), "yyyy-MM-dd"));
+		}catch(Exception e){
+			map.put("startDate",DateUtil.now());
+			map.put("endDate",DateUtil.now());
+		}
+		orders.setPropsMap(map);
+		//运营系统显示今日商家排名
+		rm.setStoreOrderList(accountOrderDetailService.staticStoreOrder(orders));
+		AjaxUtils.sendAjaxForObjectStr(response, rm);
 	}	 
+	/**
+	 * 统计今日商家总量
+	 */
+	@RequestMapping("/staticStoreNum")
+	public void staticStoreNum(@RequestBody String str,HttpServletRequest request,HttpServletResponse response){
+		RespMess rm = new RespMess();
+		Store store = new Store();
+		JSONObject jo = JSONObject.fromObject(str);
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			map.put("startDate",DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"));
+			map.put("endDate",DateUtil.parseStringToDate(jo.getString("queryTime"), "yyyy-MM-dd"));
+		}catch(Exception e){
+			map.put("startDate",DateUtil.now());
+			map.put("endDate",DateUtil.now());
+		}
+		//运营系统显示今日商家排名
+		store.setPropsMap(map);
+		rm.setStoreNumList(storeService.staticStoreNum(store));
+		AjaxUtils.sendAjaxForObjectStr(response, rm);
+	}	 
+	
+	//导出全盘数据方法
+		@RequestMapping("/exportExcel")
+		public void exportExcel(AccountOrderDetail accountOrderDetail, ExpParamBean epb,
+				HttpServletRequest request, HttpServletResponse response, Page page)
+				throws Exception {		
+			if(accountOrderDetail.getStoreId()!=""&&accountOrderDetail.getStoreId()!=null){
+				Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
+				accountOrderDetail.setStoreELMId(StringUtils.defaultIfEmpty(
+						s.getElmId(), "0"));
+				accountOrderDetail.setStoreMTId(StringUtils.defaultIfEmpty(
+						s.getMeituanId(), "0"));
+				accountOrderDetail.setStoreBDId(StringUtils.defaultIfEmpty(
+						s.getBaiduId(), "0"));
+			}
+			int expType = Integer.parseInt(request.getParameter("expType"));
+			if (expType == 1) {
+				accountOrderDetail.setPage(page);
+			}
+			List<OperaDetailStatic> list = accountOrderDetailService.listDetailStatic(accountOrderDetail);
+			ExcelExpUtils.exportListToExcel(list, response, epb.getFieldlist(),
+					"全盘数据信息表", "全盘数据信息表");
+		}
 }

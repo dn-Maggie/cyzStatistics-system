@@ -47,4 +47,8 @@ public interface AnalysisService {
 	 * @param StoreActiveAnalysis storeActiveAnalysis:实体类
 	 */
 	public int addactiveAnalysis(List<StoreActiveAnalysis> storeActiveAnalysis);
+	/**
+	 * 更新活动数据分析方法
+	 * */
+	public ResultMessage updateStoreActiveAnalysis(StoreActiveAnalysis storeActiveAnalysis);
 }

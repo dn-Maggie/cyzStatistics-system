@@ -101,4 +101,10 @@ public class StoreServiceImpl implements StoreService{
 	public List<Store> staticStoreNum(Store store) {
 		return storeMapper.staticStoreNum(store);
 	}
+
+	/**
+	 * 获取所有商圈*/ 
+	public List<Store> getBussinessArea() {
+		return storeMapper.getBussinessArea();
+	}
 }

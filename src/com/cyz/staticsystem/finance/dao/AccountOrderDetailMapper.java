@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cyz.staticsystem.finance.model.AccountOrderDetail;
 import com.cyz.staticsystem.finance.model.AccountSaleGoods;
+import com.cyz.staticsystem.finance.model.OperaDetailStatic;
 import com.cyz.staticsystem.finance.model.OrderDetailQuery;
 import com.cyz.staticsystem.finance.model.OrderDetailStatic;
 /**
@@ -68,5 +69,11 @@ public interface AccountOrderDetailMapper  {
 	/**
 	 * 统计订单数据(空值情况)*/
 	public List<OrderDetailStatic> calcuOrderAll(OrderDetailQuery odq);
+	/**
+	 *全盘信息数据*/
+	public List<OperaDetailStatic> listDetailStatic(AccountOrderDetail accountOrderDetail);
+	/**
+	 *全盘信息数据(全部)*/
+	public List<OrderDetailStatic> calcuOperaStatic(OrderDetailQuery odq);
 
 }

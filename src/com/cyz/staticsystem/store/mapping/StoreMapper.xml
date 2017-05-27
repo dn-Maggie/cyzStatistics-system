@@ -57,6 +57,9 @@
 		<result column="shopId" property="shopId" jdbcType="VARCHAR" />
 		<result column="platformType" property="platformType" jdbcType="VARCHAR" />
 	</resultMap>
+	<resultMap id="ResultBussinessArea" type="com.cyz.staticsystem.store.model.Store">
+		<result column="business_area" property="businessArea" jdbcType="VARCHAR" />
+	</resultMap>
 	<sql id="Base_Column_List">
 		 	 STORE_ID
 			,STORE_NAME
@@ -162,6 +165,11 @@
 		from dn_store as s
 		left join dn_brand as b on b.BRAND_ID = s.BRAND_ID
 		where s.STORE_ID = #{storeId,jdbcType=VARCHAR}
+	</select>
+	
+	<!--获取所有店铺商圈  -->
+	<select id="getBussinessArea" resultMap="ResultBussinessArea" parameterType="java.lang.String">
+		SELECT DISTINCT  business_area FROM `dn_store`;
 	</select>
 	
 	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.store.model.Store">
@@ -590,7 +598,17 @@
 		SELECT 
 		'商家新增数量' as storeName,count(*) AS averageSales
 		FROM `dn_store`
-		WHERE DATE_FORMAT(regist_date, '%Y-%c-%d') = DATE_FORMAT(#{registDate,jdbcType=DATE},'%Y-%c-%d')
+		WHERE 1=1
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(regist_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(regist_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
 		UNION ALL
 		SELECT 
 		'商家退出数量' as storeName,count(*) AS averageSales

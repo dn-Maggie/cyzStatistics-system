@@ -76,5 +76,13 @@ public class AnalysisServiceImpl implements AnalysisService{
 	@Override
 	public int addactiveAnalysis(List<StoreActiveAnalysis> storeActiveAnalysis) {
 		return analysisMapper.addactiveAnalysis(storeActiveAnalysis);
+	}
+	
+	
+	/**
+	 * 更新活动数据分析方法
+	 * */
+	public ResultMessage updateStoreActiveAnalysis(StoreActiveAnalysis storeActiveAnalysis) {
+		return analysisMapper.updateStoreActiveAnalysis(storeActiveAnalysis);
 	};
 }

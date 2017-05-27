@@ -36,6 +36,9 @@
 		.box span {
 			float: right;
 		}
+		.breadcrumb{
+			margin-left: 0!important;
+		}
 	</style>
 </head>
 <body onselect="return false;">
@@ -46,19 +49,10 @@
 		</li>
 		<li>
 			<span>商圈</span>
-			<select class="search_select_nowidth" name="bussinessCir" id="bussinessCir">
-				<option>请选择</option>
+			<select class="search_select_nowidth" name="businessArea" id="businessArea">
+				<option value="">请选择</option>
 				<c:forEach items="${tradingArea}" var="tradingArea">
-					<option value="${tradingArea.dictCode}"><c:out value="${tradingArea.dictName}"></c:out></option>
-				</c:forEach>
-			</select>
-		</li>
-		<li>
-			<span>活动类型</span>
-			<select class="search_select_nowidth" name="activityType" id="activityType">
-				<option>请选择</option>
-				<c:forEach items="${activityType}" var="activityType">
-					<option value="${activityType.dictCode}"><c:out value="${activityType.dictName}"></c:out></option>
+					<option value="${tradingArea.businessArea}"><c:out value="${tradingArea.businessArea}"></c:out></option>
 				</c:forEach>
 			</select>
 		</li>
@@ -69,6 +63,14 @@
 			<input type="radio" name="timeQuantum" id="timeQuantum_30"><label for="timeQuantum_30">近30天</label>
 			<input type="radio" name="timeQuantum" id="timeQuantum_90"><label for="timeQuantum_90">近90天</label>
 		</li>
+		<li><span>商户名称：</span>
+					<select class="search_select choose_select" name="storeId" id="storeId">
+					<option value = "">所有店铺</option>
+						<c:forEach var="store" items="${store}">
+							<option value="${store.storeId}"> <c:out value="${store.storeName}"></c:out> </option>
+		             	</c:forEach>
+					</select>
+		</li>
 		<li><input type="button" id="breadcrumb_search" class="search_btn_default" value="查询"></li>
 	</ul>
 	</div>
@@ -77,25 +79,25 @@
 		<li class="ht200">
 			<div class="today_item todayAll">
 				<div class="today_item_title">
-					<span><img>今日总览</span>
+					<span><img>财务数据总览</span>
 				</div>
 				<div class="today_item_data">
 					<ul>
 						<li class="wh50p " >
 							<span><b></b>订单成交数量</span>
-							<strong class="allNumber" style="color: rgb(238, 114, 26)" id="todayOrderNum"></strong>
+							<strong class="allNumber" style="color: rgb(238, 114, 26)" id="todayAccountOrderNum"></strong>
 							
 						</li>
 						<li class="wh50p">
 							<span><b></b>成交金额</span>
-							<strong class="allAmount" style="color: rgb(237, 121, 122)" id="todayOrderAmount"></strong>
+							<strong class="allAmount" style="color: rgb(237, 121, 122)" id="todayAccountOrderAmount"></strong>
 						</li>
 					</ul>
 				</div>
 			</div>
 			<div class="today_item todayRank">
 				<div class="today_item_title">
-					<span><img>今日商家排名</span>
+					<span><img>商家排名</span>
 				</div>
 				<div class="today_item_data">
 					<ul id="storeOrderList">
@@ -104,30 +106,28 @@
 			</div>
 		</li>
 		<li class="ht200">
-			<div class="today_item todayOrder">
+			<div class="today_item todayAll">
 				<div class="today_item_title">
-					<span><img>平台交易订单数量</span>
+					<span><img>运营数据总览</span>
 				</div>
 				<div class="today_item_data">
 					<ul>
-						<li class="wh33p">
-							<strong class="elm"><b id="elmOrderNum"></b></strong>
-							<span>【饿了么】</span>
+						<li class="wh50p " >
+							<span><b></b>订单成交数量</span>
+							<strong class="allNumber" style="color: rgb(238, 114, 26)" id="todayOperaOrderNum"></strong>
+							
 						</li>
-						<li class="wh33p">
-							<strong class="meituan"><b id="mtOrderNum"></b></strong>
-							<span>【美团外卖】</span>
-						</li>
-						<li class="wh33p">
-							<strong class="baidu"><b id="bdwmOrderNum"></b></strong>
-							<span>【百度外卖】</span>
+						<li class="wh50p">
+							<span><b></b>成交金额</span>
+							<strong class="allAmount" style="color: rgb(237, 121, 122)" id="todayOperaOrderAmount"></strong>
 						</li>
 					</ul>
 				</div>
 			</div>
+			
 			<div class="today_item todaySeller">
 				<div class="today_item_title">
-					<span><img>今日商家数量</span>
+					<span><img>商家数量</span>
 				</div>
 				<div class="today_item_data">
 					<ul id="storeNumList">
@@ -136,31 +136,84 @@
 			</div>
 		</li>
 	</ul>
+	
+	
 		<div class="widget-box transparent">
 			<div class="widget-header widget-header-flat">
 				<h5 class="lighter" style="color:#555">
 					<i class="icon-eye-open"></i>
-					三大平台营业额总览
+					三大平台财务营业额总览
 				</h5>
 			</div>
 			<div class="widget-body">
 				<div class="col-sm-4 platform_totalMoney">
 					<div class="platform_totalMoney_item">
-						<span class="platform_totalMoney_item-Name">饿了么外卖</span>
-						<strong class="platform_totalMoney_item-todayValue" id="elmOrderAmount"></strong>
+						<span class="platform_totalMoney_item-Name">饿了么</span>
+						<div class="detail_box">
+							<strong class="platform_totalMoney_item-todayValue" id="elmOrderNum"></strong>
+							<strong class="platform_totalMoney_item-todayValue">/</strong>
+							<strong class="platform_totalMoney_item-todayValue" id="elmOrderAmount"></strong>
+						</div>
 					</div>
-					
 				</div>
 				<div class="col-sm-4 platform_totalMoney">
 					<div class="platform_totalMoney_item">
 						<span class="platform_totalMoney_item-Name">美团外卖</span>
-						<strong class="platform_totalMoney_item-todayValue" id="mtOrderAmount"></strong>
+						<div class="detail_box">
+							<strong class="platform_totalMoney_item-todayValue" id="mtOrderNum"></strong>
+							<strong class="platform_totalMoney_item-todayValue">/</strong>
+							<strong class="platform_totalMoney_item-todayValue" id="mtOrderAmount"></strong>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-4 platform_totalMoney">
 					<div class="platform_totalMoney_item">
 						<span class="platform_totalMoney_item-Name">百度外卖</span>
-						<strong class="platform_totalMoney_item-todayValue" id="bdwmOrderAmount"></strong>
+						<div class="detail_box">
+							<strong class="platform_totalMoney_item-todayValue" id="bdwmOrderNum"></strong>
+							<strong class="platform_totalMoney_item-todayValue">/</strong>
+							<strong class="platform_totalMoney_item-todayValue" id="bdwmOrderAmount"></strong>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-flat">
+				<h5 class="lighter" style="color:#555">
+					<i class="icon-eye-open"></i>
+					三大平台运营营业额总览
+				</h5>
+			</div>
+			<div class="widget-body">
+				<div class="col-sm-4 platform_totalMoney">
+					<div class="platform_totalMoney_item">
+						<span class="platform_totalMoney_item-Name">饿了么</span>
+						<div class="detail_box">
+							<strong class="platform_totalMoney_item-todayValue" id="elmOperaOrderNum"></strong>
+							<strong class="platform_totalMoney_item-todayValue">/</strong>
+							<strong class="platform_totalMoney_item-todayValue" id="elmOperaOrderAmount"></strong>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4 platform_totalMoney">
+					<div class="platform_totalMoney_item">
+						<span class="platform_totalMoney_item-Name">美团外卖</span>
+						<div class="detail_box">
+							<strong class="platform_totalMoney_item-todayValue" id="mtOperaOrderNum"></strong>
+							<strong class="platform_totalMoney_item-todayValue">/</strong>
+							<strong class="platform_totalMoney_item-todayValue" id="mtOperaOrderAmount"></strong>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4 platform_totalMoney">
+					<div class="platform_totalMoney_item">
+						<span class="platform_totalMoney_item-Name">百度外卖</span>
+						<div class="detail_box">
+							<strong class="platform_totalMoney_item-todayValue" id="bdwmOperaOrderNum"></strong>
+							<strong class="platform_totalMoney_item-todayValue">/</strong>
+							<strong class="platform_totalMoney_item-todayValue" id="bdwmOperaOrderAmount"></strong>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -182,16 +235,6 @@
 					<div id="sales-charts"></div>
 				</div>
 			</div>
-		</div>
-		
-	
-		<div class="orderNum box" style="display: none;">
-			<ul class="ulOrderNum">
-			</ul>
-		</div>	
-		<div class="orderAmount box" style="display: none;">
-			<ul class="ulOrderAmount">
-			</ul>
 		</div>
 	</div>
 	<script src="<%=request.getContextPath() %>/static/js/jquery.slimscroll.min.js"></script>
@@ -220,21 +263,76 @@
 				});
 				edit_password_iframe_dialog.open();
 		})
-		queryStatic();
+		queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),"");
 		queryOperaStatic();
 	})
 	$("#queryTime").on("change",function(){
-		queryStatic();
+		queryStatic($("#queryTime").val(),$("#queryTime").val(),"");
+	})
+	$("input[name='timeQuantum']").on('click',function(){
+		var chooseDate = $("input[type='radio']:checked").attr('id');
+		switch (chooseDate) {
+		case 'timeQuantum_yesterday':
+			queryStatic(new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),"");
+			break;
+		case 'timeQuantum_today':
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),"");
+			break;
+		case 'timeQuantum_7':
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*7).format('yyyy-MM-dd'),"");
+			break;
+		case 'timeQuantum_30':
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd'),"");
+			break;
+		case 'timeQuantum_90':
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*90).format('yyyy-MM-dd'),"");
+			break;
+		default:
+			break;
+		}
 	})
 	$("#breadcrumb_search").on("click",function(){
-		console.log(1);
+		var storeId = $("#storeId").val();
+		var queryTime = $("#queryTime").val()!=""?$("#queryTime").val():new Date().format('yyyy-MM-dd');
+		var beginTime = $("#queryTime").val()!=""?$("#queryTime").val():new Date().format('yyyy-MM-dd');
+		var chooseDate = $("input[type='radio']:checked").attr('id');
+		switch (chooseDate) {
+		case 'timeQuantum_yesterday':
+			queryTime = new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd');
+			beginTime =  new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd');
+			break;
+		case 'timeQuantum_today':
+			queryTime = new Date().format('yyyy-MM-dd');
+			beginTime =  new Date().format('yyyy-MM-dd');
+			break;
+		case 'timeQuantum_7':
+			queryTime = new Date().format('yyyy-MM-dd');
+			beginTime =  new Date(new Date().getTime() - 86400000*7).format('yyyy-MM-dd');
+			break;
+		case 'timeQuantum_30':
+			queryTime = new Date().format('yyyy-MM-dd');
+			beginTime =  new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd');
+			break;
+		case 'timeQuantum_90':
+			queryTime = new Date().format('yyyy-MM-dd');
+			beginTime =  new Date(new Date().getTime() - 86400000*90).format('yyyy-MM-dd');
+			break;
+		default:
+			break;
+		}
+		queryStatic(queryTime,beginTime,storeId);
 	})
-	function queryStatic(){
+	function queryStatic(queryTime,beginTime,storeId){
 			var paramData = {
 				username:"<%=Utils.getLoginUserInfo(request).getUserAccount()%>",
 				password:"<%=Utils.getLoginUserInfo(request).getPassword()%>",
-				queryTime:$("#queryTime").val().length>0?$("#queryTime").val():new Date().format("yyyy-MM-dd")
+				queryTime:queryTime,
+				beginTime:beginTime,
+				storeId:$("#storeId").val()
 			};
+			/**
+			 * 统计财务订单数据
+			 */
 			$.ajax({
 	             type: "post",
 	             url : "<m:url value='/config/calcuOrderDetail.do'/>",
@@ -244,13 +342,56 @@
 	 		   	 dataType:"json",
 	 		   	 contentType:false,
 	             success: function(response){
-	            	drawStaticData(response);
+	            	drawAccountStaticData(response);
+	             }
+	        });
+			/**
+			 * 统计运营订单数据
+			 */
+			$.ajax({
+	             type: "post",
+	             url : "<m:url value='/config/calcuOperaDetail.do'/>",
+	             data: JSON.stringify(paramData),
+	             cache: true,
+	             async: false,
+	 		   	 dataType:"json",
+	 		   	 contentType:false,
+	             success: function(response){
+	            	drawOperaStaticData(response);
+	             }
+	        });
+			/**
+			 * 统计今日商家总量
+			 */
+			$.ajax({
+	             type: "post",
+	             url : "<m:url value='/config/staticStoreNum.do'/>",
+	             data: JSON.stringify(paramData),
+	             cache: true,
+	             async: false,
+	 		   	 dataType:"json",
+	 		   	 contentType:false,
+	             success: function(response){
+	            	drawStoreNum(response);
+	             }
+	        });
+			/**
+			 * 统计今日商家排名
+			 */
+			$.ajax({
+	             type: "post",
+	             url : "<m:url value='/config/staticStoreOrder.do'/>",
+	             data: JSON.stringify(paramData),
+	             cache: true,
+	             async: false,
+	 		   	 dataType:"json",
+	 		   	 contentType:false,
+	             success: function(response){
+	            	drawStoreOrder(response);
 	             }
 	        });
 	}
 	function queryOperaStatic(){
-		//12天总营业额
-		var d1 = [];
 		//12天美团外卖营业额
 		var d2 = [];
 		//12天百度外卖营业额
@@ -259,47 +400,61 @@
 		var d4 = [];
 		var i ;
 		for(i = 0; i<= 6 ; i++){
-			getWeekData(i,d1,d2,d3,d4);
+			getWeekData(i,d2,d3,d4);
 		}
-		console.log(d1,d2,d3,d4);
-		drawOperaLine(d1,d2,d3,d4);
+		drawOperaLine(d2,d3,d4);
 	}
-	function getWeekData(i,d1,d2,d3,d4){
+	function getWeekData(i,d2,d3,d4){
 			var paramData = {
 				username:"<%=Utils.getLoginUserInfo(request).getUserAccount()%>",
 				password:"<%=Utils.getLoginUserInfo(request).getPassword()%>",
-				queryTime:new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd')
+				queryTime:new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd'),
+				beginTime:new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd'),
+				storeId:""
 			};
 			$.ajax({
 	             type: "post",
-	             url : "<m:url value='/config/calcuOrderDetail.do'/>",
+	             url : "<m:url value='/config/calcuOperaDetail.do'/>",
 	             data: JSON.stringify(paramData),
 	             cache: true,
 	             async: false,
 	 		   	 dataType:"json",
 	 		   	 contentType:false,
 	             success: function(response){
-	            	 d1.push([(7-i), response.successOrderPrice]);
-	            	 d2.push([(7-i), response.mtsuccessOrderPrice]);
-	            	 d3.push([(7-i), response.bdwmsuccessOrderPrice]);
-	            	 d4.push([(7-i), response.elmsuccessOrderPrice]);
+	            	 d2.push([(7-i), response.operaStatic.mtsuccessOrderPrice]);
+	            	 d3.push([(7-i), response.operaStatic.bdwmsuccessOrderPrice]);
+	            	 d4.push([(7-i), response.operaStatic.elmsuccessOrderPrice]);
 	             }
 	        });
 	}
-	function drawStaticData(data){
-		 $("#todayOrderNum").text(data.successOrderNum);
-         $("#todayOrderAmount").text(data.successOrderPrice.toFixed(2));
-         $("#elmOrderNum").text(data.elmsuccessOrderNum);
-         $("#mtOrderNum").text(data.mtsuccessOrderNum);
-         $("#bdwmOrderNum").text(data.bdwmsuccessOrderNum);
-         $("#elmOrderAmount").text(data.elmsuccessOrderPrice.toFixed(2));
-         $("#mtOrderAmount").text(data.mtsuccessOrderPrice.toFixed(2));
-         $("#bdwmOrderAmount").text(data.bdwmsuccessOrderPrice.toFixed(2));
-         var storeNumList_htmltemp =""
-       	 var storeOrderList_htmltemp =""
-      	 var _detailDayOrderNum_htmltemp =""
-       	 var _detailDayOrderAmount_htmltemp =""
-       	 if(data.storeNumList!=null){
+	//财务营业额
+	function drawAccountStaticData(data){
+		 $("#todayAccountOrderNum").text(data.accountStatic.successOrderNum);
+         $("#todayAccountOrderAmount").text(data.accountStatic.successOrderPrice.toFixed(2));
+         //财务营业额
+         $("#elmOrderNum").text(data.accountStatic.elmsuccessOrderNum);
+         $("#mtOrderNum").text(data.accountStatic.mtsuccessOrderNum);
+         $("#bdwmOrderNum").text(data.accountStatic.bdwmsuccessOrderNum);
+         $("#elmOrderAmount").text(data.accountStatic.elmsuccessOrderPrice.toFixed(2));
+         $("#mtOrderAmount").text(data.accountStatic.mtsuccessOrderPrice.toFixed(2));
+         $("#bdwmOrderAmount").text(data.accountStatic.bdwmsuccessOrderPrice.toFixed(2));
+ 	}
+	 //运营营业额
+	function drawOperaStaticData(data){
+        $("#todayOperaOrderNum").text(data.operaStatic.successOrderNum);
+        $("#todayOperaOrderAmount").text(data.operaStatic.successOrderPrice.toFixed(2));
+		 //运营营业额
+        $("#elmOperaOrderNum").text(data.operaStatic.elmsuccessOrderNum);
+        $("#mtOperaOrderNum").text(data.operaStatic.mtsuccessOrderNum);
+        $("#bdwmOperaOrderNum").text(data.operaStatic.bdwmsuccessOrderNum);
+        $("#elmOperaOrderAmount").text(data.operaStatic.elmsuccessOrderPrice.toFixed(2));
+        $("#mtOperaOrderAmount").text(data.operaStatic.mtsuccessOrderPrice.toFixed(2));
+        $("#bdwmOperaOrderAmount").text(data.operaStatic.bdwmsuccessOrderPrice.toFixed(2));
+	}
+	 //商家数量
+	function drawStoreNum(data){
+		var storeNumList_htmltemp =""
+      	if(data.storeNumList!=null){
        		for(var i=0;i<data.storeNumList.length;i++){
            	 storeNumList_htmltemp +='<li class="ht33p">'
     				+'<span>'+data.storeNumList[i].storeName+'</span>'
@@ -307,6 +462,11 @@
     				+'</li>'
             }
        	}
+		 $("#storeNumList").html(storeNumList_htmltemp);
+	}
+	 //商家排名
+	function drawStoreOrder(data){
+		 var storeOrderList_htmltemp =""
          if(data.storeOrderList!=null){
             for(var i=0;i<data.storeOrderList.length;i++){
            	 storeOrderList_htmltemp +='<li>'
@@ -315,37 +475,14 @@
     				+'</li>'
             }
        	 }
-         $("#storeNumList").html(storeNumList_htmltemp);
-         $("#storeOrderList").html(storeOrderList_htmltemp);
-         var orderNumTemp = "";
-         var orderAmontTemp  = "";
-         if(data.result!=null){
-	         for(var i = 0;i<data.result[0].length;i++) {
-	        	 var _pt = data.result[0][i].platformType;
-	        	 var store = data.result[0][i].storeName || "未登记店铺";
-	        	 var platformType = _pt=='mt'?"美团":_pt=='elm'?"饿了么":_pt=='bdwm'?"百度外卖":"未知";
-	        	 var color = _pt=='mt'?"#3ECF8B":_pt=='elm'?"#359BF5":_pt=='bdwm'?"#FF2D48":"#ccc";
-	        	 orderNumTemp += '<li>'+ store +'（'+ platformType +'） <span style="color:'+color+'">'+ data.result[0][i].successOrderNum +'</span></li>';
-	        	 orderAmontTemp += '<li>'+ store +'（'+ platformType +'） <span style="color:'+color+'">'+ data.result[0][i].successOrderAmount +'</span></li>';
-	         }
-         }
-         $(".ulOrderNum").html(orderNumTemp);
-    	 $(".ulOrderAmount").html(orderAmontTemp);
- 	}
-	
-	$orderNum = $('.orderNum');
-	$orderAmount = $('.orderAmount');
-	$(".allNumber").hover(function(){$orderNum.show();},function(){$orderNum.hide();})
-	$(".allAmount").hover(function(){$orderAmount.show();},function(){$orderAmount.hide();})
-	$(".allNumber,.allAmount").mouseenter(function(e) {  
-		$orderNum.css({top: e.pageY,left: e.pageX,});
-		$orderAmount.css({top: e.pageY,left: e.pageX,})
-	});
-	
-	
-	
+		 $("#storeOrderList").html(storeOrderList_htmltemp);
+	}
+	 
+	 
+	 
+	 
 	//填充营业额趋势图	
-	function drawOperaLine(d1,d2,d3,d4){
+	function drawOperaLine(d2,d3,d4){
 		$('.sparkline').each(function(){
 			var $box = $(this).closest('.infobox');
 			var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
@@ -358,7 +495,6 @@
 		});
 		var sales_charts = $('#sales-charts').css({'width':'100%' , 'height':'450px'});
 		$.plot("#sales-charts", [
-			{ label: "总营业额", data: d1},
 			{ label: "美团外卖营业额", data: d2, color:'#3ECF8B' },
 			{ label: "百度外卖营业额", data: d3 , color:'#FF2D48'},
 			{ label: "饿了么外卖营业额", data:d4, color:'#359BF5' }

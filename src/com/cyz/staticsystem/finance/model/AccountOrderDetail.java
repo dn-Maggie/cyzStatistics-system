@@ -136,7 +136,16 @@ public class AccountOrderDetail extends Model{
 	                 * 用户申请退单金额
 	                 **/
 				   			private String refundAmount;
-		   		
+		   			/**
+	                 * 订单最终状态
+	                 **/
+				   			private String latestStatus;
+		   			/**
+	                 * 订单最终有效性
+	                 **/
+				   			private String latestValidStatus;
+						   					
+				   			
 		            /**
 	                 * 结算金额
 	                 **/
@@ -237,6 +246,12 @@ public class AccountOrderDetail extends Model{
 	                 * 结算比例
 	                 **/
 				   			private BigDecimal orderSaleRate;
+				   			
+				   			
+				   			
+				   			
+				   			
+				   			
 		  			public Timestamp getBookedTime() {
 						return bookedTime;
 					}
@@ -860,6 +875,22 @@ public class AccountOrderDetail extends Model{
 
 			public void setBrandName(String brandName) {
 				this.brandName = brandName;
+			}
+
+			public String getLatestStatus() {
+				return latestStatus;
+			}
+
+			public void setLatestStatus(String latestStatus) {
+				this.latestStatus = latestStatus;
+			}
+
+			public String getLatestValidStatus() {
+				return latestValidStatus;
+			}
+
+			public void setLatestValidStatus(String latestValidStatus) {
+				this.latestValidStatus = latestValidStatus;
 			}
 
 

@@ -7,59 +7,17 @@
 <script src="<%=request.getContextPath() %>/js/extend/finance.js"></script>
 <style type="text/css">
 .ui-jqgrid-labels{height:54px;}
-/*.listplace{
-    float: left;
-}
-.search.border-bottom{
-    float: left;
-}
-.listtable_box{
-	overflow-y:scroll;
-	}
-.ui-jqgrid .ui-jqgrid-bdiv {
-    border-top: 1px solid #e1e1e1;
-    position: fixed;
-    }
-.ui-jqgrid .ui-jqgrid-sdiv{
-	position: fixed;
-}
-.frozen-bdiv.ui-jqgrid-bdiv{
-	position: fixed!important;
-    z-index: 2!important;
-  	left: auto!important;
-    top: auto!important;
-    overflow-y: hidden;
-    overflow-x: scroll;
-    width: 450px;
-    max-height: 640px;
-}
-.frozen-bdiv.ui-jqgrid-bdiv ::-webkit-scrollbar{
-	visibility: hidden;
-}
-#orderDetailprowed{
-	position: fixed;
-	bottom: 10px;
-}*/
+.ui-jqgrid-hdiv{overflow: hidden;}
 </style>
 <script type="text/javascript">
 var gridObj = {};
-function matchGrid(){
-	if($("#orderDetail").height()<640){
-		$('.ui-jqgrid-bdiv').css('height',$("#orderDetail").height()+6+'px');
-	}else{$('.ui-jqgrid-bdiv').css('height','640px');}
-	$(".ui-jqgrid-sdiv").show();
-	$(".ui-jqgrid-sdiv").css('top',$('.ui-jqgrid-bdiv').height()+$('.ui-jqgrid-bdiv')[0].offsetTop+'px');
-}
 	$(function(){
-		window.onresize = function() {
-			/* matchGrid(); */
-		}
 		gridObj =  new biz.grid({
 	        id:"#orderDetail",
 	        url: "<m:url value='/accountOrderDetail/listAccountOrderDetail.do'/>",
 	       	sortname:"order_time",
 	       	sortorder:"desc",
-	       	rownumbers:false,
+	       	rownumbers:true,
 	       	frozen:true,
 	       	shrinkToFit: false,
 	       	ondblClickRow: function (rowid) {
@@ -88,15 +46,17 @@ function matchGrid(){
 	       	colModel:[
 					{name : "id",hidden : true,key : true,label:"账单ID",index : "id",frozen:true},	
 					{name : "storeName",label:"店铺名称",index : "store_name",width:220,frozen:true},
-					{name : "orderTime",label:"订单创建时间",index : "order_time",width:200,frozen:true},	
+					{name : "orderTime",label:"订单时间",index : "order_time",width:200,frozen:true},	
 					{name : "orderNo",label:"订单号",index : "order_no",width:200},
 					{name : "isInvalid",label:"订单状态",index : "is_invalid",width:100
 						,formatter:GridColModelForMatter.isInvalid},	
+					{name : "latestStatus",label:"订单最终状态",index : "latest_status",width:100},	
 					{name : "orderType",label:"订单类型",index : "order_type",width:100
 						,formatter:GridColModelForMatter.orderType},	
-						{name : "distributionMode",label:"配送方式",index : "distribution_mode",formatter:GridColModelForMatter.distributionMode},	
+					{name : "distributionMode",label:"配送方式",index : "distribution_mode",formatter:GridColModelForMatter.distributionMode},	
 					{name : "orginPrice",label:"菜价",index : "orgin_price",width:100},				
-					{name : "mealFee",label:"餐盒费",index : "meal_fee",width:100},				
+					{name : "mealFee",label:"餐盒费",index : "meal_fee",width:100},			
+					{name : "refundAmount",label:"用户申请退单金额",index : "refund_amount",width:100},		
 					/*{name : "activitiesSubsidyBymerchant",label:"实际菜品折扣",index : "activities_subsidy_bymerchant",editable:true,width:100},	*/			
 					{name : "specialOffer",label:"特价菜结算",index : "special_offer",width:100},			
 					{name : "orderDistCharge",label:"订单取配送费",index : "order_dist_charge",width:100},
@@ -107,7 +67,8 @@ function matchGrid(){
 					{name : "merchantSubsidyVouchers",label:"商户承担代金券补贴",index : "merchant_subsidy_vouchers",width:100},	
 					{name : "platformSubsidyVouchers",label:"平台承担代金券补贴",index : "platform_subsidy_vouchers",width:100}, 
 					{name : "serviceCharge",label:"服务费",index : "service_charge",width:100},				
-					{name : "settlementAmount",label:"结算金额",index : "settlement_amount",width:100},				
+					{name : "settlementAmount",label:"结算金额",index : "settlement_amount",width:100},	
+					{name : "refundAmount",label:"用户申请退单金额",index : "refund_amount",width:100},
 					{name : "platformType",label:"平台类型",index : "platform_type",formatter:GridColModelForMatter.platformType,width:100},
 	           	],
 			serializeGridData:function(postData){//添加查询条件值
@@ -120,7 +81,7 @@ function matchGrid(){
 	        rowList:[10,15,50,100],//每页显示记录数
 			rowNum:15,//默认显示15条
 			gridComplete:function(){//表格加载执行  
-				/* matchGrid(); */
+				/*matchGrid(); */
 			 	var footerCell = $(this).footerData();
 			 	var footerObj = {};
 			 	for(var i in footerCell){
@@ -145,33 +106,9 @@ function matchGrid(){
 		fid.submit();
 	}
 	
-    //新增的弹出框
-	var add_iframe_dialog;
-	//修改的弹出框
-   	var edit_iframe_dialog;
 	//查看的弹出框
 	var show_iframe_dialog;
   	
-  	function add(){
-  		var url = baseUrl+'/accountOrderDetail/toAddAccountOrderDetail.do';
-		var title = "订单明细增加";
-		add_iframe_dialog = Add.create(url, title);
-		List.openDialog(add_iframe_dialog);
-  	}
-	function closeAdd(){
-		List.closeDialog(add_iframe_dialog,gridObj);
-	}
-    function edit(){
-		var key = ICSS.utils.getSelectRowData("id");
-		var url=baseUrl+'/accountOrderDetail/toEditAccountOrderDetail.do';
-		var title = "订单明细编辑";
-		edit_iframe_dialog = Edit.create(key, url, title);
-		List.openDialog(edit_iframe_dialog);
-    }
-    //关闭编辑页面，供子页面调用
-    function closeEdit(){
-    	List.closeDialog(edit_iframe_dialog,gridObj);
-    }
     function show(){
     	var key = ICSS.utils.getSelectRowData("id");
 		var url = baseUrl+'/accountOrderDetail/toShowAccountOrderDetail.do';
@@ -188,14 +125,6 @@ function matchGrid(){
     	var ids = ICSS.utils.getSelectRowData("id");
 		var url = baseUrl+'/accountOrderDetail/deleteAccountOrderDetail.do';
 		List.batchDelete(id, url,gridObj);
-    }
-    //导入excel数据
-	function importData(){
-		ExpExcel.showImportWin();
-	}
-    //下载模板
-    function downloadTemplate(){
-    	ExpExcel.showDownloadWin();
     }
  	//导出订单详细数据
  	function exportData(){
@@ -299,31 +228,11 @@ function matchGrid(){
 				<!--功能按钮begin-->
 				<div class="list_btn_bg fl"><!--功能按钮 div-->
 					<ul>
-					<li>
-						<a title="下载模板" href="javascript:" onclick="downloadTemplate();">
-						<i class="icon_bg icon_download"></i> <span>下载模板</span>
-						</a>
-					</li>
-					 <c:if test="${importData}">
-						<li>
-							<a title="导入原始数据" href="javascript:;" onclick="importData();"> 
-								<i class="back_icon import_icon"> </i> 
-								<span>导入原始数据</span>
-							</a>
-						</li>
-					</c:if> 
 					<c:if test="${exportData}">
 						<li>
 							<a title="导出数据" href="javascript:;" onclick="exportData();"> 
 								<i class="back_icon import_icon"> </i> 
 								<span>导出数据</span>
-							</a>
-						</li>
-					</c:if>
-					<c:if test="${delete}">
-						<li>
-							<a title="<m:message code="button.delete"/>" href="javascript:;"
-								onclick="batchDelete();"> <i class="icon_bg icon_del"></i> <span><m:message code="button.delete" /></span>
 							</a>
 						</li>
 					</c:if>

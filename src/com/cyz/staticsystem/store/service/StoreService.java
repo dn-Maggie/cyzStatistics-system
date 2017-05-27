@@ -60,4 +60,7 @@ public interface StoreService  {
 	/**
 	 * 统计商家数量*/
 	public List<Store> staticStoreNum(Store store);
+	/**
+	 * 获取所有商圈*/ 
+	public List<Store> getBussinessArea();
 }

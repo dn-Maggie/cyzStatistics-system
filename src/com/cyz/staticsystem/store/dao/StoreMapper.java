@@ -60,4 +60,7 @@ public interface StoreMapper  {
 	/**
 	 * 统计商家数量*/
 	public List<Store> staticStoreNum(Store store);
+	/**
+	 * 统计所有商圈*/
+	public List<Store> getBussinessArea();
 }

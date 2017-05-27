@@ -8,6 +8,17 @@ public class OrderDetailQuery extends Model {
 	/**
 	 * 查询日期*/
 	private String queryTime;
+	private String beginTime;
+	private String storeId;
+	private String storeELMId;
+	private String storeMTId;
+	private String storeBDId;
+	public String getBeginTime() {
+		return beginTime;
+	}
+	public void setBeginTime(String beginTime) {
+		this.beginTime = beginTime;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -25,5 +36,29 @@ public class OrderDetailQuery extends Model {
 	}
 	public void setQueryTime(String queryTime) {
 		this.queryTime = queryTime;
+	}
+	public String getStoreId() {
+		return storeId;
+	}
+	public String getStoreELMId() {
+		return storeELMId;
+	}
+	public String getStoreMTId() {
+		return storeMTId;
+	}
+	public String getStoreBDId() {
+		return storeBDId;
+	}
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
+	}
+	public void setStoreELMId(String storeELMId) {
+		this.storeELMId = storeELMId;
+	}
+	public void setStoreMTId(String storeMTId) {
+		this.storeMTId = storeMTId;
+	}
+	public void setStoreBDId(String storeBDId) {
+		this.storeBDId = storeBDId;
 	}
 }

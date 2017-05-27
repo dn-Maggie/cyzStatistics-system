@@ -1,5 +1,9 @@
 package com.cyz.staticsystem.staticAnalysis.model;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.cyz.staticsystem.common.bean.Model;
 
 public class StoreActiveAnalysis extends Model {
@@ -7,6 +11,29 @@ public class StoreActiveAnalysis extends Model {
      * 主键
      **/
 	private String id;
+	 /**
+     * 订单ID
+     **/
+	private String orderNo;
+	/**
+	 * 活动类型
+	 **/
+	private String activityType;
+	/**
+	 * 活动名称
+	 **/
+	private String activityName;
+	 /**
+     * 平台类型
+     **/
+	private String platformType;
+	/**
+	 * 商户Id
+	 **/
+	private String storeId;
+	private String storeELMId;
+	private String storeMTId;
+	private String storeBDId;
 	/**
 	 * 商户名称
 	 **/
@@ -19,15 +46,13 @@ public class StoreActiveAnalysis extends Model {
 	/**
 	 * 查询时间（日期时间段）
 	 **/
-	private String searchTime;
+	@DateTimeFormat(pattern="yyyy-MM-dd") 
+	private Date searchTime;
+	
 	/**
-	 * 活动类型
+	 * 所报商品名称
 	 **/
-	private String activityType;
-	/**
-	 * 活动名称
-	 **/
-	private String activityName;
+	private String producName;
 	/**
 	 * 平台补贴金额
 	 **/
@@ -94,11 +119,11 @@ public class StoreActiveAnalysis extends Model {
 		this.storeArea = storeArea;
 	}
 
-	public String getSearchTime() {
+	public Date getSearchTime() {
 		return searchTime;
 	}
 
-	public void setSearchTime(String searchTime) {
+	public void setSearchTime(Date searchTime) {
 		this.searchTime = searchTime;
 	}
 
@@ -196,5 +221,61 @@ public class StoreActiveAnalysis extends Model {
 
 	public void setOrderAmountIncrementPercent(String orderAmountIncrementPercent) {
 		this.orderAmountIncrementPercent = orderAmountIncrementPercent;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public String getPlatformType() {
+		return platformType;
+	}
+
+	public void setPlatformType(String platformType) {
+		this.platformType = platformType;
+	}
+
+	public String getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
+	}
+
+	public String getProducName() {
+		return producName;
+	}
+
+	public void setProducName(String producName) {
+		this.producName = producName;
+	}
+
+	public String getStoreELMId() {
+		return storeELMId;
+	}
+
+	public String getStoreMTId() {
+		return storeMTId;
+	}
+
+	public String getStoreBDId() {
+		return storeBDId;
+	}
+
+	public void setStoreELMId(String storeELMId) {
+		this.storeELMId = storeELMId;
+	}
+
+	public void setStoreMTId(String storeMTId) {
+		this.storeMTId = storeMTId;
+	}
+
+	public void setStoreBDId(String storeBDId) {
+		this.storeBDId = storeBDId;
 	}
 }

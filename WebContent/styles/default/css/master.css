@@ -191,7 +191,7 @@ select.search_choose{height:30px;width:127px;}
 .search_choose144{width: 144px;height: 30px;line-height:30px; border: 1px solid #ddd;color: #666;padding-left: 5px;outline: none;float: left;}
 .search_choose100{width: 100px;margin-right:10px;height: 30px;line-height:30px; border: 1px solid #ddd;color: #666;padding-left: 5px;outline: none;float: left;}
 .search_select{width: 168px;height: 30px;line-height:30px; border: 1px solid #ddd;color: #666;padding-left: 5px;outline: none;}
-.search_select_nowidth{height: 30px;line-height:30px; border: 1px solid #ddd;color: #666;padding-left: 5px;outline: none;}
+.search_select_nowidth{font-size: 14px;height: 30px;line-height:30px; border: 1px solid #ddd;color: #666;padding-left: 5px;outline: none;}
 .icon_search{ position:relative; background-image:url(../images/btn/icon_search.png); background-repeat:no-repeat; background-position:center center;background-color: #eeeded; }
 .search em{ border:1px solid #ddd; border-left:none; text-align:center; width:30px; height:30px; cursor:pointer; float:left;}
 .input_select{width: 168px;height:25px;line-height:25px; border: 1px solid #ddd;color: #666;padding-left: 5px;outline: none;}

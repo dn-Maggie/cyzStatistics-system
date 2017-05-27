@@ -3,11 +3,15 @@
 <mapper namespace="com.cyz.staticsystem.staticAnalysis.dao.AnalysisMapper">
 	<resultMap id="StoreActiveAnalysisResultMap" type="com.cyz.staticsystem.staticAnalysis.model.StoreActiveAnalysis">
 		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="orderNo" property="orderNo" jdbcType="VARCHAR" />
+		<result column="platformType" property="platformType" jdbcType="VARCHAR" />
+		<result column="storeId" property="storeId" jdbcType="VARCHAR" />
 		<result column="storeName" property="storeName" jdbcType="VARCHAR" />
 		<result column="storeArea" property="storeArea" jdbcType="VARCHAR" />
 		<result column="searchTime" property="searchTime" jdbcType="VARCHAR" />
 		<result column="activityType" property="activityType" jdbcType="VARCHAR" />
 		<result column="activityName" property="activityName" jdbcType="VARCHAR" />
+		<result column="productName" property="productName" jdbcType="VARCHAR" />
 		<result column="platformAllowance" property="platformAllowance" jdbcType="VARCHAR" />
 		<result column="activityIntensity" property="activityIntensity" jdbcType="VARCHAR" />
 		<result column="activityCycle" property="activityCycle" jdbcType="VARCHAR" />
@@ -38,7 +42,6 @@
 		<result column="contributionInBid" property="contributionInBid" jdbcType="VARCHAR" />
 	</resultMap>
 	<resultMap id="DemandAnalysisBaseResultMap" type="com.cyz.staticsystem.staticAnalysis.model.DemandAnalysis">
-		<id column="id" property="id" jdbcType="VARCHAR" />
 		<result column="searchTime" property="searchTime" jdbcType="VARCHAR" />
 		<result column="storeArea" property="storeArea" jdbcType="VARCHAR" />
 		<result column="customName" property="customName" jdbcType="VARCHAR" />
@@ -49,100 +52,123 @@
 		<result column="averageCost" property="averageCost" jdbcType="VARCHAR" />
 		<result column="favoriteDishesName" property="favoriteDishesName" jdbcType="VARCHAR" />
 		<result column="favoriteDishesCost" property="favoriteDishesCost" jdbcType="VARCHAR" />
+		<result column="platformType" property="platformType" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="StoreActiveAnalysis_Column_List">
-	 	id
-	 	,storeName
-		,storeArea
-		,searchTime
-		,activityType
-		,activityName
-		,platformAllowance
-		,activityIntensity
-		,activityCycle
-		,activityTotalCost
-		,activityTotalProfit
-		,profitPercent
-		,enterRateInActivity
-		,conversionRateInActivity
-		,tradeAmountIncrementPercent
-		,orderAmountIncrementPercent
+	 	id,
+	 	orderNo,
+	 	platformType,
+	 	storeId,
+	 	storeName,
+		storeArea,
+		searchTime,
+		activityType,
+		activityName,
+		productName,
+		platformAllowance,
+		activityIntensity,
+		activityCycle,
+		activityTotalCost,
+		activityTotalProfit,
+		profitPercent,
+		enterRateInActivity,
+		conversionRateInActivity,
+		tradeAmountIncrementPercent,
+		orderAmountIncrementPercent
 	</sql>
 	<sql id="DemandAnalysis_Column_List">
-	 	id
-	 	,searchTime
-		,storeArea
-		,customName
-		,customOrdAddr
-		,customTel
-		,mostBrowseMerchantName
-		,mostBrowseMerchantType
-		,averageCost
-		,favoriteDishesName
-		,favoriteDishesCost
+	 	searchTime,
+		storeArea,
+		customName,
+		customOrdAddr,
+		customTel,
+		mostBrowseMerchantName,
+		mostBrowseMerchantType,
+		averageCost,
+		favoriteDishesName,
+		favoriteDishesCost,
+		platformType
 	</sql>
 	<sql id="BidStaticAnalysis_Column_List">
-		id
-	 	,storeName
-		,storeArea
-		,bidTime
-		,searchTime
-		,bidCycle
-		,bidTotalAmountInWeek
-		,averageClickCost
-		,bidActivityIntensity
-		,exposureIncrementPercent
-		,enterRateIncrementPercent
-		,transformIncrementPercent
-		,tradeAmountIncrementPercent
-		,rankBeforeBid
-		,rankAfterBid
-		,contributionInBid
+		id,
+	 	storeName,
+		storeArea,
+		bidTime,
+		searchTime,
+		bidCycle,
+		bidTotalAmountInWeek,
+		averageClickCost,
+		bidActivityIntensity,
+		exposureIncrementPercent,
+		enterRateIncrementPercent,
+		transformIncrementPercent,
+		tradeAmountIncrementPercent,
+		rankBeforeBid,
+		rankAfterBid,
+		contributionInBid
 	</sql>
+	<!--精准客户需求分析  -->
 	<select id="demandAnalysis" resultMap="DemandAnalysisBaseResultMap" parameterType="com.cyz.staticsystem.staticAnalysis.model.DemandAnalysis">
-		select
-		<include refid="DemandAnalysis_Column_List" />
-		from analysis_demand
+		SELECT
+			 aod.order_time AS searchTime,
+			 s.business_area AS storeArea,
+			 aod.consignee_name AS customName,
+			 aod.target_addr AS customOrdAddr,
+			 aod.consignee_phones AS customTel,
+			 aod.store_name AS mostBrowseMerchantName,
+			 c.CATEGORY_NAME AS mostBrowseMerchantType,
+			 aod.settlement_amount AS averageCost,
+			 replace(aod.goods_name,',','、') AS favoriteDishesName,
+ 			 replace(aod.goods_price,',','、') AS favoriteDishesCost,
+			 aod.platform_type AS platformType
+		FROM
+			`account_order_detail_foropera` as aod 
+		LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or s.baidu_id = aod.store_BD_id
+		LEFT JOIN dn_brand as b on s.BRAND_ID = b.BRAND_ID 
+		LEFT join dn_category as c on c.CATEGORY_ID = b.CATEGORY_ID
 		where 1=1
-		<if test="id != null and '' != id">  
-			and id = #{id,jdbcType=VARCHAR}
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
 		</if>
-		<if test="searchTime != null and '' != searchTime">  
-			and searchTime = #{searchTime,jdbcType=VARCHAR}
-		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
 		<if test="storeArea != null and '' != storeArea">  
-			and storeArea = #{storeArea,jdbcType=VARCHAR}
+			and s.business_area = #{storeArea,jdbcType=VARCHAR}
 		</if>
 		<if test="customName != null and '' != customName">  
-			and customName = #{customName,jdbcType=VARCHAR}
+			and aod.customName = #{customName,jdbcType=VARCHAR}
 		</if>
 		<if test="customOrdAddr != null and '' != customOrdAddr">  
-			and customOrdAddr = #{customOrdAddr,jdbcType=VARCHAR}
+			and aod.customOrdAddr = #{customOrdAddr,jdbcType=VARCHAR}
 		</if>
 		<if test="customTel != null and '' != customTel">  
-			and customTel = #{customTel,jdbcType=VARCHAR}
+			and aod.customTel = #{customTel,jdbcType=VARCHAR}
 		</if>
-		<if test="mostBrowseMerchantName != null and '' != mostBrowseMerchantName">  
-			and mostBrowseMerchantName = #{mostBrowseMerchantName,jdbcType=VARCHAR}
+		<if test="storeId != null and '' != storeId">  
+			and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR} )
 		</if>
 		<if test="mostBrowseMerchantType != null and '' != mostBrowseMerchantType">  
-			and mostBrowseMerchantType = #{mostBrowseMerchantType,jdbcType=VARCHAR}
+			and c.CATEGORY_ID = #{mostBrowseMerchantType,jdbcType=VARCHAR}
 		</if>
-		<if test="averageCost != null and '' != averageCost">  
-			and averageCost = #{averageCost,jdbcType=DECIMAL}
+		<if test="platformType != null and '' != platformType">  
+			and aod.platformType = #{platformType,jdbcType=VARCHAR}
 		</if>
 		<if test="favoriteDishesName != null and '' != favoriteDishesName">  
-			and favoriteDishesName = #{favoriteDishesName,jdbcType=VARCHAR}
+			and aod.goods_name like CONCAT('%',#{favoriteDishesName,jdbcType=VARCHAR},'%') 
 		</if>
-		<if test="favoriteDishesCost != null and '' != favoriteDishesCost">  
-			and favoriteDishesCost = #{favoriteDishesCost,jdbcType=DECIMAL}
-		</if>
+		GROUP BY
+			consignee_phones,
+			order_no
 		<if test="orderFields != null and '' != orderFields">  
          	order by ${orderFields} ${order}
        	</if>
-		
 	</select>
-	
+	<!--竞价分析  -->
 	<select id="bidStaticAnalysis" resultMap="BidStaticAnalysisResultMap" parameterType="com.cyz.staticsystem.staticAnalysis.model.BidStaticAnalysis">
 		select
 		<include refid="BidStaticAnalysis_Column_List" />
@@ -197,24 +223,47 @@
          	order by ${orderFields} ${order}
        	</if>
 	</select>
-	
+	<!--店铺活动分析 -->
 	<select id="storeActiveAnalysis" resultMap="StoreActiveAnalysisResultMap" parameterType="com.cyz.staticsystem.staticAnalysis.model.StoreActiveAnalysis">
-		select
-		<include refid="StoreActiveAnalysis_Column_List" />
-		from analysis_storeactive
+		SELECT
+			asa.storeName as storeName,
+			s.business_area as storeArea,
+			DATE_FORMAT(asa.searchTime,'%Y-%m-%d') as searchTime,
+			asa.activityType,
+			asa.activityName,
+			asa.platformType,
+			asa.activityIntensity,
+			asa.activityCycle,	
+			asa.activityTotalCost,
+			asa.activityTotalProfit,
+			asa.profitPercent,
+			asa.enterRateInActivity,
+			asa.conversionRateInActivity,
+			asa.tradeAmountIncrementPercent,
+			asa.orderAmountIncrementPercent
+		FROM
+			`analysis_storeactive` AS asa
+		LEFT JOIN dn_store AS s ON s.elm_id = asa.storeId OR s.meituan_id = asa.storeId OR s.baidu_id = asa.storeId
 		where 1=1
 		<if test="id != null and '' != id">  
 			and id = #{id,jdbcType=VARCHAR}
 		</if>
-		<if test="storeName != null and '' != storeName">  
-			and storeName = #{storeName,jdbcType=VARCHAR}
+		<if test="storeId != null and '' != storeId">  
+			and (asa.storeId = #{storeELMId,jdbcType=VARCHAR} or asa.storeId = #{storeMTId,jdbcType=VARCHAR} or asa.storeId = #{storeBDId,jdbcType=VARCHAR} )
 		</if>
 		<if test="storeArea != null and '' != storeArea">  
 			and storeArea = #{storeArea,jdbcType=VARCHAR}
 		</if>
-		<if test="searchTime != null and '' != searchTime">  
-			and searchTime = #{searchTime,jdbcType=VARCHAR}
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(asa.searchTime,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
 		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(asa.searchTime,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
 		<if test="activityType != null and '' != activityType">  
 			and activityType = #{activityType,jdbcType=VARCHAR}
 		</if>
@@ -251,13 +300,14 @@
 		<if test="orderAmountIncrementPercent != null and '' != orderAmountIncrementPercent">  
 			and orderAmountIncrementPercent = #{orderAmountIncrementPercent,jdbcType=VARCHAR}
 		</if>
+		<!-- GROUP BY activityName,DATE_FORMAT(asa.searchTime,'%Y-%m-%d')-->
 		<if test="orderFields != null and '' != orderFields">  
          	order by ${orderFields} ${order}
        	</if>
 	</select>
 	
 	
-	
+	<!--批量插入竞价  -->
 	<insert id="addbidAnalysis" parameterType="java.util.List">
 		insert into analysis_bid (
 				id
@@ -295,35 +345,8 @@
 		</foreach>
 	
 	</insert>
-	
-		<insert id="adddemanAnalysis" parameterType="java.util.List">
-		insert into analysis_demand (
-				id
-				,customName
-				,customOrdAddr
-				,customTel
-				,mostBrowseMerchantName
-				,mostBrowseMerchantType
-				,averageCost
-				,favoriteDishesName
-				,favoriteDishesCost
-		)values 
-		<foreach collection="list" item="item" index="index" separator="," >
-		(
-			#{item.id,jdbcType=VARCHAR}
-			,#{item.customName,jdbcType=VARCHAR}
-			,#{item.customOrdAddr,jdbcType=VARCHAR}
-			,#{item.customTel,jdbcType=VARCHAR}
-			,#{item.mostBrowseMerchantName,jdbcType=VARCHAR}
-			,#{item.mostBrowseMerchantType,jdbcType=VARCHAR}
-			,#{item.averageCost,jdbcType=DECIMAL}
-			,#{item.favoriteDishesName,jdbcType=VARCHAR}
-			,#{item.favoriteDishesCost,jdbcType=VARCHAR}
-		)
-		</foreach>
-	</insert>
-	
-		<insert id="addactiveAnalysis" parameterType="java.util.List">
+	<!--批量插入店铺活动  -->
+	<insert id="addactiveAnalysis" parameterType="java.util.List">
 		insert into analysis_storeactive(
 				id
 			 	,storeName
@@ -361,8 +384,48 @@
 		)
 		</foreach>
 	</insert>
-	<!-- <select id="allStatic" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.product.model.Product">
 	
-	
-	</select> -->
+	<!--更新一条店铺活动数据 -->	
+	<update id="updateStoreActiveAnalysis" parameterType="com.cyz.staticsystem.staticAnalysis.model.StoreActiveAnalysis">
+		update analysis_storeactive  set
+		id= #{id,jdbcType=VARCHAR}
+		<if test="activityType != null and '' != activityType">  
+			,activityType = #{activityType,jdbcType=VARCHAR}
+		</if>
+		<if test="activityName != null and '' != activityName">  
+			,activityName = #{activityName,jdbcType=VARCHAR}
+		</if>
+		<if test="platformAllowance != null and '' != platformAllowance">  
+			,platformAllowance = #{platformAllowance,jdbcType=VARCHAR}
+		</if>
+		<if test="activityIntensity != null and '' != activityIntensity">  
+			,activityIntensity = #{activityIntensity,jdbcType=VARCHAR}
+		</if>
+		<if test="activityCycle != null and '' != activityCycle">  
+			,activityCycle = #{activityCycle,jdbcType=VARCHAR}
+		</if>
+		<if test="activityTotalCost != null and '' != activityTotalCost">  
+			,activityTotalCost = #{activityTotalCost,jdbcType=DECIMAL}
+		</if>
+		<if test="activityTotalProfit != null and '' != activityTotalProfit">  
+			,activityTotalProfit = #{activityTotalProfit,jdbcType=VARCHAR}
+		</if>
+		<if test="profitPercent != null and '' != profitPercent">  
+			,profitPercent = #{profitPercent,jdbcType=VARCHAR}
+		</if>
+		<if test="enterRateInActivity != null and '' != enterRateInActivity">  
+			,enterRateInActivity = #{enterRateInActivity,jdbcType=VARCHAR}
+		</if>
+		<if test="conversionRateInActivity != null and '' != conversionRateInActivity">  
+			,conversionRateInActivity = #{conversionRateInActivity,jdbcType=VARCHAR}
+		</if>
+		<if test="tradeAmountIncrementPercent != null and '' != tradeAmountIncrementPercent">  
+			,tradeAmountIncrementPercent = #{tradeAmountIncrementPercent,jdbcType=VARCHAR}
+		</if>
+		<if test="orderAmountIncrementPercent != null and '' != orderAmountIncrementPercent">  
+			,orderAmountIncrementPercent = #{orderAmountIncrementPercent,jdbcType=VARCHAR}
+		</if>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
 </mapper>

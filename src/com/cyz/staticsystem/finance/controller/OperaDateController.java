@@ -63,7 +63,7 @@ public class OperaDateController{
 	public ModelAndView toListByDate(HttpServletRequest request){
 		 ModelAndView mv = new ModelAndView("WEB-INF/jsp/finance/accountOperateIncome/listGoods");
 		 Store store = new Store();
-		 	store.setIsDelete(0);
+	 		store.setIsDelete(0);
 			boolean isAdmin = true;
 	 		if(!Utils.isSuperAdmin(request)){
 	 			store.setOwnerUserId(Utils.getLoginUserInfoId(request));
@@ -260,20 +260,20 @@ public class OperaDateController{
 			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
 			AjaxUtils.sendAjaxForObjectStr(response,rs);	
 			break;
-		case "orderSaleRate":
-			rs= operaDateService.updateSaleRate(operaDate);
-			rs = operaDateService.updatePlatformAccount(operaDate);
-			rs = operaDateService.updateDeepOpera(operaDate);
-			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
-			accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
-			accountOperaTotalService.addDeepTotalByOperaDate(operaDate);
-			AjaxUtils.sendAjaxForObjectStr(response,rs);	
-			break;
 		case "otherSum":
+			Store s = storeService.getByPrimaryKey(operaDate.getStoreName());
+			operaDate.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			operaDate.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			operaDate.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+			operaDate.setOperator(Utils.getLoginUserInfoId(request));
+			
 			rs= operaDateService.updateSaleRateSum(operaDate);
 			rs = operaDateService.updatePlatformAccountSum(operaDate);
 			rs = operaDateService.updateDeepOperaSum(operaDate);
+			
 			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
 			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
 			accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);

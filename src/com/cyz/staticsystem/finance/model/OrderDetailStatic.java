@@ -15,6 +15,9 @@ public class OrderDetailStatic extends Model {
 	/**
 	 * 成功订单数*/
 	private Integer successOrderNum;
+	private Integer elmsuccessOrderNum;
+	private Integer mtsuccessOrderNum;
+	private Integer bdwmsuccessOrderNum;
 	/**
 	 * 失败订单数*/
 	private Integer failOrderNum;
@@ -24,6 +27,10 @@ public class OrderDetailStatic extends Model {
 	/**
 	 * 成功订单总额*/
 	private double successOrderAmount;
+	private double elmsuccessOrderAmount;
+	private double mtsuccessOrderAmount;
+	private double bdwmsuccessOrderAmount;
+	
 	/**
 	 * 失败订单总额*/
 	private double failOrderAmount;
@@ -70,5 +77,41 @@ public class OrderDetailStatic extends Model {
 	}
 	public void setFailOrderAmount(double failOrderAmount) {
 		this.failOrderAmount = failOrderAmount;
+	}
+	public Integer getElmsuccessOrderNum() {
+		return elmsuccessOrderNum;
+	}
+	public Integer getMtsuccessOrderNum() {
+		return mtsuccessOrderNum;
+	}
+	public Integer getBdwmsuccessOrderNum() {
+		return bdwmsuccessOrderNum;
+	}
+	public double getElmsuccessOrderAmount() {
+		return elmsuccessOrderAmount;
+	}
+	public double getMtsuccessOrderAmount() {
+		return mtsuccessOrderAmount;
+	}
+	public double getBdwmsuccessOrderAmount() {
+		return bdwmsuccessOrderAmount;
+	}
+	public void setElmsuccessOrderNum(Integer elmsuccessOrderNum) {
+		this.elmsuccessOrderNum = elmsuccessOrderNum;
+	}
+	public void setMtsuccessOrderNum(Integer mtsuccessOrderNum) {
+		this.mtsuccessOrderNum = mtsuccessOrderNum;
+	}
+	public void setBdwmsuccessOrderNum(Integer bdwmsuccessOrderNum) {
+		this.bdwmsuccessOrderNum = bdwmsuccessOrderNum;
+	}
+	public void setElmsuccessOrderAmount(double elmsuccessOrderAmount) {
+		this.elmsuccessOrderAmount = elmsuccessOrderAmount;
+	}
+	public void setMtsuccessOrderAmount(double mtsuccessOrderAmount) {
+		this.mtsuccessOrderAmount = mtsuccessOrderAmount;
+	}
+	public void setBdwmsuccessOrderAmount(double bdwmsuccessOrderAmount) {
+		this.bdwmsuccessOrderAmount = bdwmsuccessOrderAmount;
 	}
 }

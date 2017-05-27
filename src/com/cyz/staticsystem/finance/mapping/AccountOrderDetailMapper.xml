@@ -50,6 +50,8 @@
 			<result column="goods_price" property="goodsPrice" jdbcType="VARCHAR" />
 			<result column="order_sale_rate" property="orderSaleRate" jdbcType="DECIMAL" />
 			<result column="target_addr" property="targetAddr" jdbcType="VARCHAR" />
+			<result column="latest_status" property="latestStatus" jdbcType="VARCHAR" />
+			<result column="latest_valid_status" property="latestValidStatus" jdbcType="VARCHAR" />
 	</resultMap>
 	<resultMap id="GoodsMap" type="com.cyz.staticsystem.finance.model.AccountSaleGoods" >
 		<id jdbcType="VARCHAR" property="id" column="id"/>
@@ -70,9 +72,32 @@
 		<result jdbcType="VARCHAR" property="platformType" column="platformType"/>
 		<result jdbcType="INTEGER" property="successOrderNum" column="successOrderNum"/>
 		<result jdbcType="INTEGER" property="failOrderNum" column="failOrderNum"/>
-		<!-- <result jdbcType="TIMESTAMP" property="orderTime" column="orderTime"/> -->
 		<result jdbcType="DECIMAL" property="successOrderAmount" column="successOrderAmount"/>
 		<result jdbcType="DECIMAL" property="failOrderAmount" column="failOrderAmount"/>
+	</resultMap>
+	<resultMap id="DetailStatic" type="com.cyz.staticsystem.finance.model.OperaDetailStatic" >
+		<result jdbcType="VARCHAR" property="brandName" column="brandName"/>
+		<result jdbcType="VARCHAR" property="storeName" column="storeName"/>
+		<result jdbcType="VARCHAR" property="businessArea" column="businessArea"/>
+		<result jdbcType="INTEGER" property="successOrderNum" column="successOrderNum"/>
+		<result jdbcType="INTEGER" property="failOrderNum" column="failOrderNum"/>
+		<result jdbcType="DECIMAL" property="successOrderAmount" column="successOrderAmount"/>
+		<result jdbcType="DECIMAL" property="failOrderAmount" column="failOrderAmount"/>
+		
+		<result jdbcType="INTEGER" property="elmsuccessOrderNum" column="elmsuccessOrderNum"/>
+		<result jdbcType="INTEGER" property="elmfailOrderNum" column="elmfailOrderNum"/>
+		<result jdbcType="DECIMAL" property="elmsuccessOrderAmount" column="elmsuccessOrderAmount"/>
+		<result jdbcType="DECIMAL" property="elmfailOrderAmount" column="elmfailOrderAmount"/>
+		
+		<result jdbcType="INTEGER" property="mtsuccessOrderNum" column="mtsuccessOrderNum"/>
+		<result jdbcType="INTEGER" property="mtfailOrderNum" column="mtfailOrderNum"/>
+		<result jdbcType="DECIMAL" property="mtsuccessOrderAmount" column="mtsuccessOrderAmount"/>
+		<result jdbcType="DECIMAL" property="mtfailOrderAmount" column="mtfailOrderAmount"/>
+		
+		<result jdbcType="INTEGER" property="bdwmsuccessOrderNum" column="bdwmsuccessOrderNum"/>
+		<result jdbcType="INTEGER" property="bdwmfailOrderNum" column="bdwmfailOrderNum"/>
+		<result jdbcType="DECIMAL" property="bdwmsuccessOrderAmount" column="bdwmsuccessOrderAmount"/>
+		<result jdbcType="DECIMAL" property="bdwmfailOrderAmount" column="bdwmfailOrderAmount"/>
 	</resultMap>
 	<sql id="Base_Column_List">
 	 	id,
@@ -122,7 +147,9 @@
 		goods_id,
 		goods_price,
 		order_sale_rate,
-		target_addr
+		target_addr,
+		latest_status,
+		latest_valid_status
 	</sql>
 	<sql id="Goods_List"> id ,store_id ,store_name ,create_date,order_no ,good_name ,good_unit_price ,good_actual_price,good_num ,platform_type </sql>
 	<select id="getByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -181,12 +208,14 @@
 			od.goods_id,
 			od.goods_price,
 			od.order_sale_rate,
-			od.target_addr
+			od.target_addr,
+			od.latest_status,
+			od.latest_valid_status
 			from account_order_detail as od 
-			LEFT JOIN store_special_offer as sso on sso.store_name = od.store_name and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
+			LEFT JOIN dn_store as s on s.elm_id = od.store_id or s.meituan_id= od.store_MT_id or s.baidu_id =od.store_BD_id
+			LEFT JOIN store_special_offer as sso on sso.store_id = s.store_id and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') <= DATE_FORMAT(sso.special_offer_end_date,'%Y-%c-%d')]]>
-			LEFT JOIN dn_store as s on s.elm_id = od.store_id or s.meituan_id= od.store_MT_id or s.baidu_id =od.store_BD_id
 			 where 1=1
 		<if test="brandId != null and '' != brandId">  
 			AND s.BRAND_ID = #{brandId,jdbcType=VARCHAR}
@@ -243,6 +272,9 @@
 		</if>
 		<if test="platformType != null and '' != platformType">  
 			and od.platform_type = #{platformType,jdbcType=DECIMAL}
+		</if>
+		<if test="latestValidStatus != null and '' != latestValidStatus">  
+			and od.latest_valid_status = #{latestValidStatus,jdbcType=DECIMAL}
 		</if>
 		GROUP BY od.order_no
 		<if test="orderFields != null and '' != orderFields">  
@@ -353,7 +385,7 @@
 			sum(asg.good_num * asg.good_unit_price) as goods_price,
 			asg.platform_type 
 		from account_sale_goods as asg 
-		LEFT JOIN account_order_detail as aod on aod.order_no = asg.order_no and asg.store_name = aod.store_name
+		LEFT JOIN account_order_detail as aod on aod.order_no = asg.order_no
 			where 1=1 
 		<if test="id != null and '' != id"> and id = #{id,jdbcType=INTEGER} </if>
 		<if test="null != propsMap.startDate and propsMap.startDate != ''">
@@ -426,111 +458,7 @@
 				,#{targetAddr,jdbcType=VARCHAR}
 			)
 	</insert>
-	<!-- 模板导入，批量增加 -->
-	<insert id="addOrderDetail" parameterType="java.util.List">
-		insert into account_order_detail (
-				id
-				,create_date
-				,store_id
-				,store_ELM_id
-				,store_MT_id
-				,store_BD_id
-				,store_name
-				,check_no
-				,order_type
-				,order_time
-				,over_time
-				,order_index
-				,order_no
-				,orgin_price
-				,meal_fee
-				,product_sale_amount
-				,actual_price
-				,merchant_activities_subsidies
-				,merchant_subsidy_vouchers
-				,actual_merchant_dist_charge
-				,merchant_dist_charge
-				,order_dist_charge
-				,platform_dist_charge
-				,service_rate
-				,service_charge
-				,refund_amount
-				,settlement_amount
-				,distribution_mode
-				,remark
-				,platform_activities_subsidies
-				,platform_subsidy_vouchers
-				,platform_type
-				,is_invalid
-				,activities_subsidy_bymerchant
-				,activities_subsidy_bycompany
-				,food_discount
-				,special_offer
-				,booked_time
-				,consignee_name
-				,consignee_phones
-				,active_time
-				,active_total
-				,goods_name
-				,goods_quality
-				,goods_id
-				,goods_price
-				,order_sale_rate
-				,target_addr
-		)values
-		<foreach collection="list" item="item" index="index" separator="," >
-		 (
-				#{item.id,jdbcType=VARCHAR}
-				,#{item.createDate,jdbcType=DATE}
-				,#{item.storeId,jdbcType=CHAR}
-				,#{item.storeELMId,jdbcType=CHAR}
-				,#{item.storeMTId,jdbcType=CHAR}
-				,#{item.storeBDId,jdbcType=CHAR}
-				,#{item.storeName,jdbcType=VARCHAR}
-				,#{item.checkNo,jdbcType=VARCHAR}
-				,#{item.orderType,jdbcType=VARCHAR}
-				,#{item.orderTime,jdbcType=TIMESTAMP}
-				,#{item.overTime,jdbcType=TIMESTAMP}
-				,#{item.orderIndex,jdbcType=VARCHAR}
-				,#{item.orderNo,jdbcType=VARCHAR}
-				,#{item.orginPrice,jdbcType=DECIMAL}
-				,#{item.mealFee,jdbcType=DECIMAL}
-				,#{item.productSaleAmount,jdbcType=DECIMAL}
-				,#{item.actualPrice,jdbcType=DECIMAL}
-				,#{item.merchantActivitiesSubsidies,jdbcType=DECIMAL}
-				,#{item.merchantSubsidyVouchers,jdbcType=DECIMAL}
-				,#{item.actualMerchantDistCharge,jdbcType=DECIMAL}
-				,#{item.merchantDistCharge,jdbcType=DECIMAL}
-				,#{item.orderDistCharge,jdbcType=DECIMAL}
-				,#{item.platformDistCharge,jdbcType=DECIMAL}
-				,#{item.serviceRate,jdbcType=VARCHAR}
-				,#{item.serviceCharge,jdbcType=DECIMAL}
-				,#{item.refundAmount,jdbcType=VARCHAR}
-				,#{item.settlementAmount,jdbcType=DECIMAL}
-				,#{item.distributionMode,jdbcType=VARCHAR}
-				,#{item.remark,jdbcType=VARCHAR}
-				,#{item.platformActivitiesSubsidies,jdbcType=DECIMAL}
-				,#{item.platformSubsidyVouchers,jdbcType=DECIMAL}
-				,#{item.platformType,jdbcType=VARCHAR}
-				,#{item.isInvalid,jdbcType=VARCHAR}
-				,#{item.activitiesSubsidyBymerchant,jdbcType=DECIMAL}
-				,#{item.activitiesSubsidyBycompany,jdbcType=DECIMAL}
-				,#{item.foodDiscount,jdbcType=DECIMAL}
-				,#{item.specialOffer,jdbcType=DECIMAL}
-				,#{item.bookedTime,jdbcType=TIMESTAMP}
-				,#{item.consigneeName,jdbcType=VARCHAR}
-				,#{item.consigneePhones,jdbcType=VARCHAR}
-				,#{item.activeTime,jdbcType=TIMESTAMP}
-				,#{item.activeTotal,jdbcType=DECIMAL}
-				,#{item.goodsName,jdbcType=VARCHAR}
-				,#{item.goodsQuality,jdbcType=VARCHAR}
-				,#{item.goodsId,jdbcType=VARCHAR}
-				,#{item.goodsPrice,jdbcType=VARCHAR}
-				,#{item.orderSaleRate,jdbcType=DECIMAL}
-				,#{item.targetAddr,jdbcType=VARCHAR}
-		)
-		</foreach>
-	</insert>
+
 	<update id="update" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
 		update account_order_detail  set
 		id= #{id,jdbcType=VARCHAR}
@@ -602,6 +530,7 @@
 		</if>
 	where id = #{id,jdbcType=VARCHAR}
 	</update>
+	
 	<!-- 更新订单数据实际配送费 -->
 	<update id="updateActualDistCharge" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
 		update account_order_detail  set
@@ -635,14 +564,24 @@
 			LEFT JOIN dn_store as s ON  s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or  s.baidu_id = aod.store_BD_id
 			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID 
 					where 1=1 
-				<if test="queryTime != null and '' != queryTime"> 
-					and DATE_FORMAT(aod.order_time,'%Y-%m-%d') = DATE_FORMAT(#{queryTime,jdbcType=TIMESTAMP},'%Y-%m-%d')
-				</if>
+				<if test="null != propsMap.startDate and propsMap.startDate != ''">
+					<![CDATA[
+						and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+					]]>
+					</if>
+				<if test="null != propsMap.endDate and propsMap.endDate != ''">
+					<![CDATA[
+						and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+					]]>
+				</if> 
 				<if test="username != null and '' != username">  
 					and bui.user_account = #{username,jdbcType=VARCHAR}
 				</if>
 				<if test="password != null and '' != password">  
 					and bui.password = #{password,jdbcType=VARCHAR}
+				</if>
+				<if test="storeId != null and '' != storeId">  
+					and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
 				</if>
 			GROUP BY s.STORE_NAME,aod.platform_type
 	</select>
@@ -667,9 +606,16 @@
 			LEFT JOIN dn_store as s ON  s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or  s.baidu_id = aod.store_BD_id
 			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID 
 					where 1=1 
-				<if test="queryTime != null and '' != queryTime"> 
-					and DATE_FORMAT(aod.order_time,'%Y-%m-%d') = DATE_FORMAT(#{queryTime,jdbcType=TIMESTAMP},'%Y-%m-%d')
-				</if>
+				<if test="null != propsMap.startDate and propsMap.startDate != ''">
+					<![CDATA[
+						and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+					]]>
+					</if>
+				<if test="null != propsMap.endDate and propsMap.endDate != ''">
+					<![CDATA[
+						and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+					]]>
+				</if> 
 				<if test="username != null and '' != username">  
 					and bui.user_account = #{username,jdbcType=VARCHAR}
 				</if>
@@ -703,13 +649,152 @@
 	<!-- 统计商家排名 -->
 	<select id="staticStoreOrder" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
 		SELECT store_name as storeName, COUNT(DISTINCT order_no)-sum(is_invalid) AS orderNo
-			FROM account_order_detail
+			FROM account_order_detail_foropera
 			WHERE 1=1
-			<if test="null != createDate and createDate != ''">
-				and DATE_FORMAT(order_time, '%Y-%m-%d') = DATE_FORMAT(#{createDate,jdbcType=DATE},'%Y-%m-%d')
-			</if>
+			 <if test="null != propsMap.startDate and propsMap.startDate != ''">
+				<![CDATA[
+					and DATE_FORMAT(order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+				</if>
+			<if test="null != propsMap.endDate and propsMap.endDate != ''">
+				<![CDATA[
+					and DATE_FORMAT(order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+				]]>
+			</if> 
 			GROUP BY storeName
 			ORDER BY orderNo DESC
 			LIMIT 4
 	</select>
+	
+	
+	
+	<!-- 全盘信息（运营分店铺） -->
+	<select id="listDetailStatic" resultMap="DetailStatic" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
+		select
+				b.brand_name as brandName,
+				od.STORE_NAME as storeName,
+				s.business_area as businessArea,
+				COUNT(DISTINCT case when od.latest_valid_status ='0'  and od.is_invalid = '0' then od.order_no end) as successOrderNum,	
+				sum(od.latest_valid_status) as failOrderNum,
+				sum(case when od.is_invalid = '0' and  od.latest_valid_status ='0' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0'  and  od.latest_valid_status ='0'  then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0'  and  od.latest_valid_status ='0'  then od.platform_dist_charge else 0 end)
+					+sum(case when od.is_invalid = '0'  and  od.latest_valid_status ='0'  then od.merchant_dist_charge else 0 end) as successOrderAmount,
+				sum(case when od.latest_valid_status = '1' then od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' then od.platform_dist_charge else 0 end)
+					+sum(case when od.latest_valid_status = '1' then od.merchant_dist_charge else 0 end) as failOrderAmount,
+
+				COUNT(DISTINCT case when od.platform_type = 'elm' and od.is_invalid = '0' and od.latest_valid_status ='0' then od.order_no END)  as elmsuccessOrderNum,	
+				sum(case when od.platform_type = 'elm' then od.latest_valid_status else 0 end) as elmfailOrderNum,
+				sum(case when od.is_invalid = '0' and od.platform_type = 'elm' and od.latest_valid_status ='0' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.platform_type = 'elm' and od.latest_valid_status ='0' then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.platform_type = 'elm' and od.latest_valid_status ='0' then od.merchant_dist_charge else 0 end) as elmsuccessOrderAmount,
+				sum(case when od.latest_valid_status = '1' and od.platform_type = 'elm' then  od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'elm' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'elm' then od.merchant_dist_charge else 0 end) as elmfailOrderAmount,			
+
+				COUNT(DISTINCT case when od.platform_type = 'mt' and od.is_invalid = '0'  and od.latest_valid_status ='0' then od.order_no END) as mtsuccessOrderNum,	
+			  	sum(case when od.platform_type = 'mt' then od.latest_valid_status else 0 end) as mtfailOrderNum,
+				sum(case when od.is_invalid = '0' and od.platform_type = 'mt' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.latest_valid_status ='0' and od.platform_type = 'mt' then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.latest_valid_status ='0' and od.platform_type = 'mt' then od.platform_dist_charge else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.latest_valid_status ='0' and od.platform_type = 'mt' then od.merchant_dist_charge else 0 end) as mtsuccessOrderAmount,
+				sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then  od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then od.platform_dist_charge else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then od.merchant_dist_charge else 0 end) as mtfailOrderAmount,		
+				
+				COUNT(DISTINCT case when od.platform_type = 'bdwm' and od.is_invalid = '0'  and od.latest_valid_status ='0' then od.order_no END) as bdwmsuccessOrderNum,	
+				sum(case when od.platform_type = 'bdwm' then od.latest_valid_status else 0 end) as  bdwmfailOrderNum,
+				sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'  and od.platform_type = 'bdwm' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'   and od.platform_type = 'bdwm' then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'   and od.platform_type = 'bdwm' then od.platform_dist_charge else 0 end)
+					+sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'   and od.platform_type = 'bdwm' then od.merchant_dist_charge else 0 end) as bdwmsuccessOrderAmount,
+				sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then  od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then od.platform_dist_charge else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then od.merchant_dist_charge else 0 end) as bdwmfailOrderAmount		
+			from account_order_detail_foropera as od 
+			LEFT JOIN dn_store as s on s.elm_id = od.store_id or s.meituan_id= od.store_MT_id or s.baidu_id =od.store_BD_id
+			LEFT JOIN dn_brand as b on b.brand_id = s.brand_id
+			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID 
+			where 1=1
+		<if test="brandId != null and '' != brandId">  
+			AND s.BRAND_ID = #{brandId,jdbcType=VARCHAR}
+		</if>
+		<if test="brandName != null and '' != brandName">  
+			and bui.user_account = #{brandName,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and (od.store_id = #{storeELMId,jdbcType=VARCHAR} or od.store_id = #{storeMTId,jdbcType=VARCHAR} or od.store_id = #{storeBDId,jdbcType=VARCHAR})
+		</if>
+		<if test="orderType != null and '' != orderType">  
+			and od.order_type = #{orderType,jdbcType=VARCHAR}
+		</if>
+		<if test="isInvalid != null and '' != isInvalid">  
+			and od.is_invalid = #{isInvalid,jdbcType=TIMESTAMP}
+		</if>
+		 <if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.over_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.over_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="distributionMode != null and '' != distributionMode">  
+			and od.distribution_mode = #{distributionMode,jdbcType=VARCHAR}
+		</if>
+		GROUP BY s.store_id
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
+	</select>
+	
+	
+	<!-- 全盘信息（运营总） -->
+	<select id="calcuOperaStatic" resultMap="orderStatic" parameterType="com.cyz.staticsystem.finance.model.OrderDetailQuery">
+		select
+				s.STORE_ID as storeId,
+				aod.STORE_NAME as storeName,
+				aod.platform_type as platformType,
+				COUNT(DISTINCT case when aod.latest_valid_status ='0' and aod.is_invalid = '0' then aod.order_no end) as successOrderNum,	
+				sum(case when aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.orgin_price else 0 end)
+				+sum(case when aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.meal_fee else 0 end)
+				+sum(case when aod.platform_type != 'elm' and aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.platform_dist_charge else 0 end)
+				+sum(case when aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.merchant_dist_charge else 0 end) as successOrderAmount,
+				sum(aod.latest_valid_status) as failOrderNum,
+				sum(case when aod.latest_valid_status = '1' then aod.orgin_price else 0 end)
+				+sum(case when aod.latest_valid_status = '1' then aod.meal_fee else 0 end)
+				+sum(case when aod.platform_type != 'elm' and aod.latest_valid_status = '1' then aod.platform_dist_charge else 0 end)
+				+sum(case when aod.latest_valid_status = '1' then aod.merchant_dist_charge else 0 end) as failOrderAmount
+			from account_order_detail_foropera as aod
+			LEFT JOIN dn_store as s ON  s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or  s.baidu_id = aod.store_BD_id
+			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID 
+					where 1=1 
+				<if test="null != propsMap.startDate and propsMap.startDate != ''">
+					<![CDATA[
+						and DATE_FORMAT(aod.over_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+					]]>
+				</if>
+				<if test="null != propsMap.endDate and propsMap.endDate != ''">
+					<![CDATA[
+						and DATE_FORMAT(aod.over_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+					]]>
+				</if> 
+				<if test="storeId != null and '' != storeId">  
+					and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
+				</if>
+				<if test="username != null and '' != username">  
+					and bui.user_account = #{username,jdbcType=VARCHAR}
+				</if>
+				<if test="password != null and '' != password">  
+					and bui.password = #{password,jdbcType=VARCHAR}
+				</if>
+	</select>
+	
+	
 </mapper>

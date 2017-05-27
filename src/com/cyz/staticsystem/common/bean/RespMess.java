@@ -13,6 +13,25 @@ import com.cyz.staticsystem.common.enums.ResultStatus;
  */
 public class RespMess implements Serializable {
 	private static final long serialVersionUID = 2060919719016478351L;
+	
+
+	public RespMess() {
+		super();
+		this.result = null;
+		this.operaStatic = null;
+		this.accountStatic = null;
+		this.storeNumList = null;
+		this.storeOrderList = null;
+		this.successOrderPrice = 0;
+		this.successOrderNum = 0;
+		this.elmsuccessOrderNum = 0;
+		this.mtsuccessOrderNum = 0;
+		this.bdwmsuccessOrderNum = 0;
+		this.elmsuccessOrderPrice = 0;
+		this.mtsuccessOrderPrice = 0;
+		this.bdwmsuccessOrderPrice = 0;
+	}
+
 	/**
 	 * 配合app输出
 	 */
@@ -21,6 +40,9 @@ public class RespMess implements Serializable {
 	 * 结果状态1是成功，0是失败
 	 */
 	private String respCode;
+	
+	
+
 	/**
 	 * 结果消息，返回业务执行结果
 	 */
@@ -29,6 +51,16 @@ public class RespMess implements Serializable {
 	 * 结果数据
 	 */
 	private Object result;
+	private Object operaStatic;
+	private Object accountStatic;
+	public Object getAccountStatic() {
+		return accountStatic;
+	}
+
+	public void setAccountStatic(Object accountStatic) {
+		this.accountStatic = accountStatic;
+	}
+
 	/**
 	 * 今日商家数量
 	 * */
@@ -181,6 +213,14 @@ public class RespMess implements Serializable {
 
 	public void setStoreOrderList(Object storeOrderList) {
 		this.storeOrderList = storeOrderList;
+	}
+
+	public Object getOperaStatic() {
+		return operaStatic;
+	}
+
+	public void setOperaStatic(Object operaStatic) {
+		this.operaStatic = operaStatic;
 	}
 
 }

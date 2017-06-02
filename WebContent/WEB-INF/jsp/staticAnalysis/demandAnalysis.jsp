@@ -240,7 +240,6 @@ var gridObj = {};
 									<div class="stats-customsec-info-showcount">
 										<span>复购率</span>
 										<span class="percent" style="font-size: 26px;" id="oldsRate">
-											126
 										</span>
 									</div>
 								</div>

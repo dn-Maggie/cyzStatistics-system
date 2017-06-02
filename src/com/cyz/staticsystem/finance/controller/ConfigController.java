@@ -78,7 +78,6 @@ public class ConfigController{
 		OrderDetailQuery odq = new OrderDetailQuery();
 		AccountOrderDetail orders = new AccountOrderDetail();
 		JSONObject jo = JSONObject.fromObject(str);
-		JSONArray allList = new JSONArray();
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			try{
@@ -123,8 +122,6 @@ public class ConfigController{
 				odq.setPassword(odq.getPassword());
 				orders.setBrandName(odq.getUsername());
 			}
-			
-			List<OrderDetailStatic> osList = accountOrderDetailService.calcuOperaStatic(odq);
 			List<OperaDetailStatic> osListdetail = accountOrderDetailService.listDetailStatic(orders);
 			RespMess rs = new RespMess();
 			for(int i = 0;i<osListdetail.size();i++){
@@ -137,10 +134,8 @@ public class ConfigController{
 				rs.setBdwmsuccessOrderNum(rs.getBdwmsuccessOrderNum()+osListdetail.get(i).getBdwmsuccessOrderNum());
 				rs.setBdwmsuccessOrderPrice(rs.getBdwmsuccessOrderPrice()+osListdetail.get(i).getBdwmsuccessOrderAmount());
 			}
-			allList.add(osList);
 			rm.setRespMsg("成功");
 			rm.setRespCode("0000");
-			rm.setResult(allList);
 			rm.setUsername(odq.getUsername());
 			//运营详细数据
 			rm.setOperaStatic(rs);
@@ -164,7 +159,6 @@ public class ConfigController{
 		RespMess rm = new RespMess();
 		OrderDetailQuery odq = new OrderDetailQuery();
 		JSONObject jo = JSONObject.fromObject(str);
-		JSONArray allList = new JSONArray();
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			try{
@@ -197,9 +191,7 @@ public class ConfigController{
 				odq.setUsername(new String(odq.getUsername().getBytes("ISO-8859-1"),"utf-8"));
 				odq.setPassword(odq.getPassword());
 			}
-			
 			List<OrderDetailStatic> osList = accountOrderDetailService.calcuOrderDetail(odq);
-			
 			if(osList.size()==0){
 				odq.setQueryTime("");
 				osList = accountOrderDetailService.calcuOrderDetailNull(odq);
@@ -220,10 +212,8 @@ public class ConfigController{
 					rs.setBdwmsuccessOrderPrice(rs.getBdwmsuccessOrderPrice()+osList.get(i).getSuccessOrderAmount());
 				}
 			}
-			allList.add(osList);
 			rm.setRespMsg("成功");
 			rm.setRespCode("0000");
-			rm.setResult(allList);
 			rm.setUsername(odq.getUsername());
 			//财务数据
 			rm.setAccountStatic(rs);

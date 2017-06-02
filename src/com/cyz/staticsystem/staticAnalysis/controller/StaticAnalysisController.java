@@ -157,12 +157,39 @@ public class StaticAnalysisController{
 		AjaxUtils.sendAjaxForPage(request, response, page, list);
 	}
 	/**
+	 * 精准客户需求分析
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/demandNumAnalysis")
+	public void demandNumAnalysis(DemandAnalysis demandAnalysis,HttpServletRequest request,HttpServletResponse response, Page page){
+		demandAnalysis.setPage(page);	
+		if(demandAnalysis.getStoreId()!=""&&demandAnalysis.getStoreId()!=null){
+			Store s = storeService.getByPrimaryKey(demandAnalysis.getStoreId());
+			demandAnalysis.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			demandAnalysis.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			demandAnalysis.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+		}
+		DemandAnalysis da = analysisService.demandNumAnalysis(demandAnalysis);
+		AjaxUtils.sendAjaxForObjectStr(response,da);
+	}
+	
+	
+	/**
  	* 进入商户产品销售统计页面
  	* @return ModelAndView 返回到新增页面
  	*/
  	@RequestMapping("/toProductSale")
-	public ModelAndView toProductSale(){
+	public ModelAndView toProductSale(HttpServletRequest request){
 		ModelAndView mv = new ModelAndView("WEB-INF/jsp/staticAnalysis/productSale");
+		Store store = new Store();
+ 		store.setIsDelete(0);
+ 		if(!Utils.isSuperAdmin(request)){
+ 			store.setOwnerUserId(Utils.getLoginUserInfoId(request));
+		}
+ 		mv.addObject("store",storeService.listByCondition(store));
 		return mv;
 	}
  	/**

@@ -93,7 +93,9 @@ public class ConfigController{
 			odq.setUsername(jo.getString("username").trim());
 			odq.setPassword(jo.getString("password").trim());
 			odq.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
+			odq.setBusinessArea(StringUtils.defaultIfEmpty(jo.getString("businessArea"), ""));
 			orders.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
+			orders.setBusinessArea(StringUtils.defaultIfEmpty(jo.getString("businessArea"), ""));
 			if(odq.getStoreId()!=""&&odq.getStoreId()!=null){
 				Store s = storeService.getByPrimaryKey(jo.getString("storeId"));
 				odq.setStoreELMId(StringUtils.defaultIfEmpty(
@@ -176,6 +178,7 @@ public class ConfigController{
 			odq.setUsername(jo.getString("username").trim());
 			odq.setPassword(jo.getString("password").trim());
 			odq.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
+			odq.setBusinessArea(StringUtils.defaultIfEmpty(jo.getString("businessArea"), ""));
 			
 			if(odq.getStoreId()!=""&&odq.getStoreId()!=null){
 				Store s = storeService.getByPrimaryKey(jo.getString("storeId"));

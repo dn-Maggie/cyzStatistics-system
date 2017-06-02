@@ -25792,12 +25792,12 @@ $.extend($.jgrid,{
      for(var i = 0,dataLength = data.length;i < dataLength; i++){
      	 //为兼容radio、checkbox的旧版格式，先判断是否存在label，否则去name
          if(getType == "value"){
-             if(((editType == "radio" || editType == "checkbox") ?  (data[i].label ? data[i].label :data[i].name) : data[i].name) == value)  {
+             if(((editType == "radio" || editType == "checkbox" ||editType == "select") ?  (data[i].label ? data[i].label :data[i].name) : data[i].name) == value)  {
                  return  editType == "comboboxtree" ? data[i][idKey] : data[i].value;
              }else{if(i == (dataLength-1)) return value;}
          }else{
              if(data[i].value == value || data[i][idKey] == value)  {
-                 return (editType == "radio" || editType == "checkbox") ?  (data[i].label ? data[i].label :data[i].name) : data[i].name ;
+                 return (editType == "radio" || editType == "checkbox" ||editType == "select") ?  (data[i].label ? data[i].label :data[i].name) : data[i].name ;
              }else{if(i == (dataLength-1)) return value;}
          }
      }
@@ -26046,10 +26046,12 @@ $.extend($.jgrid,{
      //数据为空提示用户
      if( typeof cellval == "undefined"){
          cellname = "" ;
-     }else if(data == ""){
+     }
+     else if(data == ""){
          jAlert(I18N.param_error + "$.fn.fmatter.dictionary()" , I18N.promp);
          cellname = cellval ;
-     }else{
+     }
+     else{
          if(eidttype == "checkbox" || eidttype == "comboboxlist" || eidttype == "comboboxtree"){
              tempArray = $.isArray(cellval) ? cellval : String(cellval).split(",");
              for(var p= 0,checkLength = tempArray.length;p < checkLength;p++){

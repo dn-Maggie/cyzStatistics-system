@@ -282,94 +282,6 @@
        	</if>
 	</select>
 	<!-- 菜品价格表 -->
-	<select id="listGoodsFromOrderDetail" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
-		SELECT DISTINCT
-			tod.order_time as create_date,
-			tod.store_name,
-			tod.goods_name,
-			tod.goods_price as goods_price,
-			COUNT(*) as goods_quality,
-			tod.platform_type
-		FROM
-			(
-			SELECT
-				aod.id,
-				aod.create_date,
-				aod.store_id,
-				aod.store_ELM_id,
-				aod.store_MT_id,
-				aod.store_BD_id,
-				aod.store_name,
-				aod.check_no,
-				aod.order_type,
-				aod.order_time,
-				aod.over_time,
-				aod.order_index,
-				aod.order_no,
-				aod.orgin_price,
-				aod.meal_fee,
-				aod.goods_name,
-				aod.goods_quality,
-				aod.goods_id,
-				aod.goods_price,
-				aod.platform_type 
-			FROM
-				account_order_detail AS aod
-			WHERE 1 = 1
-		<if test="id != null and '' != id">  
-			and aod.id = #{id,jdbcType=VARCHAR}
-		</if>
-		<if test="storeId != null and '' != storeId">  
-			and aod.store_id = #{storeId,jdbcType=CHAR}
-		</if>
-		<if test="storeName != null and '' != storeName">  
-			and aod.store_name = #{storeName,jdbcType=VARCHAR}
-		</if>
-		<if test="orderType != null and '' != orderType">  
-			and aod.order_type = #{orderType,jdbcType=VARCHAR}
-		</if>
-		<if test="orderTime != null and '' != orderTime">  
-			and aod.order_time = #{orderTime,jdbcType=TIMESTAMP}
-		</if>
-		<if test="isInvalid != null and '' != isInvalid">  
-			and aod.is_invalid = #{isInvalid,jdbcType=TIMESTAMP}
-		</if>
-		 <if test="null != propsMap.startDate and propsMap.startDate != ''">
-				<![CDATA[
-					and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=TIMESTAMP},'%Y-%c-%d')
-				]]>
-			</if>
-			<if test="null != propsMap.endDate and propsMap.endDate != ''">
-				<![CDATA[
-					and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=TIMESTAMP},'%Y-%c-%d')
-				]]>
-			</if> 
-			<if test="null != propsMap.startTime and propsMap.startTime != ''">
-				<![CDATA[
-					and DATE_FORMAT(aod.order_time,'%h:%m"%s') >= DATE_FORMAT(#{propsMap.startTime,jdbcType=TIMESTAMP},'%h:%m:%s')
-				]]>
-			</if>
-			<if test="null != propsMap.endTime and propsMap.endTime != ''">
-				<![CDATA[
-					and DATE_FORMAT(aod.order_time,'%h:%m:%s') <= DATE_FORMAT(#{propsMap.endTime,jdbcType=TIMESTAMP},'%h:%m:%s')
-				]]>
-			</if> 
-		<if test="orderNo != null and '' != orderNo">  
-			and aod.order_no = #{orderNo,jdbcType=VARCHAR}
-		</if>
-		<if test="remark != null and '' != remark">  
-			and aod.remark = #{remark,jdbcType=VARCHAR}
-		</if>
-		<if test="goodsName != null and '' != goodsName">  
-			and aod.goods_name like CONCAT('%',#{goodsName,jdbcType=DECIMAL},'%') 
-		</if>
-		<if test="platformType != null and '' != platformType">  
-			and aod.platform_type = #{platformType,jdbcType=DECIMAL}
-		</if>
-       	) as tod
-			GROUP BY tod.goods_name,DATE_FORMAT(tod.order_time,'%Y-%c-%d')
-			order by create_date,goods_name
-	</select>
 	<!-- 菜品数量表 -->
 	<select id="listGoods" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail" resultMap="GoodsMap">
 		select 
@@ -392,12 +304,60 @@
 			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if>
 		<if test="null != propsMap.endDate and propsMap.endDate != ''">
 			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if> 
-		<if test="storeId != null and '' != storeId"> and asg.store_id = #{storeId,jdbcType=VARCHAR} </if>
-		<if test="storeName != null and '' != storeName"> and asg.store_name = #{storeName,jdbcType=VARCHAR} </if>
+		<if test="storeId != null and '' != storeId">  
+			and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
+		</if>
 		<if test="goodsName != null and '' != goodsName"> and asg.good_name like CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%') </if>
 		<if test="platformType != null and '' != platformType"> and asg.platform_type = #{platformType,jdbcType=VARCHAR} </if>
 		GROUP BY create_date,asg.good_name,asg.store_name,asg.platform_type
 		<if test="orderFields != null and '' != orderFields"> order by ${orderFields} ${order} </if>
+	</select>
+	<!-- 获取菜品所有价格 -->
+	<select id="listGoodsTotalPrice" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail" resultMap="GoodsMap">
+		select 
+		sum(asg.good_num * asg.good_unit_price) as goods_price
+		from account_sale_goods as asg 
+		LEFT JOIN account_order_detail as aod on aod.order_no = asg.order_no
+		where 1=1 
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if> 
+		<if test="storeId != null and '' != storeId">  
+			and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
+		</if>
+		<if test="goodsName != null and '' != goodsName"> and asg.good_name like CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%') </if>
+		<if test="platformType != null and '' != platformType"> and asg.platform_type = #{platformType,jdbcType=VARCHAR} </if>
+	</select>
+	<!-- 获取排名前五菜品 -->
+	<select id="getTop5Goods" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail" resultMap="GoodsMap">
+		select 
+			asg.id as id,
+			asg.store_id as store_id,
+			asg.store_name as store_name,
+			aod.order_time as create_date,
+			aod.order_no as order_no,
+			asg.good_name as good_name,
+			asg.good_unit_price as good_unit_price,
+			asg.good_actual_price as good_actual_price,
+			sum(asg.good_num) as good_num,
+			sum(asg.good_num * asg.good_unit_price) as goods_price,
+			asg.platform_type 
+		from account_sale_goods as asg 
+		LEFT JOIN account_order_detail as aod on aod.order_no = asg.order_no
+		where 1=1 
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=TIMESTAMP},'%Y-%c-%d')]]></if> 
+		<if test="storeId != null and '' != storeId">  
+			and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
+		</if>
+		<if test="goodsName != null and '' != goodsName"> and asg.good_name like CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%') </if>
+		<if test="platformType != null and '' != platformType"> and asg.platform_type = #{platformType,jdbcType=VARCHAR} </if>
+		GROUP BY create_date,asg.good_name,asg.store_name,asg.platform_type
+		order by goods_price DESC
+		limit 5
 	</select>
 	
 	<delete id="deleteByKey" parameterType="java.lang.String">
@@ -574,6 +534,9 @@
 						and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
 					]]>
 				</if> 
+				<if test="businessArea != null and '' != businessArea">  
+					and s.business_area = #{businessArea,jdbcType=VARCHAR}
+				</if>
 				<if test="username != null and '' != username">  
 					and bui.user_account = #{username,jdbcType=VARCHAR}
 				</if>
@@ -616,11 +579,17 @@
 						and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
 					]]>
 				</if> 
+				<if test="businessArea != null and '' != businessArea">  
+					and s.business_area = #{businessArea,jdbcType=VARCHAR}
+				</if>
 				<if test="username != null and '' != username">  
 					and bui.user_account = #{username,jdbcType=VARCHAR}
 				</if>
 				<if test="password != null and '' != password">  
 					and bui.password = #{password,jdbcType=VARCHAR}
+				</if>
+				<if test="storeId != null and '' != storeId">  
+					and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
 				</if>
 	</select>
 	
@@ -642,6 +611,9 @@
 				</if>
 				<if test="password != null and '' != password">  
 					and bui.password = #{password,jdbcType=VARCHAR}
+				</if>
+				<if test="businessArea != null and '' != businessArea">  
+					and s.business_area = #{businessArea,jdbcType=VARCHAR}
 				</if>
 			GROUP BY s.STORE_NAME,aod.platform_type
 	</select>
@@ -726,6 +698,9 @@
 		<if test="brandName != null and '' != brandName">  
 			and bui.user_account = #{brandName,jdbcType=VARCHAR}
 		</if>
+		<if test="businessArea != null and '' != businessArea">  
+			and s.business_area = #{businessArea,jdbcType=VARCHAR}
+		</if>
 		<if test="storeId != null and '' != storeId">  
 			and (od.store_id = #{storeELMId,jdbcType=VARCHAR} or od.store_id = #{storeMTId,jdbcType=VARCHAR} or od.store_id = #{storeBDId,jdbcType=VARCHAR})
 		</if>
@@ -787,6 +762,9 @@
 				</if> 
 				<if test="storeId != null and '' != storeId">  
 					and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
+				</if>
+				<if test="businessArea != null and '' != businessArea">  
+					and s.business_area = #{businessArea,jdbcType=VARCHAR}
 				</if>
 				<if test="username != null and '' != username">  
 					and bui.user_account = #{username,jdbcType=VARCHAR}

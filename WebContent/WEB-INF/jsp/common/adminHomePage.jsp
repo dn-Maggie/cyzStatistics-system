@@ -263,29 +263,29 @@
 				});
 				edit_password_iframe_dialog.open();
 		})
-		queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),"");
+		queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),"","");
 		queryOperaStatic();
 	})
 	$("#queryTime").on("change",function(){
-		queryStatic($("#queryTime").val(),$("#queryTime").val(),"");
+		queryStatic($("#queryTime").val(),$("#queryTime").val(),$("#storeId").val(),$("#businessArea").val());
 	})
 	$("input[name='timeQuantum']").on('click',function(){
 		var chooseDate = $("input[type='radio']:checked").attr('id');
 		switch (chooseDate) {
 		case 'timeQuantum_yesterday':
-			queryStatic(new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),"");
+			queryStatic(new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
 			break;
 		case 'timeQuantum_today':
-			queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),"");
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
 			break;
 		case 'timeQuantum_7':
-			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*7).format('yyyy-MM-dd'),"");
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*7).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
 			break;
 		case 'timeQuantum_30':
-			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd'),"");
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
 			break;
 		case 'timeQuantum_90':
-			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*90).format('yyyy-MM-dd'),"");
+			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*90).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
 			break;
 		default:
 			break;
@@ -295,6 +295,7 @@
 		var storeId = $("#storeId").val();
 		var queryTime = $("#queryTime").val()!=""?$("#queryTime").val():new Date().format('yyyy-MM-dd');
 		var beginTime = $("#queryTime").val()!=""?$("#queryTime").val():new Date().format('yyyy-MM-dd');
+		var businessArea = $("#businessArea").val();
 		var chooseDate = $("input[type='radio']:checked").attr('id');
 		switch (chooseDate) {
 		case 'timeQuantum_yesterday':
@@ -320,15 +321,16 @@
 		default:
 			break;
 		}
-		queryStatic(queryTime,beginTime,storeId);
+		queryStatic(queryTime,beginTime,storeId,businessArea);
 	})
-	function queryStatic(queryTime,beginTime,storeId){
+	function queryStatic(queryTime,beginTime,storeId,businessArea){
 			var paramData = {
 				username:"<%=Utils.getLoginUserInfo(request).getUserAccount()%>",
 				password:"<%=Utils.getLoginUserInfo(request).getPassword()%>",
 				queryTime:queryTime,
 				beginTime:beginTime,
-				storeId:$("#storeId").val()
+				storeId:$("#storeId").val(),
+				businessArea:businessArea
 			};
 			/**
 			 * 统计财务订单数据
@@ -410,7 +412,8 @@
 				password:"<%=Utils.getLoginUserInfo(request).getPassword()%>",
 				queryTime:new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd'),
 				beginTime:new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd'),
-				storeId:""
+				storeId:$("#storeId").val(),
+				businessArea:$("#businessArea").val()
 			};
 			$.ajax({
 	             type: "post",

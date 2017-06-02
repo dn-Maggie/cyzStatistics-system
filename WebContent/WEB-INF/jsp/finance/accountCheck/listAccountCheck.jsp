@@ -20,7 +20,7 @@ var totalColModel = [{name : "id",hidden : true,key : true,label:"主键",index 
 //绑商家卡对账表表头    
 var boundMerchantModel = {url: "<m:url value='/accountCheck/listAccountCheck.do'/>?type=boundMerchant",
 					 		colModel:[
-							{name : "storeName",label:"店铺名称",index : "store_name"},
+							{name : "storeName",label:"店铺名称",index : "store_name",width:350},
 							{name : "createDate",label:"日期",index : "create_date"},				
 							{name : "invalidNum",label:"无效单量",index : "invalid_num"},		
 							{name : "validNum",label:"有效单量",index : "valid_num",isBasic:true,},	
@@ -34,7 +34,7 @@ var boundMerchantModel = {url: "<m:url value='/accountCheck/listAccountCheck.do'
 //绑公司卡对账表表头         
 var boundCompanyModel = {url: "<m:url value='/accountCheck/listAccountCheck.do'/>?type=boundCompany",
 						colModel:[
-							{name : "storeName",label:"店铺名称",index : "store_name"},
+							{name : "storeName",label:"店铺名称",index : "store_name",width:350},
 							{name : "createDate",label:"日期",index : "create_date"},				
 							{name : "invalidNum",label:"无效单量",index : "invalid_num"},		
 							{name : "validNum",label:"有效单量",index : "valid_num",isBasic:true,},	

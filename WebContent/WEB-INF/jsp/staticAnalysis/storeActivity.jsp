@@ -16,7 +16,7 @@ var gridObj = {};
            	sortorder:"asc",
            	pager: '#remote_prowed' /*分页栏id*/,
      		rowList:[10,15,50,100],
-    		rowNum:10,
+    		rowNum:15,
     		cellEdit:true,
     		afterSaveCell : function(rowid,name,val,iRow,iCol) {
            			var paramDatas = {};
@@ -35,7 +35,9 @@ var gridObj = {};
    					{name : "storeName",label:"商户名称",index : "storeName"},		
    					{name : "storeArea",label:"商圈",index : "storeArea"},				
    					{name : "searchTime",label:"查询时间",index : "searchTime"},				
-   					{name : "activityType",label:"活动类型",index : "activityType"},				
+   					{name : "activityType",label:"活动类型",index : "activityType",editable:true,edittype : "select",editoptions : {
+ 						   url: "<m:url value='/dictInfo/getDictInfoByType.do'/>?type=activityType"
+   					}},				
    					{name : "activityName",label:"活动名称",index : "activityName"},			
    					{name : "platformAllowance",label:"平台补贴金额",index : "platformAllowance",editable:true},				
    					{name : "activityIntensity",label:"活动力度",index : "activityIntensity",editable:true},				

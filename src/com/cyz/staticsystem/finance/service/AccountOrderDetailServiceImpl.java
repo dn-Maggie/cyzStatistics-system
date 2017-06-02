@@ -126,4 +126,16 @@ public class AccountOrderDetailServiceImpl implements AccountOrderDetailService{
 	public List<OrderDetailStatic> calcuOperaStatic(OrderDetailQuery odq) {
 		return accountOrderDetailMapper.calcuOperaStatic(odq);
 	}
+
+	/**
+	 *获取销售额总额*/
+	public AccountSaleGoods listGoodsTotalPrice(AccountOrderDetail accountOrderDetail) {
+		return accountOrderDetailMapper.listGoodsTotalPrice(accountOrderDetail);
+	}
+
+	/**
+	 *获取前五菜品*/
+	public List<AccountSaleGoods> getTop5Goods(AccountOrderDetail accountOrderDetail) {
+		return accountOrderDetailMapper.getTop5Goods(accountOrderDetail);
+	}
 }

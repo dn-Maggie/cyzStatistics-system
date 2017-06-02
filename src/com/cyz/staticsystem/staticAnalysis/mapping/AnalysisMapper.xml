@@ -42,6 +42,7 @@
 		<result column="contributionInBid" property="contributionInBid" jdbcType="VARCHAR" />
 	</resultMap>
 	<resultMap id="DemandAnalysisBaseResultMap" type="com.cyz.staticsystem.staticAnalysis.model.DemandAnalysis">
+		<result column="orderNum" property="orderNum" jdbcType="VARCHAR" />
 		<result column="searchTime" property="searchTime" jdbcType="VARCHAR" />
 		<result column="storeArea" property="storeArea" jdbcType="VARCHAR" />
 		<result column="customName" property="customName" jdbcType="VARCHAR" />
@@ -110,6 +111,7 @@
 	<!--精准客户需求分析  -->
 	<select id="demandAnalysis" resultMap="DemandAnalysisBaseResultMap" parameterType="com.cyz.staticsystem.staticAnalysis.model.DemandAnalysis">
 		SELECT
+			COUNT(aod.consignee_name) as orderNum,
 			 aod.order_time AS searchTime,
 			 s.business_area AS storeArea,
 			 aod.consignee_name AS customName,
@@ -117,7 +119,7 @@
 			 aod.consignee_phones AS customTel,
 			 aod.store_name AS mostBrowseMerchantName,
 			 c.CATEGORY_NAME AS mostBrowseMerchantType,
-			 aod.settlement_amount AS averageCost,
+			 sum(aod.settlement_amount)/COUNT(aod.consignee_name) AS averageCost,
 			 replace(aod.goods_name,',','、') AS favoriteDishesName,
  			 replace(aod.goods_price,',','、') AS favoriteDishesCost,
 			 aod.platform_type AS platformType
@@ -141,7 +143,7 @@
 			and s.business_area = #{storeArea,jdbcType=VARCHAR}
 		</if>
 		<if test="customName != null and '' != customName">  
-			and aod.customName = #{customName,jdbcType=VARCHAR}
+			and aod.customName like CONCAT('%',#{customName,jdbcType=VARCHAR},'%') 
 		</if>
 		<if test="customOrdAddr != null and '' != customOrdAddr">  
 			and aod.customOrdAddr = #{customOrdAddr,jdbcType=VARCHAR}
@@ -156,17 +158,69 @@
 			and c.CATEGORY_ID = #{mostBrowseMerchantType,jdbcType=VARCHAR}
 		</if>
 		<if test="platformType != null and '' != platformType">  
-			and aod.platformType = #{platformType,jdbcType=VARCHAR}
+			and aod.platform_type = #{platformType,jdbcType=VARCHAR}
 		</if>
 		<if test="favoriteDishesName != null and '' != favoriteDishesName">  
 			and aod.goods_name like CONCAT('%',#{favoriteDishesName,jdbcType=VARCHAR},'%') 
 		</if>
 		GROUP BY
-			consignee_phones,
-			order_no
+			consignee_phones,consignee_name,target_addr,goods_name
 		<if test="orderFields != null and '' != orderFields">  
          	order by ${orderFields} ${order}
        	</if>
+	</select>
+	<!-- 客户数量  -->
+	<select id="demandNumAnalysis" resultMap="DemandAnalysisBaseResultMap" parameterType="com.cyz.staticsystem.staticAnalysis.model.DemandAnalysis">
+		SELECT
+			COUNT(ds.orderNum) as storeELMId,
+			COUNT(CASE WHEN ds.orderNum>1 THEN ds.orderNum END) as storeMTId,
+			COUNT(CASE WHEN ds.orderNum=1 THEN ds.orderNum END) as storeBDId
+		from(
+			SELECT
+					 COUNT(aod.consignee_name) as orderNum
+				FROM
+					`account_order_detail_foropera` as aod 
+				LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or s.baidu_id = aod.store_BD_id
+				LEFT JOIN dn_brand as b on s.BRAND_ID = b.BRAND_ID 
+				LEFT join dn_category as c on c.CATEGORY_ID = b.CATEGORY_ID
+				where 1=1
+		<if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(aod.order_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(aod.order_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="storeArea != null and '' != storeArea">  
+			and s.business_area = #{storeArea,jdbcType=VARCHAR}
+		</if>
+		<if test="customName != null and '' != customName">  
+			and aod.customName like CONCAT('%',#{customName,jdbcType=VARCHAR},'%') 
+		</if>
+		<if test="customOrdAddr != null and '' != customOrdAddr">  
+			and aod.customOrdAddr = #{customOrdAddr,jdbcType=VARCHAR}
+		</if>
+		<if test="customTel != null and '' != customTel">  
+			and aod.customTel = #{customTel,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR} )
+		</if>
+		<if test="mostBrowseMerchantType != null and '' != mostBrowseMerchantType">  
+			and c.CATEGORY_ID = #{mostBrowseMerchantType,jdbcType=VARCHAR}
+		</if>
+		<if test="platformType != null and '' != platformType">  
+			and aod.platform_type = #{platformType,jdbcType=VARCHAR}
+		</if>
+		<if test="favoriteDishesName != null and '' != favoriteDishesName">  
+			and aod.goods_name like CONCAT('%',#{favoriteDishesName,jdbcType=VARCHAR},'%') 
+		</if>
+		GROUP BY
+			consignee_phones,consignee_name,target_addr
+		ORDER BY orderNum DESC) as ds
 	</select>
 	<!--竞价分析  -->
 	<select id="bidStaticAnalysis" resultMap="BidStaticAnalysisResultMap" parameterType="com.cyz.staticsystem.staticAnalysis.model.BidStaticAnalysis">
@@ -226,12 +280,15 @@
 	<!--店铺活动分析 -->
 	<select id="storeActiveAnalysis" resultMap="StoreActiveAnalysisResultMap" parameterType="com.cyz.staticsystem.staticAnalysis.model.StoreActiveAnalysis">
 		SELECT
+			id,
 			asa.storeName as storeName,
 			s.business_area as storeArea,
 			DATE_FORMAT(asa.searchTime,'%Y-%m-%d') as searchTime,
 			asa.activityType,
 			asa.activityName,
 			asa.platformType,
+			<!-- sum(asa.platformAllowance) as platformAllowance, -->
+			asa.platformAllowance,
 			asa.activityIntensity,
 			asa.activityCycle,	
 			asa.activityTotalCost,
@@ -300,7 +357,7 @@
 		<if test="orderAmountIncrementPercent != null and '' != orderAmountIncrementPercent">  
 			and orderAmountIncrementPercent = #{orderAmountIncrementPercent,jdbcType=VARCHAR}
 		</if>
-		<!-- GROUP BY activityName,DATE_FORMAT(asa.searchTime,'%Y-%m-%d')-->
+		<!-- GROUP BY activityName,DATE_FORMAT(asa.searchTime,'%Y-%m-%d') -->
 		<if test="orderFields != null and '' != orderFields">  
          	order by ${orderFields} ${order}
        	</if>

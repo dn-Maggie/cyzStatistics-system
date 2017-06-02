@@ -2,16 +2,16 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<%@ include file="../common/ace.jsp"%>
 		<%@ include file="../common/header.jsp"%>
+		<%@ include file="../common/ace.jsp"%>
 		<style type="text/css">
 			.platform_totalMoney_item{
 				background-color:#fff;
-				height:200px;
+				height:300px;
 			}
 			.platform_totalMoney_item{
 				background-color:#fff;
-				height:200px;
+				height:300px;
 			}
 			.platform_totalMoney_item-Name{
 				display:block;
@@ -29,393 +29,157 @@
 				height:30%;
 				text-align:center;
 			}
+			.ui-jqgrid .ui-jqgrid-pager-nonav{
+				height:100%;
+			}
 		</style>
 		
 		<!-- page specific plugin scripts -->
 		<!--[if lte IE 8]>
 		  <script src="<%=request.getContextPath() %>/static/js/excanvas.min.js"></script>
 		<![endif]-->
+		<script src="<%=request.getContextPath() %>/js/extend/finance.js"></script>
 		<script src="<%=request.getContextPath() %>/static/js/jquery.slimscroll.min.js"></script>
 		<script src="<%=request.getContextPath() %>/static/js/jquery.easy-pie-chart.min.js"></script>
 		<script src="<%=request.getContextPath() %>/static/js/flot/jquery.flot.min.js"></script>
 		<script src="<%=request.getContextPath() %>/static/js/flot/jquery.flot.pie.min.js"></script>
 		<script src="<%=request.getContextPath() %>/static/js/flot/jquery.flot.resize.min.js"></script>
 	</head>
-	<body onbeforeunload="checkLeave()">
+	<body>
+		<div class="main  choice_box">
+		<form id="queryForm"><!-- 查询区 表单 -->
+			<div class="search border-bottom">
+				<ul>
+				<li><span>商户名称：</span>
+				<select class="search_select choose_select" name="storeId" id="storeId">
+					<c:if test="${isAdmin}"><option value = "">所有店铺</option></c:if>
+					<c:forEach var="store" items="${store}">
+						<option value="${store.storeId}"> <c:out value="${store.storeName}"></c:out> </option>
+		            </c:forEach>
+				</select>
+				</li>
+				<li><span>菜品名称：</span>
+					<input type="text" name="goodsName">
+				</li>
+				<li>
+					<div class="time_bg">
+					<input type="text" placeholder="截止日期"  class="search_time150 date-picker" name="propsMap['endDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
+					</div>
+					<div class="time_bg">
+					<input type="text" placeholder="起始日期" class="search_time150 date-picker" name="propsMap['startDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
+					</div>
+				</li>
+				 <li><select class="search_select" name="platformType" id="platformType"><option value=""></option>
+					 <option value="elm">饿了么</option><option value="mt">美团</option><option value="bdwm">百度</option>
+					</select><span>平台类型:</span></li><!--下拉 -->
+				<li><input type="reset" class="reset_btn" onclick="resetForm('')" value="重置"><!-- 重置 -->
+						<input type="button" class="search_btn mr22 " onclick="doSearch();" value="查询"></li><!-- 查询-->
+				</ul>
+		   </div>
+	    </form>
+	    <div class="listplace">
+	    	<div class="list_btn_bg fl"><!--功能按钮 div-->
+				<ul>
+					<c:if test="${exportData}">
+						<li>
+							<a title="根据订单详细导出运营详细数据" href="javascript:;" onclick="exportData();"> 
+								<i class="back_icon import_icon"> </i> 
+								<span>导出数据</span>
+							</a>
+						</li>
+					</c:if>
+				</ul>
+			</div>
+	   		
 			<div class="col-sm-12">
 				<div class="widget-box">
 					<div class="widget-header widget-header-flat widget-header-small">
 						<h5 style="color:#555">
 							<i class="icon-signal"></i>
-							产品销售饼图
+							产品销售饼图（TOP5）
 						</h5>
-
-						<div class="widget-toolbar no-border">
-							<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-								本周<i class="icon-angle-down icon-on-right bigger-110"></i>
-							</button>
-							<ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-								<li class="active">
-									<a href="#" class="blue"><i class="icon-caret-right bigger-110">&nbsp;</i>本周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>本月</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上月</a>
-								</li>
-							</ul>
-						</div>
 					</div>
-
 					<div class="widget-body">
 						<div class="widget-main">
 							<div id="piechart-product"></div>
-
-							<div class="hr hr8 hr-double"></div>
-
-							<div class="clearfix">
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-facebook-sign icon-2x blue"></i>
-										&nbsp; likes
-									</span>
-									<h4 class="bigger pull-right">1,255</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-twitter-sign icon-2x purple"></i>
-										&nbsp; tweets
-									</span>
-									<h4 class="bigger pull-right">941</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-pinterest-sign icon-2x red"></i>
-										&nbsp; pins
-									</span>
-									<h4 class="bigger pull-right">1,050</h4>
-								</div>
-							</div>
 						</div><!-- /widget-main -->
 					</div><!-- /widget-body -->
+				</div><!-- /widget-box -->
+				<div class="widget-box">
+					<table  id="goods" ></table>
+					<div  id="goodsprowed"></div>	
 				</div><!-- /widget-box -->
 			</div>
-			<div class="col-sm-12">
-				<div class="widget-box">
-					<div class="widget-header widget-header-flat widget-header-small">
-						<h5 style="color:#555">
-							<i class="icon-signal"></i>
-							行业销售饼图
-						</h5>
-						<div class="widget-toolbar no-border">
-							<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-								本周<i class="icon-angle-down icon-on-right bigger-110"></i>
-							</button>
-							<ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-								<li class="active">
-									<a href="#" class="blue"><i class="icon-caret-right bigger-110">&nbsp;</i>本周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>本月</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上月</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="widget-body">
-						<div class="widget-main">
-							<div id="piechart-industry"></div>
-							<div class="hr hr8 hr-double"></div>
-							<div class="clearfix">
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-facebook-sign icon-2x blue"></i>
-										&nbsp; likes
-									</span>
-									<h4 class="bigger pull-right">1,255</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-twitter-sign icon-2x purple"></i>
-										&nbsp; tweets
-									</span>
-									<h4 class="bigger pull-right">941</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-pinterest-sign icon-2x red"></i>
-										&nbsp; pins
-									</span>
-									<h4 class="bigger pull-right">1,050</h4>
-								</div>
-							</div>
-						</div><!-- /widget-main -->
-					</div><!-- /widget-body -->
-				</div><!-- /widget-box -->
-			</div>
-			<div class="col-sm-12">
-				<div class="widget-box">
-					<div class="widget-header widget-header-flat widget-header-small">
-						<h5 style="color:#555">
-							<i class="icon-signal"></i>
-							品类销售饼图
-						</h5>
-
-						<div class="widget-toolbar no-border">
-							<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-								本周<i class="icon-angle-down icon-on-right bigger-110"></i>
-							</button>
-
-							<ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-								<li class="active">
-									<a href="#" class="blue"><i class="icon-caret-right bigger-110">&nbsp;</i>本周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>本月</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上月</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="widget-body">
-						<div class="widget-main">
-							<div id="piechart-category"></div>
-
-							<div class="hr hr8 hr-double"></div>
-
-							<div class="clearfix">
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-facebook-sign icon-2x blue"></i>
-										&nbsp; likes
-									</span>
-									<h4 class="bigger pull-right">1,255</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-twitter-sign icon-2x purple"></i>
-										&nbsp; tweets
-									</span>
-									<h4 class="bigger pull-right">941</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-pinterest-sign icon-2x red"></i>
-										&nbsp; pins
-									</span>
-									<h4 class="bigger pull-right">1,050</h4>
-								</div>
-							</div>
-						</div><!-- /widget-main -->
-					</div><!-- /widget-body -->
-				</div><!-- /widget-box -->
 		</div>
-		<div class="col-sm-12">
-			<div class="widget-box transparent">
-				<div class="widget-header widget-header-flat">
-					<h4 class="lighter" style="color:#555">
-						<i class="icon-eye-open"></i>
-						三大平台营业额总览
-					</h4>
-				</div>
-				<div class="widget-body">
-					<div class="col-sm-4 platform_totalMoney">
-						<div class="platform_totalMoney_item">
-							<span class="platform_totalMoney_item-Name">美团外卖</span>
-							<strong class="platform_totalMoney_item-todayValue">8909.00</strong>
-							<span class="platform_totalMoney_item-yesterdayValue">昨日  ￥7890.00</span>
-						</div>
-					</div>
-					<div class="col-sm-4 platform_totalMoney">
-						<div class="platform_totalMoney_item">
-							<span class="platform_totalMoney_item-Name">饿了么外卖</span>
-							<strong class="platform_totalMoney_item-todayValue">7099.00</strong>
-							<span class="platform_totalMoney_item-yesterdayValue">昨日  ￥7090.00</span>
-						</div>
-					</div>
-					<div class="col-sm-4 platform_totalMoney">
-						<div class="platform_totalMoney_item">
-							<span class="platform_totalMoney_item-Name">百度外卖</span>
-							<strong class="platform_totalMoney_item-todayValue">7309.00</strong>
-							<span class="platform_totalMoney_item-yesterdayValue">昨日  ￥6890.00</span>
-						</div>
-					</div>
-				</div><!-- /widget-body -->
-			</div><!-- /widget-box -->
-			
-		</div>		
-		<div class="col-sm-12">
-				<div class="widget-box">
-					<div class="widget-header widget-header-flat widget-header-small">
-						<h5 style="color:#555">
-							<i class="icon-signal"></i>
-							品类销售饼图
-						</h5>
-
-						<div class="widget-toolbar no-border">
-							<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-								本周<i class="icon-angle-down icon-on-right bigger-110"></i>
-							</button>
-
-							<ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-								<li class="active">
-									<a href="#" class="blue"><i class="icon-caret-right bigger-110">&nbsp;</i>本周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>本月</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上月</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="widget-body">
-						<div class="widget-main">
-							<div id="piechart-category"></div>
-
-							<div class="hr hr8 hr-double"></div>
-
-							<div class="clearfix">
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-facebook-sign icon-2x blue"></i>
-										&nbsp; likes
-									</span>
-									<h4 class="bigger pull-right">1,255</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-twitter-sign icon-2x purple"></i>
-										&nbsp; tweets
-									</span>
-									<h4 class="bigger pull-right">941</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-pinterest-sign icon-2x red"></i>
-										&nbsp; pins
-									</span>
-									<h4 class="bigger pull-right">1,050</h4>
-								</div>
-							</div>
-						</div><!-- /widget-main -->
-					</div><!-- /widget-body -->
-				</div><!-- /widget-box -->
-		</div>
-		<div class="col-sm-12">
-				<div class="widget-box">
-					<div class="widget-header widget-header-flat widget-header-small">
-						<h5 style="color:#555">
-							<i class="icon-signal"></i>
-							品类销售饼图
-						</h5>
-
-						<div class="widget-toolbar no-border">
-							<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-								本周<i class="icon-angle-down icon-on-right bigger-110"></i>
-							</button>
-
-							<ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-								<li class="active">
-									<a href="#" class="blue"><i class="icon-caret-right bigger-110">&nbsp;</i>本周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上周</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>本月</a>
-								</li>
-								<li>
-									<a href="#"><i class="icon-caret-right bigger-110 invisible">&nbsp;</i>上月</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="widget-body">
-						<div class="widget-main">
-							<div id="piechart-category"></div>
-
-							<div class="hr hr8 hr-double"></div>
-
-							<div class="clearfix">
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-facebook-sign icon-2x blue"></i>
-										&nbsp; likes
-									</span>
-									<h4 class="bigger pull-right">1,255</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-twitter-sign icon-2x purple"></i>
-										&nbsp; tweets
-									</span>
-									<h4 class="bigger pull-right">941</h4>
-								</div>
-
-								<div class="grid3">
-									<span class="grey">
-										<i class="icon-pinterest-sign icon-2x red"></i>
-										&nbsp; pins
-									</span>
-									<h4 class="bigger pull-right">1,050</h4>
-								</div>
-							</div>
-						</div><!-- /widget-main -->
-					</div><!-- /widget-body -->
-				</div><!-- /widget-box -->
-		</div>
+	</div>
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-		//离开页面的恢复导航栏方法
-		function checkLeave(){
-			var _iframe = window.parent;
-			_iframe.$(".inlineBlock").each(function(){this.className='hidden'})
-		}
-			jQuery(function($){
-				//进入页面的展开导航栏搜索方法
-				var _iframe = window.parent;
-				_iframe.$(".hidden").each(function(){this.className='inlineBlock'})
+		var gridObj = {};
+			$(function(){
+				gridObj = new biz.grid({
+			        id:"#goods",/*html部分table id*/
+			        url: "<m:url value='/accountOrderDetail/listAccountSaleGoods.do'/>",/*grid初始化请求数据的远程地址*/
+			        datatype: "json",/*数据类型，设置为json数据，默认为json*/
+			       	sortname:"goods_price",
+			       	rownumbers:true,
+			       	sortorder:"desc",
+			       	pager: '#goodsprowed' /*分页栏id*/,
+			 		rowList:[5,15,50,100],
+					rowNum:5,
+			    	colModel:[{name : "id",hidden : true,key : true,label:"主键",index : "id"},						
+						{name : "storeName",label:"商户名称",index : "store_name",width:350}, 
+						{name : "goodName",label:"菜品名称",index : "good_name",width:300},	
+						{name : "goodNum",label:"销售数量",index : "good_num",width:300},		
+						{name : "goodUnitPrice",label:"结算单价",index : "good_unit_price",formatter:Finance.formatAccountting,width:300},	
+						{name:"goodsPrice",label:"销售额",formatter:Finance.formatAccountting,width:300},
+						{name : "platformType",label:"平台类型",index : "platform_type",formatter:GridColModelForMatter.platformType,width:350},
+				       	],
+			    	serializeGridData:function(postData){//添加查询条件值
+						var obj = getQueryCondition();
+						$ .extend(true,obj,postData);//合并查询条件值与grid的默认传递参数
+						return obj;
+					}
+			  });
+				drwaPie();
+			});
+			function getGoodsTotalPrice(){
+		    	var param = getQueryCondition();
+		    	var data = ajax("<m:url value='/accountOrderDetail/getGoodsTotalPrice.do'/>", param);
+		    	return data;
+		    };
+		    function getTop5Goods(){
+		    	var param = getQueryCondition();
+		    	var data = ajax("<m:url value='/accountOrderDetail/getTop5Goods.do'/>", param);
+		    	return data;
+		    };
+		 	 //ajax请求
+		    function ajax(url, param) {
+		    	var data;
+		    	$.ajax({
+		    		type : "post",
+		    		url :   url,
+		    		data :  param,
+		    		cache : false,
+		    		async : false,
+		    		error : function() {
+		    			data = "";
+		    		},
+		    		success : function(response) {
+	    				data = response;
+		    		}
+		    	});
+		    	return data;
+		    }
+			function drwaPie(){
 				<!--产品销售饼状图-->
 				var product = $('#piechart-product').css({'width':'90%' , 'min-height':'150px'});
-				  var data = [
-					{ label: "麦当劳麦辣鸡翅",  data: 38.7, color: "#68BC31"},
-					{ label: "豪大大爆浆鸡排",  data: 24.5, color: "#2091CF"},
-					{ label: "林科大螺蛳粉",  data: 8.2, color: "#AF4E96"},
-					{ label: "意品原味鱼头粉",  data: 18.6, color: "#DA5430"},
-					{ label: "其他",  data: 10, color: "#FEE074"}
-				  ]
-				  function drawPieChart(product, data, position) {
+			  	var datas = getTop5Goods().rows;
+			  	var totalPrice = getGoodsTotalPrice();
+				var data = []
+				for(var i = 0;i<datas.length;i++){
+					data.push({label:datas[i].goodName,data:(datas[i].goodsPrice/totalPrice),color:'#'+Math.floor(Math.random()*16888888).toString(16)});
+				}
+				function drawPieChart(product, data, position){
 				 	  $.plot(product, data, {
 						series: {
 							pie: {
@@ -447,89 +211,49 @@
 				 drawPieChart(product, data);
 				 product.data('chart', data);
 				 product.data('draw', drawPieChart);
-				 <!--行业饼状图-->
-				 var industry = $('#piechart-industry').css({'width':'90%' , 'min-height':'150px'});
-				  var data = [
-					{ label: "快餐便当",  data: 38.7, color: "#68BC31"},
-					{ label: "小吃夜宵",  data: 24.5, color: "#2091CF"},
-					{ label: "特色菜系",  data: 8.2, color: "#AF4E96"},
-					{ label: "异国料理",  data: 18.6, color: "#DA5430"},
-					{ label: "其他",  data: 10, color: "#FEE074"}
-				  ]
-				  function drawPieChart(industry, data, position) {
-				 	  $.plot(industry, data, {
-						series: {
-							pie: {
-								show: true,
-								tilt:0.8,
-								highlight: {
-									opacity: 0.25
-								},
-								stroke: {
-									color: '#fff',
-									width: 2
-								},
-								startAngle: 2
-							}
-						},
-						legend: {
-							show: true,
-							position: position || "ne", 
-							labelBoxBorderColor: null,
-							margin:[-30,15]
+				 
+				  var $tooltip = $("<div class='tooltip in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
+				  var previousPoint = null;
+				
+				  product.on('plothover', function (event, pos, item) {
+					if(item) {
+						if (previousPoint != item.seriesIndex) {
+							previousPoint = item.seriesIndex;
+							var tip = item.series['label'] + " : " + item.series['percent'].toFixed(2)+'%';
+							$tooltip.show().children(0).text(tip);
 						}
-						,
-						grid: {
-							hoverable: true,
-							clickable: true
-						}
-					 })
-				 }
-				 drawPieChart(industry, data);
-				 industry.data('chart', data);
-				 industry.data('draw', drawPieChart);
-				 <!--品类饼状图-->
-				 var category = $('#piechart-category').css({'width':'90%' , 'min-height':'150px'});
-				  var data = [
-					{ label: "川湘菜",  data: 38.7, color: "#68BC31"},
-					{ label: "粤菜",  data: 24.5, color: "#2091CF"},
-					{ label: "东北菜",  data: 8.2, color: "#AF4E96"},
-					{ label: "江浙菜",  data: 18.6, color: "#DA5430"},
-					{ label: "其他",  data: 10, color: "#FEE074"}
-				  ]
-				  function drawPieChart(category, data, position) {
-				 	  $.plot(category, data, {
-						series: {
-							pie: {
-								show: true,
-								tilt:0.8,
-								highlight: {
-									opacity: 0.25
-								},
-								stroke: {
-									color: '#fff',
-									width: 2
-								},
-								startAngle: 2
-							}
-						},
-						legend: {
-							show: true,
-							position: position || "ne", 
-							labelBoxBorderColor: null,
-							margin:[-30,15]
-						}
-						,
-						grid: {
-							hoverable: true,
-							clickable: true
-						}
-					 })
-				 }
-				 drawPieChart(category, data);
-				 category.data('chart', data);
-				 category.data('draw', drawPieChart);
-			});
+						$tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
+					} else {
+						$tooltip.hide();
+						previousPoint = null;
+					}
+					
+				 });
+
+				}
+			  /**
+			    * 获取查询条件值
+			    */
+			    function getQueryCondition(){
+			       var obj = {};
+					jQuery.each($("#queryForm").serializeArray(),function(i,o){
+			        	if(o.value){
+			        		obj[o.name] = o.value;
+			        	}
+			        });
+					return obj;
+			    };
+			    //查询Grid数据
+			    function doSearch(isStayCurrentPage){
+			    	if(!isStayCurrentPage)gridObj.setGridParam({"page":"1"});
+			     	gridObj.trigger('reloadGrid');
+			    	drwaPie();
+			    };
+			    //重置查询表单
+			    function resetForm(formId){
+					document.getElementById(formId).reset();
+				};
+			    
 		</script>
 	</body>
 </html>

@@ -51,4 +51,5 @@ public interface AnalysisService {
 	 * 更新活动数据分析方法
 	 * */
 	public ResultMessage updateStoreActiveAnalysis(StoreActiveAnalysis storeActiveAnalysis);
+	public DemandAnalysis demandNumAnalysis(DemandAnalysis demandAnalysis);
 }

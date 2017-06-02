@@ -83,6 +83,11 @@ public class AnalysisServiceImpl implements AnalysisService{
 	 * 更新活动数据分析方法
 	 * */
 	public ResultMessage updateStoreActiveAnalysis(StoreActiveAnalysis storeActiveAnalysis) {
-		return analysisMapper.updateStoreActiveAnalysis(storeActiveAnalysis);
+		analysisMapper.updateStoreActiveAnalysis(storeActiveAnalysis);
+		return AjaxUtils.getSuccessMessage();
+	}
+	@Override
+	public DemandAnalysis demandNumAnalysis(DemandAnalysis demandAnalysis) {
+		return analysisMapper.demandNumAnalysis(demandAnalysis);
 	};
 }

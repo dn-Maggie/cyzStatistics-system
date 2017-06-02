@@ -178,8 +178,55 @@ public class AccountOrderDetailController{
 	@RequestMapping("/listAccountSaleGoods")
 	public void listGoods(AccountOrderDetail accountOrderDetail,HttpServletRequest request,
 			HttpServletResponse response, Page page){
+		if(accountOrderDetail.getStoreId()!=""&&accountOrderDetail.getStoreId()!=null){
+			Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
+			accountOrderDetail.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			accountOrderDetail.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			accountOrderDetail.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+		}
 		accountOrderDetail.setPage(page);	
 		List<AccountSaleGoods> list = accountOrderDetailService.listGoods(accountOrderDetail);
+		AjaxUtils.sendAjaxForPage(request, response, page, list);
+	}	
+	
+	/**
+	 * 菜品销售总额
+	 */
+	@RequestMapping("/getGoodsTotalPrice")
+	public void getGoodsTotalPrice(AccountOrderDetail accountOrderDetail,HttpServletRequest request,
+			HttpServletResponse response, Page page){
+		if(accountOrderDetail.getStoreId()!=""&&accountOrderDetail.getStoreId()!=null){
+			Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
+			accountOrderDetail.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			accountOrderDetail.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			accountOrderDetail.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+		}
+		AjaxUtils.sendAjaxForObject(
+				response,accountOrderDetailService.listGoodsTotalPrice(accountOrderDetail).getGoodsPrice()
+				);
+	}	
+	/**
+	 * 获取前五菜品销售总额
+	 */
+	@RequestMapping("/getTop5Goods")
+	public void getTop5Goods(AccountOrderDetail accountOrderDetail,HttpServletRequest request,
+			HttpServletResponse response, Page page){
+		if(accountOrderDetail.getStoreId()!=""&&accountOrderDetail.getStoreId()!=null){
+			Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
+			accountOrderDetail.setStoreELMId(StringUtils.defaultIfEmpty(
+					s.getElmId(), "0"));
+			accountOrderDetail.setStoreMTId(StringUtils.defaultIfEmpty(
+					s.getMeituanId(), "0"));
+			accountOrderDetail.setStoreBDId(StringUtils.defaultIfEmpty(
+					s.getBaiduId(), "0"));
+		}
+		List<AccountSaleGoods> list = accountOrderDetailService.getTop5Goods(accountOrderDetail);
 		AjaxUtils.sendAjaxForPage(request, response, page, list);
 	}	
  	//导出数据方法

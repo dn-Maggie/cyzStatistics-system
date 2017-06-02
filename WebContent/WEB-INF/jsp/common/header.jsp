@@ -56,5 +56,15 @@
 .ui-pg-selbox {
 	font-size: 14px;
 }
+body{
+-webkit-user-select: none;  /* Chrome all / Safari all */
+-moz-user-select: none;     /* Firefox all */
+-ms-user-select: none;      /* IE 10+ */
+/* No support for these yet, use at own risk */
+-o-user-select: none;
+user-select: none;
+}
+
+
 </style>
 

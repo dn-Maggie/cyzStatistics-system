@@ -33,14 +33,15 @@ public class AccountOrderDetail extends Model{
 					private String brandId;
 					private String brandName;
 					/** 配送地址
-	                 */	private String targetAddr;
+	                 */	
+					private String targetAddr;
 						
-			   			private String storeId;
-			   			private String storeELMId;
-			   			private String storeMTId;
-			   			private String storeBDId;
-			   			private String storeName;
-		   		
+		   			private String storeId;
+		   			private String storeELMId;
+		   			private String storeMTId;
+		   			private String storeBDId;
+		   			private String storeName;
+		   			private String businessArea;
 		            /**
 	                 * 账单编号
 	                 **/
@@ -891,6 +892,14 @@ public class AccountOrderDetail extends Model{
 
 			public void setLatestValidStatus(String latestValidStatus) {
 				this.latestValidStatus = latestValidStatus;
+			}
+
+			public String getBusinessArea() {
+				return businessArea;
+			}
+
+			public void setBusinessArea(String businessArea) {
+				this.businessArea = businessArea;
 			}
 
 

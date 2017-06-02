@@ -226,6 +226,7 @@ input[name='timeQuantum']+label{
     line-height: 30px;
     position: relative;
     top: 2px;
+    cursor: pointer;
 }
 input[name='timeQuantum']:checked+label{
 	background-color: #f47115;

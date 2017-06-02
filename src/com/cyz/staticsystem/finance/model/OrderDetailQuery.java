@@ -8,7 +8,11 @@ public class OrderDetailQuery extends Model {
 	/**
 	 * 查询日期*/
 	private String queryTime;
+	
 	private String beginTime;
+	
+	private String businessArea;
+	
 	private String storeId;
 	private String storeELMId;
 	private String storeMTId;
@@ -60,5 +64,11 @@ public class OrderDetailQuery extends Model {
 	}
 	public void setStoreBDId(String storeBDId) {
 		this.storeBDId = storeBDId;
+	}
+	public String getBusinessArea() {
+		return businessArea;
+	}
+	public void setBusinessArea(String businessArea) {
+		this.businessArea = businessArea;
 	}
 }

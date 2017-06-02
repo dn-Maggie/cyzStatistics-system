@@ -12,6 +12,9 @@ public class DemandAnalysis extends Model{
      * 主键
      **/
 	private String id;
+	
+	//订单次数
+	private String orderNum;
    	/**
      * 查询时间（日期时间段）
      **/
@@ -139,5 +142,11 @@ public class DemandAnalysis extends Model{
 	}
 	public void setStoreId(String storeId) {
 		this.storeId = storeId;
+	}
+	public String getOrderNum() {
+		return orderNum;
+	}
+	public void setOrderNum(String orderNum) {
+		this.orderNum = orderNum;
 	}
 }

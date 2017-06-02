@@ -80,4 +80,10 @@ public interface AccountOrderDetailService  {
 	/**
 	 *全盘信息数据（全部）*/
 	public List<OrderDetailStatic> calcuOperaStatic(OrderDetailQuery odq);
+	/**
+	 *获取菜品所有价格*/
+	public AccountSaleGoods listGoodsTotalPrice(AccountOrderDetail accountOrderDetail);
+	/**
+	 *获取前五菜品*/
+	public List<AccountSaleGoods> getTop5Goods(AccountOrderDetail accountOrderDetail);
 }

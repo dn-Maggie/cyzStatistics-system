@@ -8,28 +8,57 @@
 <title></title>
 <script type="text/javascript">
 var gridObj = {};
-//菜品数量表表头
-var goodsModel = {url: "<m:url value='/accountOrderDetail/listAccountSaleGoods.do'/>",
-						colModel:[
-						{name : "id",hidden : true,key : true,label:"主键",index : "id"},						
-						{name : "storeName",label:"商户名称",index : "store_name",width:300}, 
-						{name : "goodName",label:"菜品名称",index : "good_name",width:300},	
-						{name : "goodNum",label:"销售数量",index : "good_num",width:300},		
-						{name : "goodUnitPrice",label:"结算单价",index : "good_unit_price",formatter:Finance.formatAccountting},	
-						/* {name : "goodActualPrice",label:"实际支付单价",index : "good_actual_price",formatter:Finance.formatAccountting}, */	
-						{name:"goodsPrice",label:"销售额",formatter:Finance.formatAccountting},
-						{name : "platformType",label:"平台类型",index : "platform_type",formatter:GridColModelForMatter.platformType},
-				       	]};
-	$(function(){
-		initGrid("goods");
-    });
-	//初始化grid
-	function initGrid(ways){
-		gridObj = Finance.createGrid(ways,goodsModel.colModel,true,false);
+$(function(){
+		gridObj = new biz.grid({
+        id:"#goods",/*html部分table id*/
+        url: "<m:url value='/accountOrderDetail/listAccountSaleGoods.do'/>",/*grid初始化请求数据的远程地址*/
+        datatype: "json",/*数据类型，设置为json数据，默认为json*/
+       	sortname:"goods_price",
+       	rownumbers:true,
+       	sortorder:"desc",
+       	pager: '#goodsprowed' /*分页栏id*/,
+ 		rowList:[10,15,50,100],
+		rowNum:15,
+    	colModel:[{name : "id",hidden : true,key : true,label:"主键",index : "id"},						
+			{name : "storeName",label:"商户名称",index : "store_name",width:350}, 
+			{name : "goodName",label:"菜品名称",index : "good_name",width:300},	
+			{name : "goodNum",label:"销售数量",index : "good_num",width:300},		
+			{name : "goodUnitPrice",label:"结算单价",index : "good_unit_price",formatter:Finance.formatAccountting,width:300},	
+			/* {name : "goodActualPrice",label:"实际支付单价",index : "good_actual_price",formatter:Finance.formatAccountting}, */	
+			{name:"goodsPrice",label:"销售额",formatter:Finance.formatAccountting,width:300},
+			{name : "platformType",label:"平台类型",index : "platform_type",formatter:GridColModelForMatter.platformType,width:350},
+	       	],
+    	serializeGridData:function(postData){//添加查询条件值
+			var obj = getQueryCondition();
+			$ .extend(true,obj,postData);//合并查询条件值与grid的默认传递参数
+			return obj;
+		}
+  });
+});
+/**
+ * 获取查询条件值
+ */
+ function getQueryCondition(){
+    var obj = {};
+		jQuery.each($("#queryForm").serializeArray(),function(i,o){
+     	if(o.value){
+     		obj[o.name] = o.value;
+     	}
+     });
+		return obj;
+ }
+ //查询Grid数据
+ function doSearch(isStayCurrentPage){
+ 	if(!isStayCurrentPage)gridObj.setGridParam({"page":"1"});
+ 	gridObj.trigger('reloadGrid');
+ }
+ //重置查询表单
+ function resetForm(formId){
+		document.getElementById(formId).reset();
 	}
-	function exportData(){
-		ExpExcel.showWin(gridObj,baseUrl+"/operaDate/exportExcel.do",'grid',gridObj.id);
-	}
+function exportData(){
+	ExpExcel.showWin(gridObj,baseUrl+"/operaDate/exportExcel.do",'grid',gridObj.id);
+}
 </script>
 </head>
 <body style="height:100%;">
@@ -38,11 +67,11 @@ var goodsModel = {url: "<m:url value='/accountOrderDetail/listAccountSaleGoods.d
 			<div class="search border-bottom">
 				<ul>
 				<li><span>商户名称：</span>
-				<select class="search_select choose_select" name="storeName" id="storeName">
+				<select class="search_select choose_select" name="storeId" id="storeId">
 					<c:if test="${isAdmin}"><option value = "">所有店铺</option></c:if>
 					<c:forEach var="store" items="${store}">
-						<option value="${store.storeName}"> <c:out value="${store.storeName}"></c:out> </option>
-		             </c:forEach>
+						<option value="${store.storeId}"> <c:out value="${store.storeName}"></c:out> </option>
+		            </c:forEach>
 				</select>
 				</li>
 				<li><span>菜品名称：</span>

@@ -232,6 +232,7 @@ public class OperaDateController{
 			rs= operaDateService.updateBasePrice(operaDate);
 			//根据修改的运营日报表修改运营总表（浅运营）
 			operaDate.setId(operaDate.getId().substring(19));
+			
 			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
 			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
 			AjaxUtils.sendAjaxForObjectStr(response,rs);	
@@ -240,6 +241,8 @@ public class OperaDateController{
 			rs= operaDateService.updateDeepOpera(operaDate);
 			//根据修改的运营日报表修改运营总表（深运营）
 			operaDate.setId(operaDate.getId().substring(19));
+			
+			
 			accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
 			accountOperaTotalService.addDeepTotalByOperaDate(operaDate);
 			AjaxUtils.sendAjaxForObjectStr(response,rs);	
@@ -248,6 +251,8 @@ public class OperaDateController{
 			rs = operaDateService.updateSaleRate(operaDate);
 			//根据修改的运营日报表修改运营总表（浅运营）
 			operaDate.setId(operaDate.getId().substring(19));
+			
+			
 			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
 			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
 			AjaxUtils.sendAjaxForObjectStr(response,rs);	
@@ -256,6 +261,8 @@ public class OperaDateController{
 			rs = operaDateService.updatePlatformAccount(operaDate);
 			//根据修改的运营日报表修改运营总表（浅运营）
 			operaDate.setId(operaDate.getId().substring(19));
+			
+			
 			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
 			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
 			AjaxUtils.sendAjaxForObjectStr(response,rs);	

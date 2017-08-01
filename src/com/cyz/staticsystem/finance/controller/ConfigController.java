@@ -75,34 +75,27 @@ public class ConfigController{
 	public void calcuOrderDetail(@RequestBody String str,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		RespMess rm = new RespMess();
-		OrderDetailQuery odq = new OrderDetailQuery();
 		AccountOrderDetail orders = new AccountOrderDetail();
 		JSONObject jo = JSONObject.fromObject(str);
 		Map<String, Object> map = new HashMap<String, Object>();
+		double diffDate = 0.0;
 		try{
 			try{
 				map.put("startDate",DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"));
 				map.put("endDate",DateUtil.parseStringToDate(jo.getString("queryTime"), "yyyy-MM-dd"));
+				diffDate = DateUtil.diffTwoDate(DateUtil.parseStringToDate(jo.getString("queryTime"), "yyyy-MM-dd"), DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"));
+				rm.setResult(diffDate);
 			}catch(Exception e){
 				map.put("startDate",DateUtil.now());
 				map.put("endDate",DateUtil.now());
+				rm.setResult(0);
 			}
-			odq.setPropsMap(map);
 			orders.setPropsMap(map);
-			odq.setUsername(jo.getString("username").trim());
-			odq.setPassword(jo.getString("password").trim());
-			odq.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
-			odq.setBusinessArea(StringUtils.defaultIfEmpty(jo.getString("businessArea"), ""));
 			orders.setStoreId(StringUtils.defaultIfEmpty(jo.getString("storeId"), ""));
 			orders.setBusinessArea(StringUtils.defaultIfEmpty(jo.getString("businessArea"), ""));
-			if(odq.getStoreId()!=""&&odq.getStoreId()!=null){
+			
+			if(orders.getStoreId()!=""&&orders.getStoreId()!=null){
 				Store s = storeService.getByPrimaryKey(jo.getString("storeId"));
-				odq.setStoreELMId(StringUtils.defaultIfEmpty(
-						s.getElmId(), "0"));
-				odq.setStoreMTId(StringUtils.defaultIfEmpty(
-						s.getMeituanId(), "0"));
-				odq.setStoreBDId(StringUtils.defaultIfEmpty(
-						s.getBaiduId(), "0"));
 				orders.setStoreELMId(StringUtils.defaultIfEmpty(
 						s.getElmId(), "0"));
 				orders.setStoreMTId(StringUtils.defaultIfEmpty(
@@ -112,40 +105,46 @@ public class ConfigController{
 			}
 			//如果是超级管理员，可以看到所有
 			if(Utils.isSuperAdmin(request)){
-				odq.setUsername(null);
-				odq.setPassword(null);
 				orders.setBrandName(null);
 			}
 			//否则看自己所属账号下的店铺
 			else{
-				odq.setUsername(new String(odq.getUsername().getBytes("ISO-8859-1"),"utf-8"));
-				odq.setPassword(odq.getPassword());
-				orders.setBrandName(odq.getUsername());
+				orders.setBrandName(new String(jo.getString("username").trim().getBytes("ISO-8859-1"),"utf-8"));
 			}
-			List<OperaDetailStatic> osListdetail = accountOrderDetailService.listDetailStatic(orders);
-			RespMess rs = new RespMess();
-			for(int i = 0;i<osListdetail.size();i++){
-				rs.setSuccessOrderPrice(rs.getSuccessOrderPrice()+osListdetail.get(i).getSuccessOrderAmount());
-				rs.setSuccessOrderNum(rs.getSuccessOrderNum()+osListdetail.get(i).getSuccessOrderNum());
-				rs.setElmsuccessOrderNum(rs.getElmsuccessOrderNum()+osListdetail.get(i).getElmsuccessOrderNum());
-				rs.setElmsuccessOrderPrice(rs.getElmsuccessOrderPrice()+osListdetail.get(i).getElmsuccessOrderAmount());
-				rs.setMtsuccessOrderNum(rs.getMtsuccessOrderNum()+osListdetail.get(i).getMtsuccessOrderNum());
-				rs.setMtsuccessOrderPrice(rs.getMtsuccessOrderPrice()+osListdetail.get(i).getMtsuccessOrderAmount());
-				rs.setBdwmsuccessOrderNum(rs.getBdwmsuccessOrderNum()+osListdetail.get(i).getBdwmsuccessOrderNum());
-				rs.setBdwmsuccessOrderPrice(rs.getBdwmsuccessOrderPrice()+osListdetail.get(i).getBdwmsuccessOrderAmount());
+			
+			
+			Map<String, Object> map2 = new HashMap<String, Object>();
+			//时间段总量
+			List<OperaDetailStatic> osListdetail = accountOrderDetailService.calcuOperaStatic(orders);
+			map2.put("allStatic",osListdetail.get(0));
+			
+			
+			//时间段分量
+			JSONArray JA = new JSONArray();
+			int diffDateInt = (new Double(diffDate)).intValue();
+			for(int k = 0;k<diffDateInt;k++){
+				map.put("startDate",DateUtil.afterDate(DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"),-k));
+				map.put("endDate",DateUtil.afterDate(DateUtil.parseStringToDate(jo.getString("beginTime"), "yyyy-MM-dd"),-k));
+				orders.setPropsMap(map);
+				List<OperaDetailStatic> osListdetail2 = accountOrderDetailService.calcuOperaStatic(orders);
+				JA.add(osListdetail2.get(0));
 			}
+			map2.put("detailStatic",JA);
+			
+			
+			
 			rm.setRespMsg("成功");
 			rm.setRespCode("0000");
-			rm.setUsername(odq.getUsername());
+			rm.setUsername(orders.getBrandName());
 			//运营详细数据
-			rm.setOperaStatic(rs);
+			rm.setOperaStatic(map2);
 		}catch(Exception e){
 			rm.setRespMsg("失败");
 			rm.setRespCode("9999");
 			rm.setResult(null);
 			rm.setSuccessOrderPrice(0);
 			rm.setSuccessOrderNum(0);
-			rm.setUsername(odq.getUsername());
+			rm.setUsername(orders.getBrandName());
 		}
 		AjaxUtils.sendAjaxForObjectStr(response, rm);
 	}	 

@@ -79,7 +79,7 @@ public interface AccountOrderDetailService  {
 	public List<OperaDetailStatic> listDetailStatic(AccountOrderDetail accountOrderDetail);
 	/**
 	 *全盘信息数据（全部）*/
-	public List<OrderDetailStatic> calcuOperaStatic(OrderDetailQuery odq);
+	public List<OperaDetailStatic> calcuOperaStatic(AccountOrderDetail orders);
 	/**
 	 *获取菜品所有价格*/
 	public AccountSaleGoods listGoodsTotalPrice(AccountOrderDetail accountOrderDetail);

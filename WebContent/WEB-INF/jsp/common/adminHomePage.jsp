@@ -264,7 +264,7 @@
 				edit_password_iframe_dialog.open();
 		})
 		queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),"","");
-		queryOperaStatic(7);
+		queryOperaStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'));
 	})
 	$("#queryTime").on("change",function(){
 		queryStatic($("#queryTime").val(),$("#queryTime").val(),$("#storeId").val(),$("#businessArea").val());
@@ -274,23 +274,23 @@
 		switch (chooseDate) {
 		case 'timeQuantum_yesterday':
 			queryStatic(new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
-			queryOperaStatic(2);
+			queryOperaStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*2).format('yyyy-MM-dd'));
 			break;
 		case 'timeQuantum_today':
 			queryStatic(new Date().format('yyyy-MM-dd'),new Date().format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
-			queryOperaStatic(7);
+			queryOperaStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000).format('yyyy-MM-dd'));
 			break;
 		case 'timeQuantum_7':
 			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*7).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
-			queryOperaStatic(7);
+			queryOperaStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*7).format('yyyy-MM-dd'));
 			break;
 		case 'timeQuantum_30':
 			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
-			queryOperaStatic(30);
+			queryOperaStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd'));
 			break;
 		case 'timeQuantum_90':
 			queryStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*90).format('yyyy-MM-dd'),$("#storeId").val(),$("#businessArea").val());
-			queryOperaStatic(90);
+			queryOperaStatic(new Date().format('yyyy-MM-dd'),new Date(new Date().getTime() - 86400000*90).format('yyyy-MM-dd'));
 			break;
 		default:
 			break;
@@ -317,7 +317,7 @@
 			break;
 		case 'timeQuantum_30':
 			queryTime = new Date().format('yyyy-MM-dd');
-			beginTime =  new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd');
+			beginTime = new Date(new Date().getTime() - 86400000*30).format('yyyy-MM-dd');
 			break;
 		case 'timeQuantum_90':
 			queryTime = new Date().format('yyyy-MM-dd');
@@ -345,7 +345,7 @@
 	             url : "<m:url value='/config/calcuOrderDetail.do'/>",
 	             data: JSON.stringify(paramData),
 	             cache: true,
-	             async: false,
+	             async: true,
 	 		   	 dataType:"json",
 	 		   	 contentType:false,
 	             success: function(response){
@@ -360,7 +360,7 @@
 	             url : "<m:url value='/config/calcuOperaDetail.do'/>",
 	             data: JSON.stringify(paramData),
 	             cache: true,
-	             async: false,
+	             async: true,
 	 		   	 dataType:"json",
 	 		   	 contentType:false,
 	             success: function(response){
@@ -375,7 +375,7 @@
 	             url : "<m:url value='/config/staticStoreNum.do'/>",
 	             data: JSON.stringify(paramData),
 	             cache: true,
-	             async: false,
+	             async: true,
 	 		   	 dataType:"json",
 	 		   	 contentType:false,
 	             success: function(response){
@@ -390,7 +390,7 @@
 	             url : "<m:url value='/config/staticStoreOrder.do'/>",
 	             data: JSON.stringify(paramData),
 	             cache: true,
-	             async: false,
+	             async: true,
 	 		   	 dataType:"json",
 	 		   	 contentType:false,
 	             success: function(response){
@@ -398,25 +398,22 @@
 	             }
 	        });
 	}
-	function queryOperaStatic(k){
+	function queryOperaStatic(beginTime,endTime){
 		//12天美团外卖营业额
 		var d2 = [];
 		//12天百度外卖营业额
 		var d3 = [];
 		//12天饿了么外卖营业额
 		var d4 = [];
-		var i ;
-		for(i = 0; i<= k ; i++){
-			getWeekData(i,k,d2,d3,d4);
-		}
-		drawOperaLine(k,d2,d3,d4);
+		getWeekData(beginTime,endTime,d2,d3,d4);
+		drawOperaLine(d2,d3,d4);
 	}
-	function getWeekData(i,k,d2,d3,d4){
+	function getWeekData(beginTime,endTime,d2,d3,d4){
 			var paramData = {
 				username:"<%=Utils.getLoginUserInfo(request).getUserAccount()%>",
 				password:"<%=Utils.getLoginUserInfo(request).getPassword()%>",
-				queryTime:new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd'),
-				beginTime:new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd'),
+				beginTime:beginTime,
+				queryTime:endTime,
 				storeId:$("#storeId").val(),
 				businessArea:$("#businessArea").val()
 			};
@@ -429,9 +426,12 @@
 	 		   	 dataType:"json",
 	 		   	 contentType:false,
 	             success: function(response){
-	            	 d2.push([(k-i), response.operaStatic.mtsuccessOrderPrice]);
-	            	 d3.push([(k-i), response.operaStatic.bdwmsuccessOrderPrice]);
-	            	 d4.push([(k-i), response.operaStatic.elmsuccessOrderPrice]);
+	            	 var k = response.result;
+	            	 for(var i = 0;i<k;i++){
+	            		 d2.push([(k-i), response.operaStatic.detailStatic[i].mtsuccessOrderAmount]);
+		            	 d3.push([(k-i), response.operaStatic.detailStatic[i].bdwmsuccessOrderAmount]);
+		            	 d4.push([(k-i), response.operaStatic.detailStatic[i].elmsuccessOrderAmount]); 
+	            	 }
 	             }
 	        });
 	}
@@ -449,15 +449,15 @@
  	}
 	 //运营营业额
 	function drawOperaStaticData(data){
-        $("#todayOperaOrderNum").text(data.operaStatic.successOrderNum);
-        $("#todayOperaOrderAmount").text(data.operaStatic.successOrderPrice.toFixed(2));
+        $("#todayOperaOrderNum").text(data.operaStatic.allStatic.successOrderNum);
+        $("#todayOperaOrderAmount").text(data.operaStatic.allStatic.successOrderAmount.toFixed(2));
 		 //运营营业额
-        $("#elmOperaOrderNum").text(data.operaStatic.elmsuccessOrderNum);
-        $("#mtOperaOrderNum").text(data.operaStatic.mtsuccessOrderNum);
-        $("#bdwmOperaOrderNum").text(data.operaStatic.bdwmsuccessOrderNum);
-        $("#elmOperaOrderAmount").text(data.operaStatic.elmsuccessOrderPrice.toFixed(2));
-        $("#mtOperaOrderAmount").text(data.operaStatic.mtsuccessOrderPrice.toFixed(2));
-        $("#bdwmOperaOrderAmount").text(data.operaStatic.bdwmsuccessOrderPrice.toFixed(2));
+        $("#elmOperaOrderNum").text(data.operaStatic.allStatic.elmsuccessOrderNum);
+        $("#mtOperaOrderNum").text(data.operaStatic.allStatic.mtsuccessOrderNum);
+        $("#bdwmOperaOrderNum").text(data.operaStatic.allStatic.bdwmsuccessOrderNum);
+        $("#elmOperaOrderAmount").text(data.operaStatic.allStatic.elmsuccessOrderAmount.toFixed(2));
+        $("#mtOperaOrderAmount").text(data.operaStatic.allStatic.mtsuccessOrderAmount.toFixed(2));
+        $("#bdwmOperaOrderAmount").text(data.operaStatic.allStatic.bdwmsuccessOrderAmount.toFixed(2));
 	}
 	 //商家数量
 	function drawStoreNum(data){
@@ -490,10 +490,10 @@
 	 
 	 
 	//填充营业额趋势图	
-	function drawOperaLine(k,d2,d3,d4){
+	function drawOperaLine(d2,d3,d4){
 		var ticks = [];
-		for(var i = 0;i<k;i++){
-			var tick = [k-i, new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd')];
+		for(var i = 0;i<d2.length;i++){
+			var tick = [d2.length-i, new Date(new Date().getTime() - 86400000*i).format('yyyy-MM-dd')];
 			ticks.push(tick);
 		}
 		$('.sparkline').each(function(){

@@ -18,6 +18,10 @@ public class StoreSpecialOffer extends Model{
 	                 * 主键
 	                 **/
 				   			private String id;
+		   			/**
+	                 * 平台类型
+	                 **/
+				   			private String platformType;
 		   		
 		            /**
 	                 * 店铺ID
@@ -252,6 +256,20 @@ public class StoreSpecialOffer extends Model{
 			 */
 			public void setSpecialType(String specialType){
 				this.specialType = specialType;
+			}
+
+			/**
+			 * @return the platformType
+			 */
+			public String getPlatformType() {
+				return platformType;
+			}
+
+			/**
+			 * @param platformType the platformType to set
+			 */
+			public void setPlatformType(String platformType) {
+				this.platformType = platformType;
 			}
 		   		
 		

@@ -77,6 +77,8 @@
 	<bean class="com.cyz.staticsystem.common.filter.RightFilter">
 		<property name="uriList">
 			<list>
+				<value>/analysisData.jsp</value>
+				<!-- <value>/AnalysisUtil</value> -->
 				<value>/error.jsp</value>
 				<value>/login.do</value>
 				<value>/getShopId.do</value>
@@ -85,7 +87,6 @@
 				<value>/order/testOrder.do</value>
 				<value>/appLogin.do</value>
 				<value>/varifyCode.do</value>
-				<value>/staticAnalysis/toAllStatic.do</value>
 				<value>/store/toListStore.do</value>
 				<value>/activity/toListActivity.do</value>
 				<value>/userInfo/toEditPassWord.do</value>

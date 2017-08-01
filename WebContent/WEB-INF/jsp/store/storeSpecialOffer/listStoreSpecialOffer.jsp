@@ -18,7 +18,9 @@ var Model = {
 			{name : "specialOfferFoodOrginPrice",label:"特价结算菜品原价",index : "special_offer_food_orgin_price"},				
 			{name : "specialOfferFoodPrice",label:"特价结算价格",index : "special_offer_food_price"},				
 			{name : "specialType",label:"是否分前缀",index : "special_type"
-				,formatter:GridColModelForMatter.fontAddressFlag}				
+				,formatter:GridColModelForMatter.fontAddressFlag},	
+			{name : "platformType",label:"平台类型",index : "platform_type"
+				,formatter:GridColModelForMatter.platformType}	
        		],
 		};
 	$(function(){

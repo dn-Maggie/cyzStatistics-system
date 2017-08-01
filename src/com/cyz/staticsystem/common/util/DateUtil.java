@@ -177,7 +177,7 @@ public class DateUtil {
 		if (begin == null || end == null) {
 			return 0.0;
 		}
-		return (end.getTime() - begin.getTime()) / 1000 / 60.0;
+		return (end.getTime() - begin.getTime()) / (1000*24*60*60.0);
 	}
 
 	/**

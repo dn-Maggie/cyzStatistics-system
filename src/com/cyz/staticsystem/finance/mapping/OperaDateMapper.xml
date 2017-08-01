@@ -919,7 +919,7 @@
 		<include refid="Base_Column_List" />
 		) select <include refid="Sum_Base_Column_List" /> from (
 			SELECT
-				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
+				CONCAT(od.order_time,od.store_id,od.platform_type) as id,
 				od.store_id as store_id,
 				od.store_name as store_name,
 				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
@@ -1025,7 +1025,7 @@
 		<include refid="Base_Column_List" />
 		) select <include refid="Sum_Base_Column_List" /> from (
 			SELECT
-				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
+				CONCAT(od.order_time,od.store_id,od.platform_type) as id,
 				od.store_id as store_id,
 				od.store_name as store_name,
 				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
@@ -1100,7 +1100,7 @@
 				od.remark,
 				od.platform_type
 			from account_order_detail as od 
-			LEFT JOIN dn_store AS s ON (s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id)
+			LEFT JOIN dn_store AS s ON s.elm_id = od.store_ELM_id OR s.meituan_id = od.store_MT_id or s.baidu_id=od.store_BD_id
 			LEFT JOIN store_special_offer as sso on sso.store_id = s.STORE_ID and od.goods_name like CONCAT('%',sso.special_offer_food_name,'%')
 			LEFT JOIN account_sale_goods as asg on asg.good_name like CONCAT('%',sso.special_offer_food_name,'%') and asg.order_no = od.order_no
 			<![CDATA[and DATE_FORMAT(od.order_time,'%Y-%c-%d') >= DATE_FORMAT(sso.special_offer_begin_date,'%Y-%c-%d')]]>
@@ -1134,7 +1134,7 @@
 		<include refid="Base_Column_List" />
 		) select <include refid="Sum_Base_Column_List" /> from (
 			SELECT
-				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
+				CONCAT(od.order_time,od.store_id,od.platform_type) as id,
 				od.store_id as store_id,
 				od.store_name as store_name,
 				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,
@@ -1252,7 +1252,7 @@
 		<include refid="Base_Column_List" />
 		) select <include refid="Sum_Base_Column_List" /> from (
 			SELECT
-				CONCAT(od.order_time,od.store_name,od.platform_type) as id,
+				CONCAT(od.order_time,od.store_id,od.platform_type) as id,
 				od.store_id as store_id,
 				od.store_name as store_name,
 				DATE_FORMAT(od.order_time,'%Y-%c-%d') as create_date,

@@ -177,8 +177,13 @@
 			  	var totalPrice = getGoodsTotalPrice();
 				var data = []
 				for(var i = 0;i<datas.length;i++){
-					data.push({label:datas[i].goodName,data:(datas[i].goodsPrice/totalPrice),color:'#'+Math.floor(Math.random()*16888888).toString(16)});
+					data.push({label:datas[i].goodName,data:(datas[i].goodsPrice/totalPrice)});
 				}
+				data[0].color = "#4383b4"
+				data[1].color = "#3ECF8B"
+				data[2].color = "#FF2D48"
+				data[3].color = "#F47115"
+				data[4].color = "rgb(237, 121, 122)"
 				function drawPieChart(product, data, position){
 				 	  $.plot(product, data, {
 						series: {

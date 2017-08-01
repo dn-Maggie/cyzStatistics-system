@@ -123,8 +123,8 @@ public class AccountOrderDetailServiceImpl implements AccountOrderDetailService{
 
 	/**
 	 *全盘信息数据（全部）*/
-	public List<OrderDetailStatic> calcuOperaStatic(OrderDetailQuery odq) {
-		return accountOrderDetailMapper.calcuOperaStatic(odq);
+	public List<OperaDetailStatic> calcuOperaStatic(AccountOrderDetail accountOrderDetail) {
+		return accountOrderDetailMapper.calcuOperaStatic(accountOrderDetail);
 	}
 
 	/**

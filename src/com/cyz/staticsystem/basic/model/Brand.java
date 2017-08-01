@@ -14,93 +14,93 @@ import com.cyz.staticsystem.common.bean.Model;
 public class Brand extends Model{
 	
 	
-		            /**
-	                 * 品牌ID(主键)
-	                 **/
-				   			private String brandId;
-		   		
-		            /**
-	                 * 品牌名称
-	                 **/
-				   			private String brandName;
-		   		
-		            /**
-	                 * 品牌负责人
-	                 **/
-				   			private String brandManager;
-		   		
-		            /**
-	                 * 负责人电话
-	                 **/
-				   			private String brandManagerTel;
-		   		
-		            /**
-	                 * 门店数量
-	                 **/
-				   			private Integer storesNumber;
-		   		
-		            /**
-	                 * 所在省份
-	                 **/
-				   			private String provinceCode;
-		   		
-		            /**
-	                 * 所在地市
-	                 **/
-				   			private String regionCode;
-		   		
-		            /**
-	                 * 所在区县
-	                 **/
-				   			private String cityCode;
-		   		
-		            /**
-	                 * 行业ID
-	                 **/
-				   			private String industryId;
-				   			private String industryName;
-		   		
-		            /**
-	                 * 品类ID
-	                 **/
-				   			private String categoryId;
-				   			private String categoryName;
-		   		
-		            /**
-	                 * 对接人
-	                 **/
-				   			private String contactName;
-		   		
-		            /**
-	                 * 负责人电话
-	                 **/
-				   			private String contactTel;
-		   		
-		            /**
-	                 * 招商人
-	                 **/
-				   			private String merchantName;
-		   		
-		            /**
-	                 * 招商人电话
-	                 **/
-				   			private String merchantTel;
-		   		
-		            /**
-	                 * 合同签订时间
-	                 **/
-					@DateTimeFormat(pattern="yyyy-MM-dd") 
-							private Date signContractDate;
-		
-		            /**
-	                 * 创建时间
-	                 **/
-					@DateTimeFormat(pattern="yyyy-MM-dd") 
-							private Date createDate;
+            /**
+             * 品牌ID(主键)
+             **/
+		   			private String brandId;
+   		
+            /**
+             * 品牌名称
+             **/
+		   			private String brandName;
+   		
+            /**
+             * 品牌负责人
+             **/
+		   			private String brandManager;
+   		
+            /**
+             * 负责人电话
+             **/
+		   			private String brandManagerTel;
+   		
+            /**
+             * 门店数量
+             **/
+		   			private Integer storesNumber;
+   		
+            /**
+             * 所在省份
+             **/
+		   			private String provinceCode;
+   		
+            /**
+             * 所在地市
+             **/
+		   			private String regionCode;
+   		
+            /**
+             * 所在区县
+             **/
+		   			private String cityCode;
+   		
+            /**
+             * 行业ID
+             **/
+		   			private String industryId;
+		   			private String industryName;
+   		
+            /**
+             * 品类ID
+             **/
+		   			private String categoryId;
+		   			private String categoryName;
+   		
+            /**
+             * 对接人
+             **/
+		   			private String contactName;
+   		
+            /**
+             * 负责人电话
+             **/
+		   			private String contactTel;
+   		
+            /**
+             * 招商人
+             **/
+		   			private String merchantName;
+   		
+            /**
+             * 招商人电话
+             **/
+		   			private String merchantTel;
+   		
+            /**
+             * 合同签订时间
+             **/
+			@DateTimeFormat(pattern="yyyy-MM-dd") 
+					private Date signContractDate;
+
+            /**
+             * 创建时间
+             **/
+			@DateTimeFormat(pattern="yyyy-MM-dd") 
+					private Date createDate;
 		
 	
 				
-		  			/**
+  			/**
 			 * 获取 品牌ID(主键)
 			 * @return String this.brandId
 			 */
@@ -120,7 +120,7 @@ public class Brand extends Model{
 		
 			
 						
-		  			/**
+  			/**
 			 * 获取 品牌名称
 			 * @return String this.brandName
 			 */
@@ -135,12 +135,8 @@ public class Brand extends Model{
 			public void setBrandName(String brandName){
 				this.brandName = brandName;
 			}
-		   		
-		
-		
-			
 						
-		  			/**
+  			/**
 			 * 获取 品牌负责人
 			 * @return String this.brandManager
 			 */
@@ -160,7 +156,7 @@ public class Brand extends Model{
 		
 			
 						
-		  			/**
+  			/**
 			 * 获取 负责人电话
 			 * @return String this.brandManagerTel
 			 */

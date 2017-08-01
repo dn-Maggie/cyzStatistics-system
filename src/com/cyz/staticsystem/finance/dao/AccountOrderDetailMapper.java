@@ -74,7 +74,7 @@ public interface AccountOrderDetailMapper  {
 	public List<OperaDetailStatic> listDetailStatic(AccountOrderDetail accountOrderDetail);
 	/**
 	 *全盘信息数据(全部)*/
-	public List<OrderDetailStatic> calcuOperaStatic(OrderDetailQuery odq);
+	public List<OperaDetailStatic> calcuOperaStatic(AccountOrderDetail accountOrderDetail);
 	/**
 	 *获取销售额总额*/
 	public AccountSaleGoods listGoodsTotalPrice(AccountOrderDetail accountOrderDetail);

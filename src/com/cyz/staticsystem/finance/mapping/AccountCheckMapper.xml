@@ -35,16 +35,13 @@
 		<result column="elm_meal_fee" property="elmMealFee" jdbcType="DECIMAL" />
 		<result column="bd_meal_fee" property="bdMealFee" jdbcType="DECIMAL" />
 		<result column="mt_meal_fee" property="mtMealFee" jdbcType="DECIMAL" />
-		
 		<result column="actual_price" property="actualPrice" jdbcType="DECIMAL" />
 		<result column="elm_actual_price" property="elmActualPrice" jdbcType="DECIMAL" />
 		<result column="bd_actual_price" property="bdActualPrice" jdbcType="DECIMAL" />
 		<result column="mt_actual_price" property="mtActualPrice" jdbcType="DECIMAL" />
-
 		<result column="elm_recieve_adjust" property="elmRecieveAdjust" jdbcType="DECIMAL" />
 		<result column="bd_recieve_adjust" property="bdRecieveAdjust" jdbcType="DECIMAL" />
 		<result column="mt_recieve_adjust" property="mtRecieveAdjust" jdbcType="DECIMAL" />
-		
 		<result column="settlement" property="settlement" jdbcType="DECIMAL" />
 		<result column="amount_rate_payable" property="amountRatePayable" jdbcType="DECIMAL" />
 		<result column="elm_settlement" property="elmSettlement" jdbcType="DECIMAL" />

@@ -219,28 +219,72 @@
 	<update id="update" parameterType="com.cyz.staticsystem.basic.model.UserInfo">
 		update BASIC_USER_INFO  set
                  USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR}
+                 <if test="fullName != null and '' != fullName">  
 				,FULL_NAME = #{fullName,jdbcType=VARCHAR}
+				</if>
+				<if test="userType != null and '' != userType">  
 				,USER_TYPE = #{userType,jdbcType=INTEGER}
+				</if>
+				<if test="userTypeName != null and '' != userTypeName">  
 				,USER_TYPE_NAME = #{userTypeName,jdbcType=VARCHAR}
+				</if>
+				<if test="mobilePhone != null and '' != mobilePhone">  
 				,MOBILE_PHONE = #{mobilePhone,jdbcType=VARCHAR}
+				</if>
+				<if test="idCard != null and '' != idCard">  
 				,ID_CARD = #{idCard,jdbcType=VARCHAR}
+				</if>
+				<if test="idCardImgPath != null and '' != idCardImgPath">  
 				,ID_CARD_IMG_PATH = #{idCardImgPath,jdbcType=BLOB}
+				</if>
+				<if test="lastLoginTime != null and '' != lastLoginTime">  
 				,LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP}
+				</if>
+				<if test="lastLoginIp != null and '' != lastLoginIp">  
 				,LAST_LOGIN_IP = #{lastLoginIp,jdbcType=VARCHAR}
+				</if>
+				<if test="states != null and '' != states">  
 				,STATES = #{states,jdbcType=INTEGER}
+				</if>
+				<if test="memo != null and '' != memo">  
 				,MEMO = #{memo,jdbcType=VARCHAR}
+				</if>
+				<if test="enableStateDate != null and '' != enableStateDate">  
 				,ENABLE_STATE_DATE = #{enableStateDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="enableEndDate != null and '' != enableEndDate">  
 				,ENABLE_END_DATE = #{enableEndDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="updated != null and '' != updated">  
 				,UPDATED = #{updated,jdbcType=TIMESTAMP}
+				</if>
+				<if test="updatedby != null and '' != updatedby">  
 				,UPDATEDBY = #{updatedby,jdbcType=VARCHAR}
+				</if>
+				<if test="platformType != null and '' != platformType">  
 				,PLATFORM_TYPE = #{platformType,jdbcType=CHAR}
+				</if>
+				<if test="storeId != null and '' != storeId">  
 				,STORE_ID = #{storeId,jdbcType=CHAR}
+				</if>
+				<if test="platformStoreIndex != null and '' != platformStoreIndex">  
 				,PLATFORM_STORE_INDEX = #{platformStoreIndex,jdbcType=INTEGER}
+				</if>
+				<if test="platformStoreName != null and '' != platformStoreName">  
 				,PLATFORM_STORE_NAME = #{platformStoreName,jdbcType=VARCHAR}
+				</if>
+				<if test="platformStoreScore != null and '' != platformStoreScore">  
 				,PLATFORM_STORE_SCORE = #{platformStoreScore,jdbcType=DOUBLE}
+				</if>
+				<if test="marketingManager != null and '' != marketingManager">  
 				,MARKETING_MANAGER = #{marketingManager,jdbcType=VARCHAR}
+				</if>
+				<if test="marketingManagerTel != null and '' != marketingManagerTel">  
 				,MARKETING_MANAGER_TEL = #{marketingManagerTel,jdbcType=VARCHAR}
+				</if>
+				<if test="userGroup != null and '' != userGroup">  
 				,user_group = #{userGroup,jdbcType=VARCHAR}
+				</if>
 			where ID = #{id,jdbcType=VARCHAR}
 	</update>
 	

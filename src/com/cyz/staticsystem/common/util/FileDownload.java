@@ -73,7 +73,7 @@ public class FileDownload extends HttpServlet {
 
     	request.setCharacterEncoding("utf-8");
     	try {          
-			// path是指欲下载的文件的路径。         
+			// pasysth是指欲下载的文件的路径。         
     		String platFormType = request.getParameter("platFormType");
     		//String file_path="/dncyz/WebContent/tempFile/订单详细（饿了么模板）.xlsx";
     		String file_path = getServletContext().getRealPath("tempFile");

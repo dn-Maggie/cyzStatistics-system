@@ -731,47 +731,91 @@
 	
 	
 	<!-- 全盘信息（运营总） -->
-	<select id="calcuOperaStatic" resultMap="orderStatic" parameterType="com.cyz.staticsystem.finance.model.OrderDetailQuery">
+	<select id="calcuOperaStatic" resultMap="DetailStatic" parameterType="com.cyz.staticsystem.finance.model.AccountOrderDetail">
 		select
-				s.STORE_ID as storeId,
-				aod.STORE_NAME as storeName,
-				aod.platform_type as platformType,
-				COUNT(DISTINCT case when aod.latest_valid_status ='0' and aod.is_invalid = '0' then aod.order_no end) as successOrderNum,	
-				sum(case when aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.orgin_price else 0 end)
-				+sum(case when aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.meal_fee else 0 end)
-				+sum(case when aod.platform_type != 'elm' and aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.platform_dist_charge else 0 end)
-				+sum(case when aod.is_invalid = '0' and aod.latest_valid_status ='0'  then aod.merchant_dist_charge else 0 end) as successOrderAmount,
-				sum(aod.latest_valid_status) as failOrderNum,
-				sum(case when aod.latest_valid_status = '1' then aod.orgin_price else 0 end)
-				+sum(case when aod.latest_valid_status = '1' then aod.meal_fee else 0 end)
-				+sum(case when aod.platform_type != 'elm' and aod.latest_valid_status = '1' then aod.platform_dist_charge else 0 end)
-				+sum(case when aod.latest_valid_status = '1' then aod.merchant_dist_charge else 0 end) as failOrderAmount
-			from account_order_detail_foropera as aod
-			LEFT JOIN dn_store as s ON  s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or  s.baidu_id = aod.store_BD_id
+				b.brand_name as brandName,
+				od.STORE_NAME as storeName,
+				s.business_area as businessArea,
+				COUNT(DISTINCT case when od.latest_valid_status ='0'  and od.is_invalid = '0' then od.order_no end) as successOrderNum,	
+				sum(od.latest_valid_status) as failOrderNum,
+				sum(case when od.is_invalid = '0' and  od.latest_valid_status ='0' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0'  and  od.latest_valid_status ='0'  then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0'  and  od.latest_valid_status ='0'  then od.platform_dist_charge else 0 end)
+					+sum(case when od.is_invalid = '0'  and  od.latest_valid_status ='0'  then od.merchant_dist_charge else 0 end) as successOrderAmount,
+				sum(case when od.latest_valid_status = '1' then od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' then od.platform_dist_charge else 0 end)
+					+sum(case when od.latest_valid_status = '1' then od.merchant_dist_charge else 0 end) as failOrderAmount,
+
+				COUNT(DISTINCT case when od.platform_type = 'elm' and od.is_invalid = '0' and od.latest_valid_status ='0' then od.order_no END)  as elmsuccessOrderNum,	
+				sum(case when od.platform_type = 'elm' then od.latest_valid_status else 0 end) as elmfailOrderNum,
+				sum(case when od.is_invalid = '0' and od.platform_type = 'elm' and od.latest_valid_status ='0' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.platform_type = 'elm' and od.latest_valid_status ='0' then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.platform_type = 'elm' and od.latest_valid_status ='0' then od.merchant_dist_charge else 0 end) as elmsuccessOrderAmount,
+				sum(case when od.latest_valid_status = '1' and od.platform_type = 'elm' then  od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'elm' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'elm' then od.merchant_dist_charge else 0 end) as elmfailOrderAmount,			
+
+				COUNT(DISTINCT case when od.platform_type = 'mt' and od.is_invalid = '0'  and od.latest_valid_status ='0' then od.order_no END) as mtsuccessOrderNum,	
+			  	sum(case when od.platform_type = 'mt' then od.latest_valid_status else 0 end) as mtfailOrderNum,
+				sum(case when od.is_invalid = '0' and od.platform_type = 'mt' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.latest_valid_status ='0' and od.platform_type = 'mt' then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.latest_valid_status ='0' and od.platform_type = 'mt' then od.platform_dist_charge else 0 end)
+					+sum(case when od.is_invalid = '0'  and od.latest_valid_status ='0' and od.platform_type = 'mt' then od.merchant_dist_charge else 0 end) as mtsuccessOrderAmount,
+				sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then  od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then od.platform_dist_charge else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'mt' then od.merchant_dist_charge else 0 end) as mtfailOrderAmount,		
+				
+				COUNT(DISTINCT case when od.platform_type = 'bdwm' and od.is_invalid = '0'  and od.latest_valid_status ='0' then od.order_no END) as bdwmsuccessOrderNum,	
+				sum(case when od.platform_type = 'bdwm' then od.latest_valid_status else 0 end) as  bdwmfailOrderNum,
+				sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'  and od.platform_type = 'bdwm' then od.orgin_price else 0 end)
+					+sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'   and od.platform_type = 'bdwm' then od.meal_fee else 0 end)
+					+sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'   and od.platform_type = 'bdwm' then od.platform_dist_charge else 0 end)
+					+sum(case when od.is_invalid = '0' and od.latest_valid_status = '0'   and od.platform_type = 'bdwm' then od.merchant_dist_charge else 0 end) as bdwmsuccessOrderAmount,
+				sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then  od.orgin_price else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then od.meal_fee else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then od.platform_dist_charge else 0 end)
+					+sum(case when od.latest_valid_status = '1' and od.platform_type = 'bdwm' then od.merchant_dist_charge else 0 end) as bdwmfailOrderAmount		
+			from account_order_detail_foropera as od 
+			LEFT JOIN dn_store as s on s.elm_id = od.store_id or s.meituan_id= od.store_MT_id or s.baidu_id =od.store_BD_id
+			LEFT JOIN dn_brand as b on b.brand_id = s.brand_id
 			LEFT JOIN basic_user_info as bui on bui.STORE_ID = s.STORE_ID 
-					where 1=1 
-				<if test="null != propsMap.startDate and propsMap.startDate != ''">
-					<![CDATA[
-						and DATE_FORMAT(aod.over_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
-					]]>
-				</if>
-				<if test="null != propsMap.endDate and propsMap.endDate != ''">
-					<![CDATA[
-						and DATE_FORMAT(aod.over_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
-					]]>
-				</if> 
-				<if test="storeId != null and '' != storeId">  
-					and (aod.store_id = #{storeELMId,jdbcType=VARCHAR} or aod.store_id = #{storeMTId,jdbcType=VARCHAR} or aod.store_id = #{storeBDId,jdbcType=VARCHAR})
-				</if>
-				<if test="businessArea != null and '' != businessArea">  
-					and s.business_area = #{businessArea,jdbcType=VARCHAR}
-				</if>
-				<if test="username != null and '' != username">  
-					and bui.user_account = #{username,jdbcType=VARCHAR}
-				</if>
-				<if test="password != null and '' != password">  
-					and bui.password = #{password,jdbcType=VARCHAR}
-				</if>
+			where 1=1
+		<if test="brandId != null and '' != brandId">  
+			AND s.BRAND_ID = #{brandId,jdbcType=VARCHAR}
+		</if>
+		<if test="brandName != null and '' != brandName">  
+			and bui.user_account = #{brandName,jdbcType=VARCHAR}
+		</if>
+		<if test="businessArea != null and '' != businessArea">  
+			and s.business_area = #{businessArea,jdbcType=VARCHAR}
+		</if>
+		<if test="storeId != null and '' != storeId">  
+			and (od.store_id = #{storeELMId,jdbcType=VARCHAR} or od.store_id = #{storeMTId,jdbcType=VARCHAR} or od.store_id = #{storeBDId,jdbcType=VARCHAR})
+		</if>
+		<if test="orderType != null and '' != orderType">  
+			and od.order_type = #{orderType,jdbcType=VARCHAR}
+		</if>
+		<if test="isInvalid != null and '' != isInvalid">  
+			and od.is_invalid = #{isInvalid,jdbcType=TIMESTAMP}
+		</if>
+		 <if test="null != propsMap.startDate and propsMap.startDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.over_time,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if>
+		<if test="null != propsMap.endDate and propsMap.endDate != ''">
+			<![CDATA[
+				and DATE_FORMAT(od.over_time,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
+			]]>
+		</if> 
+		<if test="distributionMode != null and '' != distributionMode">  
+			and od.distribution_mode = #{distributionMode,jdbcType=VARCHAR}
+		</if>
+		<if test="orderFields != null and '' != orderFields">  
+           	order by ${orderFields} ${order}
+       	</if>
 	</select>
 	
 	

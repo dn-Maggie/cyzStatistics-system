@@ -1,5 +1,6 @@
 package com.cyz.staticsystem.area.model;
 
+import com.cyz.staticsystem.common.Constant;
 import com.cyz.staticsystem.common.bean.Model;
 /**
  * 描述：省市区地域模块实体类，负责页面与后台数据传输功能
@@ -8,7 +9,7 @@ import com.cyz.staticsystem.common.bean.Model;
  * @version 1.0 2017-01-01
  */
 public class ChinaArea extends Model{
-	
+		
 	
 		            /**
 	                 * 

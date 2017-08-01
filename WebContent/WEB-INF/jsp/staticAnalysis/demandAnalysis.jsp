@@ -93,8 +93,8 @@ var gridObj = {};
 		$("#news").text(data.storeBDId);
 		$("#oldsRate").text((data.storeMTId*100/data.storeELMId).toFixed(2)+'%');
 		$('.easy-pie-chart.percentage').each(function(){
-			var barColor = $(this).data('color') || '#4ad434';
-			var trackColor = barColor == '#54a7f4' ? '#54a7f4' : '#54a7f4';
+			var barColor = $(this).data('color') || '#F47115';
+			var trackColor = barColor == '#EEE' ? '#EEE' : '#EEE';
 			var size = parseInt($(this).data('size')) || 200;
 			$(this).easyPieChart({
 				barColor: barColor,

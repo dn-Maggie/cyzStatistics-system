@@ -107,7 +107,7 @@
 			<if test="platformType != null and '' != platformType">  
 				and aod.platform_type = #{platformType,jdbcType=VARCHAR}
 			</if>
-			group by aod.id
+			group by aod.store_id
 			<if test="orderFields != null and '' != orderFields">  
 	           	order by ${orderFields} ${order}
 	       	</if>

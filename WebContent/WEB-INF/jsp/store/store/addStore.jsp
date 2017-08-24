@@ -45,15 +45,15 @@ $(function() {
 	})
 	
 	//验证码登录
-	 $("#codeInput").on("input", checkCode); 
+	/*  $("#codeInput").on("input", checkCode);  */
 	
 	//点击图片切换验证码
-	$('#imgObj').click(function() {
+	/* $('#imgObj').click(function() {
 		init();
-	});
+	}); */
 	
 	//检测百度验证码
-	function checkOutBdwm(username,password,platformType){
+	/* function checkOutBdwm(username,password,platformType){
 		if(username.length>0&&password.length>0){
 			if($('.wizard-actions').find('#imgObj').css('display')=='none'){
 				$("#codeInput").css('display','inline-block');
@@ -61,9 +61,9 @@ $(function() {
 			}
 			init();
 		}
-	}
+	} */
 	//检测验证平台账号密码
-	function checkOutAccount(username,password,platformType){
+	/* function checkOutAccount(username,password,platformType){
 		if(username.length>0||password.length>0){
 		var url = "<m:url value='/store/checkStoreAcocunt.do'/>";
 		if(username==""&&password==""){showMessage("请输入账号密码！",2000);return false;}
@@ -103,9 +103,9 @@ $(function() {
 			   }
 		});
 		}
-	}
+	} */
 	//验证平台账号密码是否匹配
-	$('.pwd').on('blur', function(){
+	/* $('.pwd').on('blur', function(){
 		var platformType = $(this).attr('name');
 		var password =$(this).val();
 		var username =$(this).parents('tr').find('.username').val();
@@ -115,7 +115,7 @@ $(function() {
 			case "baidupwd":platformType = 'bdwm'; checkOutBdwm(username,password,platformType);return false;//百度需要进行验证码校验
 			default:return false;
 		}
-	});
+	}); */
 	//登录账户验证
 	$("#edit_userAccount").on('change',function(e, info){
 		var userAccount = $("#edit_userAccount").val()
@@ -583,23 +583,7 @@ function init() {
 							</td>
 						</tr>
 						<tr>
-							<td class="inputLabelTd"><span class="required">*</span>饿了么平台商铺账号：</td>
-							<td class="inputTd">
-								<span class="input-icon">
-									<input id="edit_elmUsername" name="elmUsername" type="text" class="text username" value="${store.elmUsername}"/>
-									<i class="icon-unchecked green"></i>
-								</span>
-							</td>
-							<td class="inputLabelTd"><span class="required">*</span>饿了么平台商铺密码：</td>
-							<td class="inputTd">
-								<span class="input-icon">
-									<input id="edit_elmPwd" name="elmPwd" type="text" class="text pwd" value="${store.elmPwd}"/>
-									<i class="icon-unchecked green"></i>
-								</span>
-							</td>
-						</tr>
-						<tr>
-							<td class="inputLabelTd"><span class="required">*</span>美团平台商铺账号：</td>
+							<td class="inputLabelTd"><span class="required">*</span>美团平台商铺ID：</td>
 							<td class="inputTd">
 								<span class="input-icon">
 									<input id="edit_meituanId" name="meituanId" type="text" class="text username" value="${store.meituanId}"/>
@@ -607,26 +591,10 @@ function init() {
 								</span>
 								
 							</td>
-							<td class="inputLabelTd"><span class="required">*</span>美团平台商铺密码：</td>
-							<td class="inputTd">
-								<span class="input-icon">
-									<input id="edit_meituanPwd" name="meituanPwd" type="text" class="text pwd" value="${store.meituanPwd}"/>
-									<i class="icon-unchecked green"></i>
-								</span>
-							</td>
-						</tr>
-						<tr>
-							<td class="inputLabelTd"><span class="required">*</span>百度平台商铺账号：</td>
+							<td class="inputLabelTd"><span class="required">*</span>百度平台商铺ID：</td>
 							<td class="inputTd">
 								<span class="input-icon">
 									<input id="edit_baiduId" name="baiduId" type="text" class="text username" value="${store.baiduId}"/>
-									<i class="icon-unchecked green"></i>
-								</span>
-							</td>
-							<td class="inputLabelTd"><span class="required">*</span>百度平台商铺密码：</td>
-							<td class="inputTd">
-								<span class="input-icon">
-									<input id="edit_baidupwd" name="baidupwd" type="text" class="text pwd" value="${store.baidupwd}"/>
 									<i class="icon-unchecked green"></i>
 								</span>
 							</td>

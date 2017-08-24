@@ -1,3 +1,4 @@
+<%@page import="com.cyz.staticsystem.common.enums.LogisticsCode"%>
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE HTML>
 <html>
@@ -29,7 +30,6 @@ var deepTotalModel = {url: "<m:url value='/accountOperaTotal/listAccountOperaTot
 					{name : "brandName",label:"品牌"},
 					{name : "storeName",label:"商户名称",index : "store_name"},
 					{name : "storeType",label:"店铺类型",index : "store_type",formatter:GridColModelForMatter.storeType}, 	
-					{name : "storeDistMode",label:"配送方式"}, 	
 					{name : "invalidNum",label:"无效单",isBasic:true},				
 					{name : "validNum",label:"有效单",isBasic:true},	 
 					{name : "productSaleAmount",label:"产品销售金额",isBasic:true,editFlag:true,formatter:Finance.formatAccountting},				
@@ -126,14 +126,6 @@ var deepTotalModel = {url: "<m:url value='/accountOperaTotal/listAccountOperaTot
 						 	<option value="baidu">百度</option>
 						</select>
 						<span>平台类型:</span>
-					 </li>
-					  <li>
-					 	<select class="search_select" name="distributionMode" id="distributionMode">
-					 		<option value=""></option>
-					 		<option value="">商家自配</option>
-						 	<option value="">平台专配</option>
-					 	</select>
-						<span>配送方式:</span>
 					 </li>
 					<li>
 						<input type="reset" class="reset_btn" onclick="List.resetForm('queryForm')" value="重置"><!-- 重置 -->

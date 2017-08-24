@@ -137,7 +137,7 @@ var deepOperaModel ={url: "<m:url value='/operaDate/listOperaDate.do'/>?type=dee
 					<input type="text" placeholder="起始日期" class="search_time150 date-picker" name="propsMap['startDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
 					</div>
 				</li>
-				<li class="date_area">
+				<!-- <li class="date_area">
 					<span>创建时间:</span>
 						<div class="time_bg">
 						<div class="input-group bootstrap-timepicker">
@@ -150,7 +150,7 @@ var deepOperaModel ={url: "<m:url value='/operaDate/listOperaDate.do'/>?type=dee
 							<input class="timepicker text" name="propsMap['endTime']"   type="text" />
 						</div>
 					</div>
-					</li>	
+					</li>	 -->
 				<li><select class="search_select" name="platformType" id="platformType"><option value="">所有平台</option>
 					 <option value="elm">饿了么</option><option value="mt">美团</option><option value="bdwm">百度</option>
 					</select><span>平台类型:</span></li><!--下拉 -->

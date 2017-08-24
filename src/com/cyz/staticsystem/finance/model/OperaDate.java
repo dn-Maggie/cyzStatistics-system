@@ -27,7 +27,9 @@ public class OperaDate extends Model{
 				   			private String storeMTId;
 				   			private String storeBDId;
 				   			private String operator; //操作人
-		   		
+				   			private String storeDistMode;//配送方式
+				   			
+				   			
 				   			public String getStoreELMId() {
 								return storeELMId;
 							}
@@ -1178,6 +1180,14 @@ public class OperaDate extends Model{
 
 			public void setOperator(String operator) {
 				this.operator = operator;
+			}
+
+			public String getStoreDistMode() {
+				return storeDistMode;
+			}
+
+			public void setStoreDistMode(String storeDistMode) {
+				this.storeDistMode = storeDistMode;
 			}
 		   		
 		

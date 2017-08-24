@@ -164,7 +164,10 @@
 			,s.is_delete
 		from dn_store as s
 		left join dn_brand as b on b.BRAND_ID = s.BRAND_ID
-		where s.STORE_ID = #{storeId,jdbcType=VARCHAR}
+		where s.STORE_ID = #{storeId,jdbcType=VARCHAR} 
+			or  s.elm_id = #{storeId,jdbcType=VARCHAR} 
+			or  s.meituan_id = #{storeId,jdbcType=VARCHAR} 
+			or  s.baidu_id = #{storeId,jdbcType=VARCHAR} 
 	</select>
 	
 	<!--获取所有店铺商圈  -->
@@ -172,6 +175,22 @@
 		SELECT DISTINCT  business_area FROM `dn_store`;
 	</select>
 	
+	<!--获取所有订单店铺  -->
+	<select id="getOrderStore" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.store.model.Store">
+		SELECT  
+			aod.STORE_ID,
+			aod.STORE_NAME  
+			FROM account_order_detail as aod
+		left join dn_store as s on s.elm_id = aod.STORE_ID OR s.meituan_id = aod.STORE_ID or s.baidu_id = aod.STORE_ID
+		WHERE 1=1
+		<if test="ownerUserId != null and '' != ownerUserId">  
+			and s.owner_userId = #{ownerUserId,jdbcType=VARCHAR}
+		</if>
+		GROUP BY s.STORE_ID
+	</select>
+	
+	
+	<!--获取所有店铺  -->
 	<select id="listByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.store.model.Store">
 		SELECT
 			s.STORE_ID

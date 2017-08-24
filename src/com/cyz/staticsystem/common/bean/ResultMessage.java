@@ -32,7 +32,14 @@ public class ResultMessage implements Serializable {
 	private Object result;
 	private String respCode;
 	private String respMsg;
-
+	
+	public ResultMessage(){}
+	
+	public ResultMessage(int status,String message){
+		this.status = status;
+		this.message = message;
+	}
+	
 	public String getRespCode() {
 		return respCode;
 	}
@@ -82,4 +89,6 @@ public class ResultMessage implements Serializable {
 	public void setResult(Object result) {
 		this.result = result;
 	}
+	
+	
 }

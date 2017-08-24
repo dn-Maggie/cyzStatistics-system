@@ -285,6 +285,10 @@ public class AjaxUtils {
 	public static ResultMessage getSuccessMessage() {
 		return getResultMessage(Integer.valueOf(1), "操作成功");
 	}
+	
+	public static ResultMessage getFailureMessage() {
+		return getResultMessage(Integer.valueOf(0), "插入失败");
+	}
 
 	public static ResultMessage getSuccessMessage(String msg) {
 		return getResultMessage(Integer.valueOf(1), msg);

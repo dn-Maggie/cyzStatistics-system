@@ -16,6 +16,7 @@
 	http://www.springframework.org/schema/aop 
 	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 	">
+	<context:annotation-config/> 
 	<!-- 为controller加上自动代理 -->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<!-- controller包(自动注入) -->
@@ -74,11 +75,12 @@
 		<!-- <property name="resolveLazily" value="true"/> -->
 	</bean>
 		
+	
+		
+		
 	<bean class="com.cyz.staticsystem.common.filter.RightFilter">
 		<property name="uriList">
 			<list>
-				<value>/analysisData.jsp</value>
-				<!-- <value>/AnalysisUtil</value> -->
 				<value>/error.jsp</value>
 				<value>/login.do</value>
 				<value>/getShopId.do</value>

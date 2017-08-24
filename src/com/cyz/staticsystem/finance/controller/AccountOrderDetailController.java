@@ -1,12 +1,5 @@
 package com.cyz.staticsystem.finance.controller;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,22 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cyz.staticsystem.basic.model.Brand;
 import com.cyz.staticsystem.basic.service.BrandService;
+import com.cyz.staticsystem.common.bean.ResultMessage;
 import com.cyz.staticsystem.common.excel.ExcelExpUtils;
 import com.cyz.staticsystem.common.excel.ExpParamBean;
-import com.cyz.staticsystem.common.excel.ImportExcelUtil;
 import com.cyz.staticsystem.common.page.Page;
 import com.cyz.staticsystem.common.util.AjaxUtils;
-import com.cyz.staticsystem.common.util.DateUtil;
 import com.cyz.staticsystem.common.util.FormatEntity;
-import com.cyz.staticsystem.common.util.StringUtil;
 import com.cyz.staticsystem.common.util.Utils;
-import com.cyz.staticsystem.finance.model.AccountOperaTotal;
 import com.cyz.staticsystem.finance.model.AccountOrderDetail;
 import com.cyz.staticsystem.finance.model.AccountSaleGoods;
 import com.cyz.staticsystem.finance.model.OperaDetailStatic;
@@ -111,14 +99,12 @@ public class AccountOrderDetailController{
 	public ModelAndView toList(HttpServletRequest request){
 		 ModelAndView mv = new ModelAndView("WEB-INF/jsp/finance/accountOrderDetail/listAccountOrderDetail");
 		 Store store = new Store();
-		 Brand brand = new Brand();
 		 	store.setIsDelete(0);
 			boolean isAdmin = true;
 	 		if(!Utils.isSuperAdmin(request)){
 	 			store.setOwnerUserId(Utils.getLoginUserInfoId(request));
 			}
-			mv.addObject("brand",brandService.listByCondition(brand));
-			mv.addObject("store",storeService.listByCondition(store));
+			mv.addObject("store",storeService.getOrderStore(store));
 			mv.addObject("isAdmin",isAdmin);
 	 		return mv;
 	}
@@ -138,6 +124,10 @@ public class AccountOrderDetailController{
 		accountOrderDetail.setPage(page);	
 		if(accountOrderDetail.getStoreId()!=""&&accountOrderDetail.getStoreId()!=null){
 			Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
+			if(s == null){
+				AjaxUtils.sendAjaxForObjectStr(response,new ResultMessage(0,"系统没有关联店铺！"));
+				return;
+			}
 			accountOrderDetail.setStoreELMId(StringUtils.defaultIfEmpty(
 					s.getElmId(), "0"));
 			accountOrderDetail.setStoreMTId(StringUtils.defaultIfEmpty(
@@ -157,7 +147,6 @@ public class AccountOrderDetailController{
 	public ModelAndView toEdit(String key){
 		AccountOrderDetail entity = accountOrderDetailService.getByPrimaryKey(key);
 		Map<String,String> accountOrderDetail = FormatEntity.getObjectValue(entity);
-		
 		return new ModelAndView("WEB-INF/jsp/finance/accountOrderDetail/editAccountOrderDetail","accountOrderDetail",accountOrderDetail );
 	}
 	

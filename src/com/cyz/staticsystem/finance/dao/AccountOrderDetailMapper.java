@@ -19,14 +19,19 @@ public interface AccountOrderDetailMapper  {
 	 * 新增订单明细方法
 	 * @param accountOrderDetail AccountOrderDetail:实体类
 	 */
-	void add(AccountOrderDetail accountOrderDetail);
-	
+	int add(AccountOrderDetail accountOrderDetail);
+	/**
+	 * 新增菜品明细方法
+	 * @param accountSaleGoods AccountSaleGoods:实体类
+	 */
+	int addSaleGoods(AccountSaleGoods accountSaleGoods);
 	/**
 	 * 删除订单明细方法
 	 * @param key String:多个由“，”分割开的id字符串
 	 */
-	void deleteByKey(String key);
+	int deleteByKey(String key);
 	
+	int deleteSaleGoodsByKey(AccountSaleGoods accountSaleGoods);
 	/**
 	 * 根据主键查找订单明细实体方法
 	 * @param key String：实体主键（查询条件）
@@ -81,5 +86,7 @@ public interface AccountOrderDetailMapper  {
 	/**
 	 *获取前五菜品*/
 	public List<AccountSaleGoods> getTop5Goods(AccountOrderDetail accountOrderDetail);
+
+	
 
 }

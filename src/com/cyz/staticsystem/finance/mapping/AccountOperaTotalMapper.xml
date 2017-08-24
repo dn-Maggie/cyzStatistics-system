@@ -51,65 +51,7 @@
 		platform_type
 	</sql>
 	
-	<!--查看浅运营表 -->
-	<select id="listSimpleTotalByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.AccountOperaTotal">
-		select
-			aos.id,
-			aos.store_id,
-			aos.store_name,
-			b.BRAND_NAME,
-			s.store_type,
-			s.store_dist_mode,
-			aos.create_date,
-			sum(aos.invalid_num) as invalid_num,
-			sum(aos.valid_num) as valid_num,
-			sum(aos.product_sale_amount) as product_sale_amount,
-			sum(aos.amount_receivable) as amount_receivable,
-			sum(aos.amount_payable) as amount_payable,
-			sum(aos.cyz_service_charge) as cyz_service_charge,
-			sum(aos.sale_gross_profit) as sale_gross_profit,
-			sum(aos.dist_price) as dist_price,
-			sum(aos.dist_price) as dist_all,
-			sum(aos.dist_price -aos.actual_merchant_dist_charge) as dist_diff,
-			sum(aos.actual_merchant_dist_charge) as actual_merchant_dist_charge,
-			sum(aos.platform_activities_charge) as platform_activities_charge,
-			sum(aos.platform_activities_charge*0.4) as service_all,
-			sum(aos.other_all) as other_all,
-			sum(aos.sale_gross_profit-(aos.dist_price-aos.actual_merchant_dist_charge)-aos.platform_activities_charge*0.4) as profit_all,
-			aos.remark,
-			aos.platform_type
-		from account_opera_simple_total as aos 
-		LEFT JOIN dn_store as s on s.elm_id = aos.store_id or s.meituan_id= aos.store_id or s.baidu_id =aos.store_id
-		LEFT JOIN dn_brand as b on b.BRAND_ID = s.BRAND_ID
-		where s.is_delete = 0
-		<if test="id != null and '' != id">  
-			and aos.id = #{id,jdbcType=VARCHAR}
-		</if>
-		<if test="storeId != null and '' != storeId">  
-			and (aos.store_id = #{storeELMId,jdbcType=VARCHAR} or aos.store_id= #{storeMTId,jdbcType=VARCHAR}  or aos.store_id =#{storeBDId,jdbcType=VARCHAR}) 
-		</if>
-		<if test="storeName != null and '' != storeName">  
-			and aos.store_name = #{storeName,jdbcType=VARCHAR}
-		</if>
-		<if test="null != propsMap.startDate and propsMap.startDate != ''">
-			<![CDATA[
-				and DATE_FORMAT(aos.create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
-			]]>
-		</if>
-		<if test="null != propsMap.endDate and propsMap.endDate != ''">
-			<![CDATA[
-				and DATE_FORMAT(aos.create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
-			]]>
-		</if> 
-		<if test="platformType != null and '' != platformType">  
-			and aos.platform_type = #{platformType,jdbcType=VARCHAR}
-		</if>
-		group by aos.id
-       	<if test="orderFields != null and '' != orderFields">  
-           	order by ${orderFields} ${order}
-       	</if>
-	</select>
-	<!--查看深运营表 -->
+	<!--查看深运营汇总表 -->
 	<select id="listDeepTotalByCondition" resultMap="BaseResultMap" parameterType="com.cyz.staticsystem.finance.model.AccountOperaTotal">
 		select
 			aod.id,
@@ -139,7 +81,7 @@
 		from account_opera_deep_total as aod
 		LEFT JOIN dn_store as s on s.elm_id = aod.store_id  or  s.meituan_id=aod.store_id  or s.baidu_id =aod.store_id
 		LEFT JOIN dn_brand as b on b.BRAND_ID = s.BRAND_ID
-			where s.is_delete = 0
+			where 1=1
 			<if test="id != null and '' != id">  
 				and aod.id = #{id,jdbcType=VARCHAR}
 			</if>
@@ -171,31 +113,13 @@
 	       	</if>
 	</select>
 	
-	<!--删除浅运营数据 -->	
-	<delete id="deleteSimpleTotalByOperaDate" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
-		delete from account_opera_simple_total
-		where store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
-		<if test="null != propsMap.startDate and propsMap.startDate != ''">
-			<![CDATA[
-			and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
-			]]>
-		</if>
-		<if test="null != propsMap.endDate and propsMap.endDate != ''">
-			<![CDATA[
-			and DATE_FORMAT(create_date,'%Y-%c-%d') <= DATE_FORMAT(#{propsMap.endDate,jdbcType=DATE},'%Y-%c-%d')
-			]]>
-		</if> 
-		<if test="null != createDate and createDate != ''">
-			and DATE_FORMAT(create_date,'%Y-%c-%d') = DATE_FORMAT(#{createDate,jdbcType=DATE},'%Y-%c-%d')
-		</if> 
-		<if test="platformType != null and '' != platformType">  
-			and platform_type = #{platformType,jdbcType=VARCHAR}
-		</if>
-	</delete>
-	<!--删除深运营数据 -->	
+	<!--删除深运营汇总数据 -->	
 	<delete id="deleteDeepTotalByOperaDate" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
 		delete from account_opera_deep_total
-		where store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+		where 1 =1 
+		<if test="storeId != null and '' != storeId">  
+			and store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+		</if>
 		<if test="null != propsMap.startDate and propsMap.startDate != ''">
 			<![CDATA[
 			and DATE_FORMAT(create_date,'%Y-%c-%d') >= DATE_FORMAT(#{propsMap.startDate,jdbcType=DATE},'%Y-%c-%d')
@@ -214,111 +138,13 @@
 		</if>
 	</delete>
 	
-	
-	<!-- 生成浅运营表 -->
-	<insert id="addSimpleTotalByOperaDate" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
-		INSERT INTO account_opera_simple_total (
-			<include refid="Base_Column_List" />
-		)(
-			SELECT
-				CONCAT(create_date,store_name,platform_type) as id,
-				store_id,
-				store_name,
-				create_date,
-				sum(invalid_num) as invalid_num,
-				sum(valid_num) as valid_num,
-				sum(product_sale_amount) as product_sale_amount,
-				sum(amount_receivable) as amount_receivable,
-				sum(amount_payable) as amount_payable,
-				sum(cyz_service_charge) as cyz_service_charge,
-				sum(sale_gross_profit) as sale_gross_profit,
-				sum(dist_price) as dist_price,
-				sum(dist_all) as dist_all,
-				sum(dist_diff) as dist_diff,
-				sum(actual_merchant_dist_charge) as actual_merchant_dist_charge,
-				sum(platform_activities_charge) as platform_activities_charge,
-				sum(service_all) as service_all,
-				sum(other_all) as other_all,
-				sum(profit_all) as profit_all,
-				remark,
-				platform_type
-			FROM
-				opera_date_base_price
-			WHERE
-				store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
-			GROUP BY
-				store_name,
-				create_date
-			)
-			UNION(		
-			SELECT
-				CONCAT(create_date,store_name,platform_type) as id,
-				store_id,
-				store_name,
-				create_date,
-				sum(invalid_num) as invalid_num,
-				sum(valid_num) as valid_num,
-				sum(product_sale_amount) as product_sale_amount,
-				sum(amount_receivable) as amount_receivable,
-				sum(amount_payable) as amount_payable,
-				sum(cyz_service_charge) as cyz_service_charge,
-				sum(sale_gross_profit) as sale_gross_profit,
-				sum(dist_price) as dist_price,
-				sum(dist_all) as dist_all,
-				sum(dist_diff) as dist_diff,
-				sum(actual_merchant_dist_charge) as actual_merchant_dist_charge,
-				sum(platform_activities_charge) as platform_activities_charge,
-				sum(service_all) as service_all,
-				sum(other_all) as other_all,
-				sum(profit_all) as profit_all,
-				remark,
-				platform_type
-			FROM
-				opera_date_platform_account
-			WHERE
-				store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
-			GROUP BY
-				store_name,
-				create_date
-			)
-			UNION(
-			SELECT
-				CONCAT(create_date,store_name,platform_type) as id,
-				store_id,
-				store_name,
-				create_date,
-				sum(invalid_num) as invalid_num,
-				sum(valid_num) as valid_num,
-				sum(product_sale_amount) as product_sale_amount,
-				sum(amount_receivable) as amount_receivable,
-				sum(amount_payable) as amount_payable,
-				sum(cyz_service_charge) as cyz_service_charge,
-				sum(sale_gross_profit) as sale_gross_profit,
-				sum(dist_price) as dist_price,
-				sum(dist_all) as dist_all,
-				sum(dist_diff) as dist_diff,
-				sum(actual_merchant_dist_charge) as actual_merchant_dist_charge,
-				sum(platform_activities_charge) as platform_activities_charge,
-				sum(service_all) as service_all,
-				sum(other_all) as other_all,
-				sum(profit_all) as profit_all,
-				remark,
-				platform_type
-			FROM
-				opera_date_sale_rate
-			WHERE
-				store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
-			GROUP BY
-				create_date,store_name,platform_type
-			)
-	</insert>
-	<!-- 生成深运营表 -->
+	<!-- 生成深运营汇总表 -->
 	<insert id="addDeepTotalByOperaDate" parameterType="com.cyz.staticsystem.finance.model.OperaDate">
 		INSERT INTO account_opera_deep_total (
 		<include refid="Base_Column_List" />
 		)(
 			SELECT
-				CONCAT(create_date,store_name,platform_type) as id,
+				CONCAT(DATE_FORMAT(create_date,'%Y%m%d'),store_id,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')) as id,
 				store_id,
 				store_name,
 				create_date,
@@ -341,74 +167,16 @@
 				platform_type
 			FROM
 				opera_date_deep_opera
-			WHERE
-				store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+			WHERE 1=1
+				<if test="storeId != null and '' != storeId">  
+				 and store_id =#{storeELMId,jdbcType=VARCHAR} or store_id =#{storeMTId,jdbcType=VARCHAR} or store_id =#{storeBDId,jdbcType=VARCHAR}
+				</if>
 			GROUP BY
 				create_date,store_name,platform_type
 		)
 	</insert>
 	
-	<!-- 修改浅运营表 -->
-	<update id="updateSimpleTotal" parameterType="com.cyz.staticsystem.finance.model.AccountOperaTotal">
-		update account_opera_simple_total  set
-			id= #{id,jdbcType=VARCHAR}
-			<if test="invalidNum != null and '' != invalidNum">  
-			,invalid_num = #{invalidNum,jdbcType=INTEGER}
-			</if>
-			<if test="validNum != null and '' != validNum">  
-			,valid_num = #{validNum,jdbcType=INTEGER}
-			</if>
-			<if test="productSaleAmount != null and '' != productSaleAmount">  
-			,product_sale_amount = #{productSaleAmount,jdbcType=VARCHAR}
-			</if>
-			<if test="amountReceivable != null and '' != amountReceivable">  
-			,amount_receivable = #{amountReceivable,jdbcType=VARCHAR}
-			</if>
-			<if test="amountPayable != null and '' != amountPayable">  
-			,amount_payable = #{amountPayable,jdbcType=VARCHAR}
-			</if>
-			<if test="cyzServiceCharge != null and '' != cyzServiceCharge">  
-			,cyz_service_charge = #{cyzServiceCharge,jdbcType=VARCHAR}
-			</if>
-			<if test="saleGrossProfit != null and '' != saleGrossProfit">  
-			,sale_gross_profit = #{saleGrossProfit,jdbcType=VARCHAR}
-			</if>
-			<if test="distPrice != null and '' != distPrice">  
-			,dist_price = #{distPrice,jdbcType=VARCHAR}
-			</if>
-			<if test="distAll != null and '' != distAll">  
-			,dist_all = #{distAll,jdbcType=VARCHAR}
-			</if>
-			<if test="distDiff != null and '' != distDiff">  
-			,dist_diff = #{distDiff,jdbcType=VARCHAR}
-			</if>
-			<if test="actualMerchantDistCharge != null and '' != actualMerchantDistCharge">  
-			,actual_merchant_dist_charge = #{actualMerchantDistCharge,jdbcType=VARCHAR}
-			</if>
-			<if test="platformActivitiesCharge != null and '' != platformActivitiesCharge">  
-			,platform_activities_charge = #{platformActivitiesCharge,jdbcType=VARCHAR}
-			</if>
-			<if test="serviceAll != null and '' != serviceAll">  
-			,service_all = #{serviceAll,jdbcType=VARCHAR}
-			</if>
-			<if test="profitAll != null and '' != profitAll">  
-			,profit_all = #{profitAll,jdbcType=VARCHAR}
-			</if>
-			<if test="otherAll != null and '' != otherAll">  
-			,other_all = #{otherAll,jdbcType=VARCHAR}
-			</if>
-			<if test="remark != null and '' != remark">  
-			,remark = #{remark,jdbcType=VARCHAR}
-			</if>
-			<if test="platformType != null and '' != platformType">  
-			,platform_type = #{platformType,jdbcType=VARCHAR}
-			</if>
-		where id = #{id,jdbcType=VARCHAR}
-		<if test="createDate != null and '' != createDate">  
-			and DATE_FORMAT(create_date,'%Y-%c-%d') = DATE_FORMAT(#{createDate,jdbcType=DATE},'%Y-%c-%d')
-		</if>
-	</update>
-	<!-- 修改深运营表 -->
+	<!-- 修改深运营汇总表 -->
 	<update id="updateDeepTotal" parameterType="com.cyz.staticsystem.finance.model.AccountOperaTotal">
 		update account_opera_deep_total set
 			id= #{id,jdbcType=VARCHAR}

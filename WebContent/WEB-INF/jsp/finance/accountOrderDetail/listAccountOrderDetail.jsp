@@ -1,3 +1,4 @@
+<%@page import="com.cyz.staticsystem.common.enums.LogisticsCode"%>
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE HTML>
 <html>
@@ -48,15 +49,13 @@ var gridObj = {};
 					{name : "storeName",label:"店铺名称",index : "store_name",width:220,frozen:true},
 					{name : "orderTime",label:"订单时间",index : "order_time",width:200,frozen:true},	
 					{name : "orderNo",label:"订单号",index : "order_no",width:200},
-					{name : "isInvalid",label:"订单状态",index : "is_invalid",width:100
-						,formatter:GridColModelForMatter.isInvalid},	
-					{name : "latestStatus",label:"订单最终状态",index : "latest_status",width:100},	
+					{name : "latestStatus",label:"订单最终状态",index : "latest_status",width:100
+							,formatter:GridColModelForMatter.lastStatus},	
 					{name : "orderType",label:"订单类型",index : "order_type",width:100
 						,formatter:GridColModelForMatter.orderType},	
 					{name : "distributionMode",label:"配送方式",index : "distribution_mode",formatter:GridColModelForMatter.distributionMode},	
 					{name : "orginPrice",label:"菜价",index : "orgin_price",width:100},				
 					{name : "mealFee",label:"餐盒费",index : "meal_fee",width:100},			
-					{name : "refundAmount",label:"用户申请退单金额",index : "refund_amount",width:100},		
 					/*{name : "activitiesSubsidyBymerchant",label:"实际菜品折扣",index : "activities_subsidy_bymerchant",editable:true,width:100},	*/			
 					{name : "specialOffer",label:"特价菜结算",index : "special_offer",width:100},			
 					{name : "orderDistCharge",label:"订单取配送费",index : "order_dist_charge",width:100},
@@ -68,7 +67,8 @@ var gridObj = {};
 					{name : "platformSubsidyVouchers",label:"平台承担代金券补贴",index : "platform_subsidy_vouchers",width:100}, 
 					{name : "serviceCharge",label:"服务费",index : "service_charge",width:100},				
 					{name : "settlementAmount",label:"结算金额",index : "settlement_amount",width:100},	
-					{name : "refundAmount",label:"用户申请退单金额",index : "refund_amount",width:100},
+					{name : "refundAmount",label:"用户申请退单金额",index : "refund_amount",width:80},
+					{name : "remark",label:"备注",index : "remark",width:100},
 					{name : "platformType",label:"平台类型",index : "platform_type",formatter:GridColModelForMatter.platformType,width:100},
 	           	],
 			serializeGridData:function(postData){//添加查询条件值
@@ -80,6 +80,11 @@ var gridObj = {};
 	        emptyrecords: "无记录可显示",
 	        rowList:[10,15,50,100],//每页显示记录数
 			rowNum:15,//默认显示15条
+			loadComplete: function(resp){
+				if(resp.status!=null&&resp.status==0){
+					showError(resp.message, 5000);
+				}
+			},
 			gridComplete:function(){//表格加载执行  
 				/*matchGrid(); */
 			 	var footerCell = $(this).footerData();
@@ -98,6 +103,7 @@ var gridObj = {};
 			}
 		})
 		gridObj.setFrozenColumns();
+		
     });
 	//下载模板
 	function executeDownload(){
@@ -131,24 +137,32 @@ var gridObj = {};
  		ExpExcel.showWin(gridObj,baseUrl+"/accountOrderDetail/exportExcel.do",'grid','queryForm');
  	}
 	//生成运营汇总表
-    function genTotal(ways){
-    	var storeName = $('#storeName').val();
-    	if(storeName==""){
-    		showMessage("请选择一个店铺", "提示", 20000000);
-    		return false;
+    function genTotal(){
+    	var storeId = $('#storeId').val();
+    	if(storeId == null || storeId.length==0){
+	    	new biz.alert({type:"confirm",message:"确定要生成所有店铺的深运营表吗?（确认将覆盖已生成的深运营记录，请及时将深运营表下载）",title:I18N.promp,callback:function(result){
+				if(!result){
+					return;
+				}else{
+					showInfo("正在处理，请稍后...");
+					genOperaDate();
+				}
+			}});   
     	}else{
-    		showInfo("正在处理，请稍后...");
-    		$ .ajax({
-       			type: "post",
-       			data:Finance.getQueryCondition(),
-    			url: baseUrl+"/operaDate/addByOrderDetail.do?type="+ways,
-    			cache:false,
-    			dataType:"json",
-    			success : function(response) {
-    				showMessage(response.message,"提示", 2000);
-    			}
-    		});
+    		genOperaDate();
     	}
+    }
+    function genOperaDate(){
+    	$.ajax({
+ 			type: "post",
+ 			data:Finance.getQueryCondition(),
+	 		url: baseUrl+"/operaDate/addByOrderDetail.do",
+	 		cache:false,
+	 		dataType:"json",
+	 		success : function(response) {
+	 			showMessage(response.message,"提示", 5000);
+	 		}
+	 	});
     }
     </script>
 </head>
@@ -158,14 +172,6 @@ var gridObj = {};
 		<form id="queryForm"><!-- 查询区 表单 -->
 			<div class="search border-bottom">
 				<ul>
-				<li><span>所属品牌：</span>
-					<select class="search_select choose_select" name="brandId" id="brandId">
-					<option value = "">所有品牌</option>
-						<c:forEach var="brand" items="${brand}">
-							<option value="${brand.brandId}"> <c:out value="${brand.brandName}"></c:out> </option>
-		             	</c:forEach>
-					</select>
-				</li>
 				<li><span>商户名称：</span>
 					<select class="search_select choose_select" name="storeId" id="storeId">
 						<c:if test="${isAdmin}"><option value = "">所有店铺</option></c:if>
@@ -174,12 +180,23 @@ var gridObj = {};
 		             	</c:forEach>
 					</select>
 				</li>
+				<li><span>配送方名称：</span>
+					<select class="input_select" id="groupLogisticsCode" name="distributionMode" style="float:none">
+						<option value="">--请选择--</option>
+						<c:forEach items="<%=LogisticsCode.values() %>" var="status">
+							<option value="${status.name}">${status.descript }</option>
+						</c:forEach>
+					</select> 
+				</li>
 				<li><span>订单状态：</span>
-					<select class="search_select" name="isInvalid">
-						<option value=""></option>
+					<select class="search_select" name="latestValidStatus">
+						<option value="">--请选择--</option>
 						<option value="0">有效订单</option>
 						<option value="1">无效订单</option>
 					</select>
+				</li>
+				<li>
+					<input type="text" placeholder="订单号"  class="search_choose" name="orderNo">
 				</li>
 				<li>
 					<div class="time_bg">
@@ -189,7 +206,7 @@ var gridObj = {};
 						<input type="text" placeholder="订单起始" class="search_time150 date-picker" name="propsMap['startDate']" data-date-format="yyyy-mm-dd "><!-- 时间选择控件-->
 					</div>
 				</li>
-				<li class="date_area">
+				<!-- <li class="date_area">
 					<span>创建时间:</span>
 					<div class="time_bg">
 						<div class="input-group bootstrap-timepicker">
@@ -202,7 +219,7 @@ var gridObj = {};
 							<input class="timepicker text" name="propsMap['endTime']"   type="text" />
 						</div>
 					</div>
-					</li>		
+					</li>		 -->
 				 <li>
 				 	<li>
 				 		<select class="search_select" name="platformType" id="platformType"><option value="">所有平台</option>
@@ -210,14 +227,6 @@ var gridObj = {};
 						</select>
 					<span>平台类型:</span>
 				 </li>
-				 <!--  <li>
-				 	<select class="search_select" name="distributionMode" id="distributionMode">
-				 		<option value=""></option>
-				 		<option value="">商家自配</option>
-					 	<option value="">平台专配</option>
-				 	</select>
-					<span>配送方式:</span>
-				 </li> -->
 				 <li>
 					<input type="reset" class="reset_btn" onclick="List.resetForm('queryForm')" value="重置"><!-- 重置 -->
 					<input type="button" class="search_btn mr22 " onclick="List.doSearch(gridObj);" value="查询"></li><!-- 查询-->
@@ -237,23 +246,8 @@ var gridObj = {};
 						</li>
 					</c:if>
 					<li>
-						<a href="javascript:;" class="btn" onclick="genTotal('basePrice');">
-							<span>生成底价运营表</span>
-						</a>
-					</li>
-					<li>
-						<a href="javascript:;" class="btn" onclick="genTotal('deepOpera');">
+						<a href="javascript:;" class="btn" onclick="genTotal();">
 							<span>生成深运营运营表</span>
-						</a>
-					</li>
-					<li>
-						<a href="javascript:;" class="btn" onclick="genTotal('saleRate');">
-							<span>生成销售额比例抽佣运营表</span>
-						</a>
-					</li>
-					<li>
-						<a href="javascript:;" class="btn" onclick="genTotal('platformAccount');">
-							<span>生成平台到款抽佣运营表</span>
 						</a>
 					</li>
 					</ul>

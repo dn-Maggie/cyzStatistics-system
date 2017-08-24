@@ -24,6 +24,11 @@ public interface AccountOrderDetailService  {
 	public ResultMessage add(AccountOrderDetail accountOrderDetail);
 	
 	/**
+	 * 新增菜品明细方法
+	 * @param accountSaleGoods AccountSaleGoods:实体类
+	 */
+	public ResultMessage addSaleGoods(AccountSaleGoods accountSaleGoods);
+	/**
 	 * 删除订单明细方法
 	 * @param key:多个由“，”分割开的id字符串
 	 */
@@ -86,4 +91,6 @@ public interface AccountOrderDetailService  {
 	/**
 	 *获取前五菜品*/
 	public List<AccountSaleGoods> getTop5Goods(AccountOrderDetail accountOrderDetail);
+
+	public ResultMessage updateSaleGoods(AccountSaleGoods asg);
 }

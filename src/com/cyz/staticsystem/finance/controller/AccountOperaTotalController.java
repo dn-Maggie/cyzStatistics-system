@@ -69,20 +69,9 @@ public class AccountOperaTotalController{
 	 * */
 	@RequestMapping("/updateAccountOperaTotal")
 	public void updateTotal(AccountOperaTotal accountOperaTotal,String type,HttpServletRequest request,HttpServletResponse response){
-		switch (type) {
-		case "simpleTotal":
-			//修改浅运营表
-			AjaxUtils.sendAjaxForObjectStr(
-					response,accountOperaTotalService.updateSimpleTotal(accountOperaTotal));	
-			break;
-		case "deepTotal":
 			//修改深运营表
 			AjaxUtils.sendAjaxForObjectStr(
 					response,accountOperaTotalService.updateDeepTotal(accountOperaTotal));	
-			break;
-		default:
-			break;
-		}
 	} 
 	
 	/**
@@ -106,17 +95,7 @@ public class AccountOperaTotalController{
 			accountOperaTotal.setStoreBDId(StringUtils.defaultIfEmpty(
 					s.getBaiduId(), "0"));
 		}
-		List<AccountOperaTotal> list = null;
-		switch (type) {
-		case "simpleTotal":
-			list = accountOperaTotalService.listSimpleTotalByCondition(accountOperaTotal);
-			break;
-		case "deepTotal":
-			list = accountOperaTotalService.listDeepTotalByCondition(accountOperaTotal);
-			break;
-		default:
-			break;
-		}
+		List<AccountOperaTotal> list = accountOperaTotalService.listDeepTotalByCondition(accountOperaTotal);
 		AjaxUtils.sendAjaxForPage(request, response, page, list);
 	}
 	
@@ -141,25 +120,13 @@ public class AccountOperaTotalController{
 		}
 		List<AccountOperaTotal> list = null;
 		try{
-			String gridId = request.getParameter("gridId");
 			String filename = "";
 			String title = "";
-				switch (gridId) {
-				case "#deepTotal":
-					list = accountOperaTotalService.listDeepTotalByCondition(accountOperaTotal);
-					filename = "深运营汇总表";
-					title = "深运营汇总表";
-					break;
-				case "#simpleTotal":
-					list = accountOperaTotalService.listSimpleTotalByCondition(accountOperaTotal);
-					filename = "浅运营汇总表";
-					title = "浅运营汇总表";
-					break;
-				default:
-					break;
-				}
-				ExcelExpUtils.exportListToExcel(list, response, epb.getFieldlist(),
-						filename, title);
+			list = accountOperaTotalService.listDeepTotalByCondition(accountOperaTotal);
+			filename = "深运营汇总表";
+			title = "深运营汇总表";
+			ExcelExpUtils.exportListToExcel(list, response, epb.getFieldlist(),
+					filename, title);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

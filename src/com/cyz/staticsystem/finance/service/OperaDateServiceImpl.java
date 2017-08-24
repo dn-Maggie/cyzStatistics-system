@@ -33,7 +33,13 @@ public class OperaDateServiceImpl implements OperaDateService{
 		return AjaxUtils.getSuccessMessage();
 	}
 	public int addDeepOperaByOrderDetail(AccountOrderDetail accountOrderDetail) {
-		return operaDateMapper.addDeepOperaByOrderDetail(accountOrderDetail);		
+		int result = 0;	
+			try{
+				result = operaDateMapper.addDeepOperaByOrderDetail(accountOrderDetail);
+			}catch(Exception e){
+				result = 0;
+			}
+			return result;
 	}
 	public int addBasePriceByOrderDetail(AccountOrderDetail accountOrderDetail) {
 		return operaDateMapper.addBasePriceByOrderDetail(accountOrderDetail);

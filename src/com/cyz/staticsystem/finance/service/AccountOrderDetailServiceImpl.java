@@ -32,10 +32,31 @@ public class AccountOrderDetailServiceImpl implements AccountOrderDetailService{
 	 * @param accountOrderDetail:实体类
 	 */	
 	public ResultMessage add(AccountOrderDetail accountOrderDetail){
-		accountOrderDetailMapper.add(accountOrderDetail);
-		return AjaxUtils.getSuccessMessage();
+		return accountOrderDetailMapper.add(accountOrderDetail)>0?
+				AjaxUtils.getSuccessMessage()
+				:AjaxUtils.getFailureMessage();
 	}
-	
+	/**
+	 * 新增菜品明细方法
+	 * @param accountSaleGoods AccountSaleGoods:实体类
+	 */
+	public ResultMessage addSaleGoods(AccountSaleGoods accountSaleGoods) {
+		return accountOrderDetailMapper.addSaleGoods(accountSaleGoods)>0?
+				AjaxUtils.getSuccessMessage()
+				:AjaxUtils.getFailureMessage();
+	}
+	/**
+	 * 更新菜品明细方法
+	 * @param accountSaleGoods AccountSaleGoods:实体类
+	 */
+	public ResultMessage updateSaleGoods(AccountSaleGoods asg) {
+		if(accountOrderDetailMapper.deleteSaleGoodsByKey(asg)>0){
+			return accountOrderDetailMapper.addSaleGoods(asg)>0?
+					AjaxUtils.getSuccessMessage()
+					:AjaxUtils.getFailureMessage();
+		}
+		else return AjaxUtils.getFailureMessage();
+	}
 	/**
 	 * 根据主键查找订单明细实体方法
 	 * @param key String 实体主键
@@ -138,4 +159,7 @@ public class AccountOrderDetailServiceImpl implements AccountOrderDetailService{
 	public List<AccountSaleGoods> getTop5Goods(AccountOrderDetail accountOrderDetail) {
 		return accountOrderDetailMapper.getTop5Goods(accountOrderDetail);
 	}
+	
+
+	
 }

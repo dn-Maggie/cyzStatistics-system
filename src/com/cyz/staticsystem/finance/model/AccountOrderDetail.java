@@ -196,59 +196,59 @@ public class AccountOrderDetail extends Model{
 		   			private BigDecimal specialOrgin;
 				
 		   			
-		   		 /**
-	                 * 预定时间
-	                 **/
-					@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") 
-						private Timestamp bookedTime;
-		
-		            /**
-	                 * 客户名称
-	                 **/
-				   			private String consigneeName;
-		   		
-		            /**
-	                 * 客户手机号
-	                 **/
-				   			private String consigneePhones;
-		   		
-		            /**
-	                 * 活动时间
-	                 **/
-					@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") 
-							private Timestamp activeTime;
-		
-		            /**
-	                 * 活动优惠
-	                 **/
-				   			private BigDecimal activeTotal;
-		   		
-		            /**
-	                 * 菜品名称
-	                 **/
-				   			private String goodsName;
-		   		
-		            /**
-	                 * 菜品数量
-	                 **/
-				   			private String goodsQuality;
-		   		
-		            /**
-	                 * 菜品id
-	                 **/
-				   			private String goodsId;
-		   		
-		            /**
-	                 * 菜品价格
-	                 **/
-				   			private String goodsPrice;
-		   		
-		            /**
-	                 * 结算比例
-	                 **/
-				   			private BigDecimal orderSaleRate;
-				   			
-				   			
+	   		 /**
+                 * 预定时间
+                 **/
+				@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") 
+					private Timestamp bookedTime;
+	
+            /**
+             * 客户名称
+             **/
+		   			private String consigneeName;
+   		
+            /**
+             * 客户手机号
+             **/
+		   			private String consigneePhones;
+   		
+            /**
+             * 活动时间
+             **/
+			@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") 
+					private Timestamp activeTime;
+
+            /**
+             * 活动优惠
+             **/
+		   			private BigDecimal activeTotal;
+   		
+            /**
+             * 菜品名称
+             **/
+		   			private String goodsName;
+   		
+            /**
+             * 菜品数量
+             **/
+		   			private String goodsQuality;
+   		
+            /**
+             * 菜品id
+             **/
+		   			private String goodsId;
+   		
+            /**
+             * 菜品价格
+             **/
+		   			private String goodsPrice;
+   		
+            /**
+             * 结算比例
+             **/
+		   			private BigDecimal orderSaleRate;
+		   			
+			   			
 				   			
 				   			
 				   			
@@ -258,7 +258,7 @@ public class AccountOrderDetail extends Model{
 					}
 
 					public void setBookedTime(Timestamp bookedTime) {
-						this.bookedTime = bookedTime;
+							this.bookedTime = bookedTime;
 					}
 
 					public String getConsigneeName() {
@@ -455,7 +455,9 @@ public class AccountOrderDetail extends Model{
 			 * @param Date overTime 
 			 */
 			public void setOverTime(Timestamp overTime){
-				this.overTime = overTime;
+				if(overTime!=null){
+					this.overTime = overTime;
+				}
 			}
 						
 		  			/**

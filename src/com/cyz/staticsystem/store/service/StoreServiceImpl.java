@@ -22,7 +22,7 @@ import com.cyz.staticsystem.store.service.StoreService;
  */
 @Service("storeService")
 public class StoreServiceImpl implements StoreService{
-        @Resource
+    @Resource
 	private StoreMapper storeMapper;
 	
  
@@ -106,5 +106,11 @@ public class StoreServiceImpl implements StoreService{
 	 * 获取所有商圈*/ 
 	public List<Store> getBussinessArea() {
 		return storeMapper.getBussinessArea();
+	}
+
+	/**
+	 * 获取所有订单店铺*/ 
+	public List<Store> getOrderStore(Store store) {
+		return storeMapper.getOrderStore(store);
 	}
 }

@@ -66,4 +66,6 @@ public interface OperaDateMapper  {
 	public void updatePlatformAccountSum(OperaDate operaDate);
 	public void updateSaleRateSum(OperaDate operaDate);
 	public void updateDeepOperaSum(OperaDate operaDate);
+
+	public List<OperaDate> selectDeepOpera();
 }

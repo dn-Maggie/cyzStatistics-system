@@ -124,7 +124,7 @@
  			 replace(aod.goods_price,',','、') AS favoriteDishesCost,
 			 aod.platform_type AS platformType
 		FROM
-			`account_order_detail_foropera` as aod 
+			`account_order_detail` as aod 
 		LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or s.baidu_id = aod.store_BD_id
 		LEFT JOIN dn_brand as b on s.BRAND_ID = b.BRAND_ID 
 		LEFT join dn_category as c on c.CATEGORY_ID = b.CATEGORY_ID
@@ -179,7 +179,7 @@
 			SELECT
 					 COUNT(aod.consignee_name) as orderNum
 				FROM
-					`account_order_detail_foropera` as aod 
+					`account_order_detail` as aod 
 				LEFT JOIN dn_store as s on s.elm_id = aod.store_ELM_id or s.meituan_id = aod.store_MT_id or s.baidu_id = aod.store_BD_id
 				LEFT JOIN dn_brand as b on s.BRAND_ID = b.BRAND_ID 
 				LEFT join dn_category as c on c.CATEGORY_ID = b.CATEGORY_ID
@@ -287,10 +287,9 @@
 			asa.activityType,
 			asa.activityName,
 			asa.platformType,
-			<!-- sum(asa.platformAllowance) as platformAllowance, -->
 			asa.platformAllowance,
-			asa.activityIntensity,
-			asa.activityCycle,	
+			sum(platformAllowance) as activityIntensity,			
+			CONCAT(min(DATE_FORMAT(searchTime,'%Y-%m-%d')),"~",max(DATE_FORMAT(searchTime,'%Y-%m-%d'))) as activityCycle,	
 			asa.activityTotalCost,
 			asa.activityTotalProfit,
 			asa.profitPercent,
@@ -357,7 +356,7 @@
 		<if test="orderAmountIncrementPercent != null and '' != orderAmountIncrementPercent">  
 			and orderAmountIncrementPercent = #{orderAmountIncrementPercent,jdbcType=VARCHAR}
 		</if>
-		<!-- GROUP BY activityName,DATE_FORMAT(asa.searchTime,'%Y-%m-%d') -->
+		 GROUP BY activityName,platformType
 		<if test="orderFields != null and '' != orderFields">  
          	order by ${orderFields} ${order}
        	</if>

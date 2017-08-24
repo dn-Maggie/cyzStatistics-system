@@ -41,7 +41,7 @@ var gridObj = {};
    					{name : "activityName",label:"活动名称",index : "activityName"},			
    					{name : "platformAllowance",label:"平台补贴金额",index : "platformAllowance",editable:true},				
    					{name : "activityIntensity",label:"活动力度",index : "activityIntensity",editable:true},				
-   					{name : "activityCycle",label:"活动周期",index : "activityCycle",editable:true},				
+   					{name : "activityCycle",label:"活动周期",index : "activityCycle",editable:true,width:300},				
    					{name : "activityTotalCost",label:"该活动总支出",index : "activityTotalCost",editable:true},				
    					{name : "activityTotalProfit",label:"共计产生利润",index : "activityTotalProfit",editable:true},				
    					{name : "profitPercent",label:"利润率",index : "profitPercent",editable:true},				

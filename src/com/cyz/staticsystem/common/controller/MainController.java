@@ -1,6 +1,5 @@
 package com.cyz.staticsystem.common.controller;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cyz.staticsystem.basic.model.Brand;
 import com.cyz.staticsystem.basic.model.UserInfo;
 import com.cyz.staticsystem.basic.service.UserInfoService;
 import com.cyz.staticsystem.common.Constant;
@@ -27,7 +25,6 @@ import com.cyz.staticsystem.common.util.DateUtil;
 import com.cyz.staticsystem.common.util.MD5Encryption;
 import com.cyz.staticsystem.common.util.StringUtil;
 import com.cyz.staticsystem.common.util.Utils;
-import com.cyz.staticsystem.finance.model.AccountOrderDetail;
 import com.cyz.staticsystem.finance.service.AccountOrderDetailService;
 import com.cyz.staticsystem.store.model.Store;
 import com.cyz.staticsystem.store.service.StoreService;

@@ -28,7 +28,7 @@ import com.cyz.staticsystem.store.service.StoreService;
 /**
  * 描述：财务对账模块controller类，负责页面分发与跳转
  * 
- * @author maggie是猪
+ * @author maggie
  * @version 1.0 2017-02-23
  */
  

@@ -524,7 +524,6 @@
 			yaxis: {
 				ticks: 6,
 				min: 0,
-				max: 120000,
 				tickDecimals: 0
 			},
 			grid: {

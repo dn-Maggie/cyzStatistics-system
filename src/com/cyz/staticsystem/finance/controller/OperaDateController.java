@@ -155,24 +155,13 @@ public class OperaDateController{
 	 */
 	@RequestMapping("/deleteOperaDate")
 	public void deleteByKey(AccountOrderDetail accountOrderDetail,String type,HttpServletResponse response){
-		switch (type) {
-		case "basePrice":
-			operaDateService.deleteBasePriceByOrderDetail(accountOrderDetail);
-			break;
-		case "deepOpera":
-			operaDateService.deleteDeepOperaByOrderDetail(accountOrderDetail);
-			break;
-		case "saleRate":
-			operaDateService.deleteSaleRateByOrderDetail(accountOrderDetail);
-			break;
-		case "platformAccount":
-			operaDateService.deletePlatformAccountByOrderDetail(accountOrderDetail);
-			break;
-		default:
-			break;
-		}
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("msg", "成功");
+		try{
+			operaDateService.deleteDeepOperaByOrderDetail(accountOrderDetail);
+			map.put("msg", "成功");
+		}catch(Exception e){
+			map.put("msg", e.getMessage());
+		}
 		AjaxUtils.sendAjaxForMap(response, map);
 	}
 	
@@ -198,23 +187,7 @@ public class OperaDateController{
 			operaDate.setStoreBDId(StringUtils.defaultIfEmpty(
 					s.getBaiduId(), "0"));
 		}
-		List<OperaDate> list = null;
-		switch (type) {
-		case "basePrice":
-			list = operaDateService.listBasePriceByCondition(operaDate);
-			break;
-		case "deepOpera":
-			list = operaDateService.listDeepOperaByCondition(operaDate);
-			break;
-		case "saleRate":
-			list = operaDateService.listSaleRateByCondition(operaDate);
-			break;
-		case "platformAccount":
-			list = operaDateService.listPlatformAccountByCondition(operaDate);
-			break;
-		default:
-			break;
-		}
+		List<OperaDate> list = operaDateService.listDeepOperaByCondition(operaDate);
 		AjaxUtils.sendAjaxForPage(request, response, page, list);
 	}
 	
@@ -228,43 +201,12 @@ public class OperaDateController{
 	public void update(OperaDate operaDate,String type,HttpServletRequest request,HttpServletResponse response){
 		ResultMessage rs = new ResultMessage();
 		switch (type) {
-		case "basePrice":
-			rs= operaDateService.updateBasePrice(operaDate);
-			//根据修改的运营日报表修改运营总表（浅运营）
-			operaDate.setId(operaDate.getId().substring(19));
-			
-			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
-			AjaxUtils.sendAjaxForObjectStr(response,rs);	
-			break;
 		case "deepOpera":
 			rs= operaDateService.updateDeepOpera(operaDate);
 			//根据修改的运营日报表修改运营总表（深运营）
-			operaDate.setId(operaDate.getId().substring(19));
-			
-			
+			operaDate.setId(operaDate.getStoreId());
 			accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
 			accountOperaTotalService.addDeepTotalByOperaDate(operaDate);
-			AjaxUtils.sendAjaxForObjectStr(response,rs);	
-			break;
-		case "saleRate":
-			rs = operaDateService.updateSaleRate(operaDate);
-			//根据修改的运营日报表修改运营总表（浅运营）
-			operaDate.setId(operaDate.getId().substring(19));
-			
-			
-			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
-			AjaxUtils.sendAjaxForObjectStr(response,rs);	
-			break;
-		case "platformAccount":
-			rs = operaDateService.updatePlatformAccount(operaDate);
-			//根据修改的运营日报表修改运营总表（浅运营）
-			operaDate.setId(operaDate.getId().substring(19));
-			
-			
-			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
 			AjaxUtils.sendAjaxForObjectStr(response,rs);	
 			break;
 		case "otherSum":
@@ -276,13 +218,7 @@ public class OperaDateController{
 			operaDate.setStoreBDId(StringUtils.defaultIfEmpty(
 					s.getBaiduId(), "0"));
 			operaDate.setOperator(Utils.getLoginUserInfoId(request));
-			
-			rs= operaDateService.updateSaleRateSum(operaDate);
-			rs = operaDateService.updatePlatformAccountSum(operaDate);
 			rs = operaDateService.updateDeepOperaSum(operaDate);
-			
-			accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-			accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
 			accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
 			accountOperaTotalService.addDeepTotalByOperaDate(operaDate);
 			AjaxUtils.sendAjaxForObjectStr(response,rs);	
@@ -300,102 +236,31 @@ public class OperaDateController{
 	 * @return: ajax输入json字符串
 	 */
 	@RequestMapping("/addByOrderDetail")
-	public void addByOperaDetail(AccountOrderDetail accountOrderDetail,String type,HttpServletRequest request,HttpServletResponse response){
-		if(accountOrderDetail.getStoreName()==null)accountOrderDetail.setStoreName("");
+	public void addByOperaDetail(AccountOrderDetail accountOrderDetail,HttpServletRequest request,HttpServletResponse response){
 		OperaDate operaDate = new OperaDate();
-		if(accountOrderDetail.getStoreId()!=""&&accountOrderDetail.getStoreId()!=null){
-			Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
-			operaDate.setStoreName(s.getStoreName());
-			accountOrderDetail.setStoreELMId(StringUtils.defaultIfEmpty(
-					s.getElmId(), "0"));
-			accountOrderDetail.setStoreMTId(StringUtils.defaultIfEmpty(
-					s.getMeituanId(), "0"));
-			accountOrderDetail.setStoreBDId(StringUtils.defaultIfEmpty(
-					s.getBaiduId(), "0"));
-			operaDate.setStoreELMId(StringUtils.defaultIfEmpty(
-					s.getElmId(), "0"));
-			operaDate.setStoreMTId(StringUtils.defaultIfEmpty(
-					s.getMeituanId(), "0"));
-			operaDate.setStoreBDId(StringUtils.defaultIfEmpty(
-					s.getBaiduId(), "0"));
-		}
-		ResultMessage rs = new ResultMessage();
-		switch (type) {
-		case "basePrice":
-			try
-			{
-			operaDateService.deleteBasePriceByOrderDetail(accountOrderDetail);
+		ResultMessage rs = new ResultMessage(0,"店铺未关联该系统");
+		try{
 			operaDateService.deleteDeepOperaByOrderDetail(accountOrderDetail);
-			operaDateService.deleteSaleRateByOrderDetail(accountOrderDetail);
-			operaDateService.deletePlatformAccountByOrderDetail(accountOrderDetail);
-			if(operaDateService.addBasePriceByOrderDetail(accountOrderDetail)>0) {
-				rs.setMessage("生成运营表成功");
-				accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-				accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
-				accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
-				}
-			}catch(Exception e){
-				rs.setMessage("生成运营表或对账表时出错");
-				AjaxUtils.sendAjaxForObjectStr(response,rs);
-			}
-			break;
-		case "deepOpera":
-			try
-			{
-			operaDateService.deleteBasePriceByOrderDetail(accountOrderDetail);
-			operaDateService.deleteDeepOperaByOrderDetail(accountOrderDetail);
-			operaDateService.deleteSaleRateByOrderDetail(accountOrderDetail);
-			operaDateService.deletePlatformAccountByOrderDetail(accountOrderDetail);
 			if(operaDateService.addDeepOperaByOrderDetail(accountOrderDetail)>0){
 				rs.setMessage("生成运营表成功");
-				accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
+				Store s = storeService.getByPrimaryKey(accountOrderDetail.getStoreId());
+				if(s!=null){
+					operaDate.setStoreId(accountOrderDetail.getStoreId());
+					operaDate.setStoreELMId(StringUtils.defaultIfEmpty(
+							s.getElmId(), "0"));
+					operaDate.setStoreMTId(StringUtils.defaultIfEmpty(
+							s.getMeituanId(), "0"));
+					operaDate.setStoreBDId(StringUtils.defaultIfEmpty(
+							s.getBaiduId(), "0"));
+				}
 				accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
 				accountOperaTotalService.addDeepTotalByOperaDate(operaDate);
-				}
+			}
 			}catch(Exception e){
 				rs.setMessage("生成运营表或对账表时出错");
 				AjaxUtils.sendAjaxForObjectStr(response,rs);
+				return;
 			}
-			break;
-		case "saleRate":
-			try
-			{
-			operaDateService.deleteBasePriceByOrderDetail(accountOrderDetail);
-			operaDateService.deleteDeepOperaByOrderDetail(accountOrderDetail);
-			operaDateService.deleteSaleRateByOrderDetail(accountOrderDetail);
-			operaDateService.deletePlatformAccountByOrderDetail(accountOrderDetail);
-			if(operaDateService.addSaleRateByOrderDetail(accountOrderDetail)>0){
-				rs.setMessage("生成运营表成功");
-				accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-				accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
-				accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
-				}
-			}catch(Exception e){
-				rs.setMessage("生成运营表或对账表时出错");
-				AjaxUtils.sendAjaxForObjectStr(response,rs);
-			}
-			break;
-		case "platformAccount":
-			try
-			{
-			operaDateService.deleteBasePriceByOrderDetail(accountOrderDetail);
-			operaDateService.deleteDeepOperaByOrderDetail(accountOrderDetail);
-			operaDateService.deleteSaleRateByOrderDetail(accountOrderDetail);
-			operaDateService.deletePlatformAccountByOrderDetail(accountOrderDetail);
-			if(operaDateService.addPlatformAccountByOrderDetail(accountOrderDetail)>0){
-				rs.setMessage("生成运营表成功");
-				accountOperaTotalService.deleteSimpleTotalByOperaDate(operaDate);
-				accountOperaTotalService.deleteDeepTotalByOperaDate(operaDate);
-				accountOperaTotalService.addSimpleTotalByOperaDate(operaDate);
-				}
-			}catch(Exception e){
-				rs.setMessage("生成运营表或对账表时出错");
-				AjaxUtils.sendAjaxForObjectStr(response,rs);
-			}
-			break;
-		default:
-			break;
-		}
 		AjaxUtils.sendAjaxForObjectStr(response,rs);
 	}
 	//导出数据方法
@@ -444,21 +309,6 @@ public class OperaDateController{
 					list = operaDateService.listDeepOperaByCondition(operaDate);
 					filename = "深运营表";
 					title = "深运营表";
-					break;
-				case "#basePrice":
-					list = operaDateService.listBasePriceByCondition(operaDate);
-					filename = "底价运营表";
-					title = "底价运营表";
-					break;
-				case "#saleRate":
-					list = operaDateService.listSaleRateByCondition(operaDate);
-					filename = "销售额比例抽佣运营表";
-					title = "销售额比例抽佣运营表";
-					break;
-				case "#platformAccount":
-					list = operaDateService.listPlatformAccountByCondition(operaDate);	
-					filename = "平台到账抽佣运营表";
-					title = "平台到账抽佣运营表";
 					break;
 				default:
 					break;

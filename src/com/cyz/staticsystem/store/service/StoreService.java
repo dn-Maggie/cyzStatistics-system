@@ -63,4 +63,7 @@ public interface StoreService  {
 	/**
 	 * 获取所有商圈*/ 
 	public List<Store> getBussinessArea();
+	/**
+	 * 获取所有订单店铺*/ 
+	public List<Store> getOrderStore(Store store);
 }
